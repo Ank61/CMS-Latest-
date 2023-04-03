@@ -66,7 +66,7 @@
 .addButton:hover{
 background-color: #2462a3;
     color: white;
-    cursor: pointer;
+    cursor: pointer !important;
 }
 .wrapper{
     display: flex;
@@ -136,7 +136,7 @@ color :#2462a3;
 .backgroundFlex{
     display : flex;
     flex-direction: row;
-    margin-top: 20px;
+    margin-top: 5px;
 }
 .previewButton{
     display: flex;
@@ -154,4 +154,8 @@ color :#2462a3;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.background{
+    display: flex;
+    flex-direction: row;
 }

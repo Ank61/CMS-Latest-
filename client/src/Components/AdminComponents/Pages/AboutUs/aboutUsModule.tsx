@@ -92,6 +92,8 @@ import { faGripVertical } from '@fortawesome/free-solid-svg-icons';
 import SquareIcon from '@mui/icons-material/Square';
 import { HexColorPicker } from "react-colorful";
 import outsideClickOutside from "../../../Common/outsideClickOutside";
+import outsideClickSecond from "../../../Common/outsideClickSecond"
+import outsideClickThird from '../../../Common/outsideClickThird'
 import { Form } from 'react-bootstrap';
 import Iframe from 'react-iframe'
 
@@ -137,7 +139,6 @@ function TabPanel(props: TabPanelProps) {
 }
 
 function a11yProps(index: number) {
-    debugger
     return {
         id: `simple-tab-${index}`,
         'aria-controls': `simple-tabpanel-${index}`,
@@ -156,12 +157,24 @@ function AboutUsDynamic() {
     const [modalBackground, setModalBackground] = useState<boolean>(false)
     const [imageURL, setImageURL] = useState<string>("")
     const [textOverImage, setTextOverImage] = useState<string>("")
+    const [secondBackground, setSecondBackground] = useState(false)
+    const [secondColor, setSecondColor] = useState("#ccf6c2")
+    const popoverSecond = React.useRef<HTMLInputElement>(null);
+    const closeSecond = useCallback(() => setSecondBackground(false), [])
+    outsideClickSecond(popoverSecond, closeSecond)
+
+    const [thirdBackground, setThirdBackground] = useState(false)
+    const [thirdColor, setThirdColor] = useState("#f9e0c0")
+    const popoverThird = React.useRef<HTMLInputElement>(null);
+    const closeThird = useCallback(() => setThirdBackground(false), [])
+    outsideClickThird(popoverThird, closeThird)
     let { id } = useParams();
     //For add button
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
+        a11yProps(0)
     };
     const handleClose = () => {
         setAnchorEl(null);
@@ -188,13 +201,11 @@ function AboutUsDynamic() {
         console.log(valueBottom)
     }
     //For background select in div module
-    const [color, setColor] = useState("#aabbcc");
+    const [color, setColor] = useState("#cce4ff");
     const popover = React.useRef<HTMLInputElement>(null);
     const [isOpen, toggle] = useState(false);
     const close = useCallback(() => toggle(false), []);
     outsideClickOutside(popover, close);
-    //For preview
-    const [previewInsert, setPreviewInsert] = useState<boolean>(false)
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -254,19 +265,13 @@ function AboutUsDynamic() {
     //     setModal(false)
     // }
     function handleDelete() {
-        const obj = {
-            moduleId: `${moduleDetails?.moduleId}`
-        }
+        const obj = { moduleId: `${moduleDetails?.moduleId}`}
         axios.post("http://localhost:8080/aboutUs/delete", obj).then(response => console.log(response)).catch(err => console.log(err))
         navigate("/admin/aboutus")
         toast.error("Deleted successfully")
     }
-    // function handleBackground() {
-    //     setModalBackground(true)
-    // }
     function handleBackgroundModal() {
-        setEditorContent((prev) => prev +
-            `<div style='position: relative;text-align: center;color: white;'><img src=${imageURL} style='width:100%'><div style='position: absolute;  top: 1px; left: 1px; width : 400px; height : 200px; background-color : #ffffff; color : #000000; word-wrap: break-word;'>${textOverImage}</div></div>`)
+        setEditorContent((prev) => prev + `<div style='position: relative;text-align: center;color: white;'><img src=${imageURL} style='width:100%'><div style='position: absolute;  top: 1px; left: 1px; width : 400px; height : 200px; background-color : #ffffff; color : #000000; word-wrap: break-word;'>${textOverImage}</div></div>`)
         setModalBackground(false)
     }
     //insertCode Modal
@@ -283,47 +288,55 @@ function AboutUsDynamic() {
         setEditorContent((prev) => prev + `${insertCode}`);
         console.log(insertCode)
         setModal(false);
-
+        setInsertCode("")
     }
     let insertCodeModal = `<!doctype html> <html> <head> </head> <body><div style='background-color : red'> ${insertCode}</div></body> </html>`;
     //For Creating Div Module
     const [anchorElDiv, setAnchorElDiv] = React.useState<HTMLButtonElement | null>(null);
     const handleClickDiv = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorElDiv(event.currentTarget);
-        //All the computation here for CSS Code
         if (data.columnNumber === 1 && data.rowNumber === 0) {
-            debugger;
             setInsertDiv('<div style="display: grid; grid-template-columns: 1fr; grid-template-rows: 1fr; gap: 0px 0px;"> <div style="background-color : #cce4ff;min-height : 191px;">Div 1</div> </div> ')
         }
         if (data.columnNumber === 3 && data.rowNumber === 0) {
-            //check Spacing here
-            debugger;
-            setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr; gap: 0px ${spacing}px;"> <div style="background-color : #cce4ff">Div 1</div> <div style="background-color : #fbcfcf; min-height : 191px">Div 2</div> <div style="background-color : #ccf6c2">This </div></div> `)
+            if (data.border === "sharp") setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr; gap: 0px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;"> <div style="background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px; border : 1px solid black">Div 1</div> <div style="background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"}; min-height : 191px;  border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px ;border : 1px solid black">Div 2</div> <div style="background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px; border : 1px solid black">Div 3 </div></div> `)
+            if (data.border === "thin") setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr; gap: 0px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;"> <div style="background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px; border : 3px solid black">Div 1</div> <div style="background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"}; min-height : 191px;  border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px ;border : 3px solid black">Div 2</div> <div style="background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px; border : 3px solid black">Div 3 </div></div> `)
+            if (data.border === "thick")  setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr; gap: 0px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;"> <div style="background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px; border : 5px solid black">Div 1</div> <div style="background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"}; min-height : 191px;  border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px ;border : 5px solid black">Div 2</div> <div style="background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"}  ;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px; border : 5px solid black">Div 3 </div></div> `)
+            if (data.border === "none") setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr; gap: 0px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;"> <div style="background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 1</div> <div style="background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"}; min-height : 191px;  border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px">Div 2</div> <div style="background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"};  border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px">Div 3 </div></div> `)
         }
         if (data.columnNumber === 2 && data.rowNumber === 0) {
             debugger;
             setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; gap: 0px ${spacing}px;"> <div style="background-color : #cce4ff;min-height : 191px">Div 1</div> <div style="background-color : #fbcfcf">Div 2</div></div> `)
         }
         if (data.columnNumber === 4 && data.rowNumber === 0) {
-            debugger;
-            setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: 1fr; gap: 0px ${spacing}px;"> <div style="background-color : #cce4ff; min-height : 191px">Div 1</div> <div style="background-color : #fbcfcf">Div 2</div> <div style="background-color : #ccf6c2">This </div><div style="background-color : #f9e0c0">Div 3</div></div> `)
+            if (data.border === "sharp")  setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: 1fr; gap: ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;"> <div style="background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;  border : 1px solid black; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;min-height : 191px;">Div 1</div> <div style="background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"};  border : 1px solid black;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div> <div style="background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;  border : 1px solid black; ">Div 3 </div><div style="background-color : #f9e0c0;  border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px; border : 1px solid black";">Div 4</div></div> `)
+            if (data.border === "thin")  setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr;grid-template-columns: 1fr 1fr; grid-template-rows: 0.5fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;grid-template-areas: 'a a' 'b c'  "> <div style="grid-area: a;background-color : #cce4ff ;min-height : 191px;" >Div 1</div> <div style="grid-area: b;background-color : #fbcfcf;">Div 2</div> <div style="grid-area: c;background-color : #ccf6c2;">Div 3</div></div>`) 
+            if (data.border === "thick")  setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: 1fr; gap: ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;"> <div style="background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;  border : 5px solid black ;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;min-height : 191px">Div 1</div> <div style="background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"};   border : 5px solid black;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div> <div style="background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3 </div><div style="background-color : #f9e0c0;  border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px; border : 5px solid black";">Div 4</div></div> `)
+            if (data.border === "none")  setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: 1fr; gap: ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;"> <div style="background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;  border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px ;min-height : 191px ;">Div 1</div> <div style="background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"};  border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div> <div style="background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3 </div><div style="background-color : #f9e0c0;  border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 4</div></div> `) 
         }
         if (data.columnNumber === 2 && data.rowNumber === 1) {
-            debugger;
-            setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr;grid-template-columns: 1fr 1fr; grid-template-rows: 0.5fr 1fr; gap: 0px ${spacing}px;grid-template-areas: 'a a' 'b c'  "> <div style="grid-area: a;background-color : #cce4ff ;min-height : 191px;" >Div 1</div> <div style="grid-area: b;background-color : #fbcfcf;">Div 2</div> <div style="grid-area: c;background-color : #ccf6c2;">Div 3</div></div>`)
+            if (data.border === "sharp")  setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr;grid-template-columns: 1fr 1fr; grid-template-rows: 0.5fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;grid-template-areas: 'a a' 'b c'  "> <div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"};border : 1px solid black; ;min-height : 191px; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;" >Div 1</div> <div style="grid-area: b;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"};border : 1px solid black; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div> <div style="grid-area: c;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"};border : 1px solid black; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3</div></div>`)
+            if (data.border === "thin")  setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr;grid-template-columns: 1fr 1fr; grid-template-rows: 0.5fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;grid-template-areas: 'a a' 'b c'  "> <div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;min-height : 191px;border : 3px solid black; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;" >Div 1</div> <div style="grid-area: b;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"};border : 3px solid black; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div> <div style="grid-area: c;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"}; border : 3px solid black;  border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3</div></div>`)         
+            if (data.border === "thick")  setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr;grid-template-columns: 1fr 1fr; grid-template-rows: 0.5fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;grid-template-areas: 'a a' 'b c'  "> <div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;min-height : 191px;border : 5px solid black; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;" >Div 1</div> <div style="grid-area: b;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"};border : 5px solid black; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div> <div style="grid-area: c;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"}; border : 5px solid black; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3</div></div>`)        
+            if (data.border === "none")   setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr;grid-template-columns: 1fr 1fr; grid-template-rows: 0.5fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;grid-template-areas: 'a a' 'b c'  "> <div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;min-height : 191px; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;" >Div 1</div> <div style="grid-area: b;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"}; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div> <div style="grid-area: c;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"}; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3</div></div>`)
         }
         if (data.columnNumber === 3 && data.rowNumber === 1) {
-            debugger;
-            setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr;grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 0.5fr 1fr; gap: 0px 0px;grid-template-areas: 'a a a' 'b c d'  "> <div style="grid-area: a;background-color : #cce4ff ;min-height : 191px;" >Div 1</div> <div style="grid-area: b;background-color : #fbcfcf;">Div 2</div> <div style="grid-area: c;background-color : #ccf6c2;">This </div><div style="grid-area: d;background-color : #f9e0c0;">Div 3</div></div> `)
+            if (data.border === "sharp") setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr;grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 0.5fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;grid-template-areas: 'a a a' 'b c d'  "> <div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;border : 1px solid black;min-height : 191px; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;" >Div 1</div> <div style="grid-area: b;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"};border : 1px solid black ;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div> <div style="grid-area: c;border : 1px solid black;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">This </div><div style="grid-area: d;background-color : #f9e0c0; border : 1px solid black;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 4</div></div> `)
+            if (data.border === "thin") setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr;grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 0.5fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;grid-template-areas: 'a a a' 'b c d'  "> <div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;border : 3px solid black;min-height : 191px; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;" >Div 1</div> <div style="grid-area: b;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"}; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;border : 3px solid black;">Div 2</div> <div style="grid-area: c;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;border : 3px solid black;">This </div><div style="grid-area: d;background-color : #f9e0c0; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;border : 3px solid black;">Div 4</div></div> `)
+            if (data.border === "thick") setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr;grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 0.5fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;grid-template-areas: 'a a a' 'b c d'  "> <div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"};border : 5px solid black;min-height : 191px; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;" >Div 1</div> <div style="grid-area: b;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"}; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;border : 5px solid black;">Div 2</div> <div style="grid-area: c;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;border : 5px solid black;">This </div><div style="grid-area: d;background-color : #f9e0c0; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;border : 5px solid black;">Div 4</div></div> `)
+            if (data.border === "none") setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr;grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 0.5fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;grid-template-areas: 'a a a' 'b c d'  "> <div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;min-height : 191px; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;" >Div 1</div> <div style="grid-area: b;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"}; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div> <div style="grid-area: c;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">This </div><div style="grid-area: d;background-color : #f9e0c0; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 4</div></div> `)
         }
         if (data.columnNumber === 3 && data.rowNumber === 1 && data.complex === "Left Big") {
-            debugger;
-            setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0px 0px; grid-template-areas: 'a b b' 'a c d' "><div style="grid-area: a;background-color : #cce4ff ;">Div 1</div><div style="grid-area: b;background-color : #ccf6c2 ;min-height : 191px;">Div 2</div><div style="grid-area: c;background-color : #fbcfcf;">This</div><div style="grid-area: d;background-color : #f9e0c0;">Div 3</div> </div>`);
-
-        }
+            if (data.border === "sharp")  setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px; grid-template-areas: 'a b b' 'a c d' "><div style="grid-area: a;border : 1px solid black;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 1</div><div style="grid-area: b;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"};min-height : 191px;">Div 2</div><div style="grid-area: c;background-color : #fbcfcf;border : 1px solid black; ;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3</div><div style="grid-area: d;border : 1px solid black;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 4</div> </div>`);
+            if (data.border === "thin")  setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px; grid-template-areas: 'a b b' 'a c d' "><div style="grid-area: a;border : 3px solid black;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 1</div><div style="grid-area: b;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"};min-height : 191px;border : 3px solid black;">Div 2</div><div style="grid-area: c;border : 3px solid black;background-color : #fbcfcf; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3</div><div style="grid-area: d;border : 3px solid black;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 4</div> </div>`);    
+            if (data.border === "thick") setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px; grid-template-areas: 'a b b' 'a c d' "><div style="grid-area: a;border : 5px solid black;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 1</div><div style="grid-area: b;border : 5px solid black;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"};min-height : 191px;">Div 2</div><div style="grid-area: c;border : 5px solid black;background-color : #fbcfcf; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3</div><div style="grid-area: d;border : 5px solid black;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 4</div> </div>`);      
+            if (data.border === "none") setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px; grid-template-areas: 'a b b' 'a c d' "><div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 1</div><div style="grid-area: b;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"};min-height : 191px;">Div 2</div><div style="grid-area: c;background-color : #fbcfcf; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3</div><div style="grid-area: d;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 4</div> </div>`);     
+    }
         if (data.columnNumber === 2 && data.rowNumber === 2) {
-            debugger;
-            setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0px 0px; grid-template-areas: 'a b' 'c d' "> <div style="grid-area: a;background-color : #cce4ff ;min-height : 191px;">Div 1</div><div style="grid-area: b;background-color : #ccf6c2 ;">Div 2</div><div style="grid-area: c;background-color : #fbcfcf;">Div 3</div><div style="grid-area: d;background-color : #f9e0c0;">Div 4</div></div>`)
+            if (data.border === "sharp") setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px; grid-template-areas: 'a b' 'c d' "> <div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;border : 1px solid black;min-height : 191px; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 1</div><div style="grid-area: b;border : 1px solid black;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"}; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div><div style="grid-area: c;border : 1px solid black;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3</div><div style="grid-area: d;border : 1px solid black;background-color : #f9e0c0; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 4</div></div>`)
+            if (data.border === "thin") setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px; grid-template-areas: 'a b' 'c d' "> <div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;min-height : 191px; border : 3px solid black;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 1</div><div style="grid-area: b;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"};  border : 3px solid black;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div><div style="grid-area: c;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"};  border : 3px solid black; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3</div><div style="grid-area: d;background-color : #f9e0c0;  border : 3px solid black;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 4</div></div>`)
+            if (data.border === "thick") setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px; grid-template-areas: 'a b' 'c d' "> <div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;border : 5px solid black;min-height : 191px; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 1</div><div style="grid-area: b;border : 5px solid black;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"}; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div><div style="grid-area: c;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border : 5px solid black;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3</div><div style="grid-area: d;border : 5px solid black;background-color : #f9e0c0; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 4</div></div>`)
+            if (data.border === "none")  setInsertDiv(`<div style="display: grid; grid-auto-columns: 1fr; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap:  ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px; grid-template-areas: 'a b' 'c d' "> <div style="grid-area: a;background-color : ${color !== "#cce4ff" ? color : "#cce4ff"} ;min-height : 191px; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 1</div><div style="grid-area: b;background-color : ${secondColor !== "#ccf6c2" ? secondColor : "#ccf6c2"}; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 2</div><div style="grid-area: c;background-color : ${thirdColor !== "#f9e0c0" ? thirdColor : "#f9e0c0"} ; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 3</div><div style="grid-area: d;background-color : #f9e0c0; border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;">Div 4</div></div>`)
         }
     };
     const handleCloseDiv = () => {
@@ -346,7 +359,7 @@ function AboutUsDynamic() {
     }
     function handleCloseFullModal() {
         debugger;
-        console.log(codeSelected )
+        console.log(codeSelected)
         setModal(false)
         setCodeSelected(false)
         setValueBottom(0);
@@ -354,42 +367,19 @@ function AboutUsDynamic() {
         setData({ columnNumber: 0, rowNumber: 0, spacing: 0, backgroundColor: "", border: "none", shape: "Square", complex: "" })
     }
 
-    // const Item = styled(Paper)(({ theme }) => ({
-    //     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    //     ...theme.typography.body2,
-    //     padding: theme.spacing(1),
-    //     textAlign: 'center',
-    //     color: theme.palette.text.secondary,
-    // }));
-
-
     return (
         <>
             <div className="mainDiv">
-                <Layout title="About Us" moduleName={moduleDetails ? moduleDetails.moduleName : " "}></Layout>
-                <Toaster />
+                <Layout title="About Us" moduleName={moduleDetails ? moduleDetails.moduleName : " "}></Layout> <Toaster />
             </div>
             <div className='mainContentDiv'>
                 <div className="contentDiv">
                     <div>
-                        <Button
-                            id="basic-button"
-                            aria-controls={open ? 'basic-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                            onClick={handleClick}
-                        > <div className="addButton"><AddIcon /></div></Button>
-                        <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={handleClose}
-                            MenuListProps={{
-                                'aria-labelledby': 'basic-button',
-                            }}
-                        >
-                            <MenuItem style={{ fontSize: 14 }} onClick={handleClose}> <ViewModuleIcon style={{ marginRight: 20, fontSize: 29 }} /> Divide Module
-                            </MenuItem>
+                        <Button id="basic-button" aria-controls={open ? 'basic-menu' : undefined}  aria-haspopup="true" aria-expanded={open ? 'true' : undefined} onClick={handleClick} > 
+                        <div className="addButton"><AddIcon /></div>
+                        </Button>
+                        <Menu  id="basic-menu"  anchorEl={anchorEl}  open={open}  onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
+                            <MenuItem style={{ fontSize: 14 }} onClick={handleClose}> <ViewModuleIcon style={{ marginRight: 20, fontSize: 29 }} /> Divide Module</MenuItem>
                             <MenuItem onClick={handleClose} style={{ fontSize: 14 }}><SmartButtonIcon style={{ marginRight: 20, fontSize: 31 }} /> Button</MenuItem>
                             <MenuItem onClick={handleClose} style={{ fontSize: 14 }}><WallpaperIcon style={{ marginRight: 20, fontSize: 26 }} />   Background Image</MenuItem>
                             <MenuItem onClick={handleClose} style={{ fontSize: 14 }}><AlignHorizontalCenterIcon style={{ marginRight: 20, fontSize: 28 }} /> Align Item</MenuItem>
@@ -434,14 +424,13 @@ function AboutUsDynamic() {
                 >
 
                     <Modal.Body style={{ overflow: 'auto' }} >
-                        {/* <Box> */}
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <div className="InsertCodeModal">
                                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
                                     <Tab label="Select Column Type" {...a11yProps(0)} onClick={() => setCodeSelected(false)} />
                                     <Tab label="Apply Code" {...a11yProps(1)} onClick={() => setCodeSelected(true)} />
                                 </Tabs>
-                                <Tab label={<ClearIcon onClick={() => handleCloseFullModal()} />}></Tab>
+                                <Tab label={<ClearIcon onClick={() => handleCloseFullModal()} />} ></Tab>
                             </div>
                         </Box>
                         {!codeSelected && valueBottom !== 1 && valueBottom !== 2 ?
@@ -524,14 +513,7 @@ function AboutUsDynamic() {
                                                 <Grid container justifyContent="center" spacing={spacing} style={{ marginLeft: 2, width: '100%' }}>
                                                     {[0, 1, 2].map((value) => (
                                                         <Grid key={value} item>
-                                                            <Paper
-                                                                sx={{
-                                                                    height: 130,
-                                                                    width: 80,
-                                                                    border: '1px solid #77aadc',
-                                                                    backgroundColor: '#efebeb'
-                                                                }}
-                                                            />
+                                                            <Paper sx={{ height: 130, width: 80, border: '1px solid #77aadc', backgroundColor: '#efebeb' }}/>
                                                         </Grid>
                                                     ))}
                                                 </Grid>
@@ -542,14 +524,7 @@ function AboutUsDynamic() {
                                                 <Grid container justifyContent="center" spacing={spacing} style={{ marginLeft: 2, width: '100%' }}>
                                                     {[0, 1, 2, 3].map((value) => (
                                                         <Grid key={value} item>
-                                                            <Paper
-                                                                sx={{
-                                                                    height: 130,
-                                                                    width: 80,
-                                                                    border: '1px solid #77aadc',
-                                                                    backgroundColor: '#efebeb'
-                                                                }}
-                                                            />
+                                                            <Paper sx={{ height: 130,  width: 80, border: '1px solid #77aadc', backgroundColor: '#efebeb' }}/>
                                                         </Grid>
                                                     ))}
                                                 </Grid> : ""}
@@ -557,93 +532,50 @@ function AboutUsDynamic() {
                                             {/* For 3 column  and 1 row no complex*/}
                                             {data.columnNumber === 3 && data.rowNumber === 1 && data.complex !== "Left Big" ?
                                                 <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={spacing}>
-                                                    <Box gridColumn="span 12">
-                                                        <Paper sx={{ height: 40, width: 420, border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
-                                                    <Box gridColumn="span 4">
-                                                        <Paper sx={{ height: 80, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
-                                                    <Box gridColumn="span 4">
-                                                        <Paper sx={{ height: 80, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
-                                                    <Box gridColumn="span 4">
-                                                        <Paper sx={{ height: 80, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
+                                                    <Box gridColumn="span 12"> <Paper sx={{ height: 40, width: 420, border: '1px solid #77aadc', backgroundColor: '#efebeb' }} /> </Box>
+                                                    <Box gridColumn="span 4"> <Paper sx={{ height: 80, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />  </Box>
+                                                    <Box gridColumn="span 4">  <Paper sx={{ height: 80, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} /> </Box>
+                                                    <Box gridColumn="span 4">  <Paper sx={{ height: 80, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} /> </Box>
                                                 </Box> : ""}
 
                                             {/* For 2 column  and 1 row no complex*/}
                                             {data.columnNumber === 2 && data.rowNumber === 1 && data.complex !== "Left Big" ?
                                                 <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={spacing}>
-                                                    <Box gridColumn="span 12">
-                                                        <Paper sx={{ height: 40, width: 420, border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
-                                                    <Box gridColumn="span 6">
-                                                        <Paper sx={{ height: 80, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
-                                                    <Box gridColumn="span 6">
-                                                        <Paper sx={{ height: 80, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
+                                                    <Box gridColumn="span 12"> <Paper sx={{ height: 40, width: 420, border: '1px solid #77aadc', backgroundColor: '#efebeb' }} /> </Box>
+                                                    <Box gridColumn="span 6">   <Paper sx={{ height: 80, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />  </Box>
+                                                    <Box gridColumn="span 6"> <Paper sx={{ height: 80, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} /> </Box>
                                                 </Box> : ""}
 
                                             {/* For 2 column  and 1 row with complex*/}
                                             {data.columnNumber === 3 && data.rowNumber === 1 && data.complex === "Left Big" ?
                                                 <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gridTemplateRows="repeat(2,1fr)" gap={spacing}>
-                                                    <Box gridRow="span 4" gridColumn="span 4">
-                                                        <Paper sx={{ height: 120, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
-                                                    <Box gridColumn="span 8">
-                                                        <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
-                                                    <Box gridColumn="span 4">
-                                                        <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
-                                                    <Box gridColumn="span 4">
-                                                        <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
+                                                    <Box gridRow="span 4" gridColumn="span 4">   <Paper sx={{ height: 120, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />  </Box>
+                                                    <Box gridColumn="span 8"> <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />  </Box>
+                                                    <Box gridColumn="span 4">   <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} /> </Box>
+                                                    <Box gridColumn="span 4">  <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} /> </Box>
                                                 </Box>
                                                 : ""}
+
                                             {/*For 4 equal sizes*/}
                                             {data.columnNumber === 2 && data.rowNumber === 2 && data.complex !== "Left Big" ?
-
                                                 <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={spacing}>
-                                                    <Box gridColumn="span 6">
-                                                        <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
-                                                    <Box gridColumn="span 6">
-                                                        <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
-                                                    <Box gridColumn="span 6">
-                                                        <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
-                                                    <Box gridColumn="span 6">
-                                                        <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />
-                                                    </Box>
+                                                    <Box gridColumn="span 6">  <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} /> </Box>
+                                                    <Box gridColumn="span 6">  <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} /> </Box>
+                                                    <Box gridColumn="span 6">  <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />  </Box>
+                                                    <Box gridColumn="span 6">   <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />  </Box>
                                                 </Box>
-
                                                 : ""}
 
-                                        </Grid>
+                                    </Grid>
                                         <Grid item xs={12}>
                                             <Paper sx={{ p: 2 }}>
                                                 <Grid container style={{ height: 60 }}>
                                                     <Grid item>
                                                         <FormControl component="fieldset">
                                                             <FormLabel component="legend" style={{ fontSize: 15 }}>Select Spacing</FormLabel>
-                                                            <RadioGroup
-                                                                name="spacing"
-                                                                aria-label="spacing"
-                                                                value={spacing.toString()}
-                                                                onChange={handleChangeGrid}
-                                                                row
-                                                            >
+                                                            <RadioGroup name="spacing"  aria-label="spacing"  value={spacing.toString()}   onChange={handleChangeGrid}  row >
                                                                 {[0, 1, 2, 3, 4].map((value) => (  // removed 0.5,8 and 12
-                                                                    <FormControlLabel
-                                                                        key={value}
-                                                                        value={value.toString()}
-                                                                        control={<Radio />}
-                                                                        label={value.toString()}
-                                                                        style={{ height: 20, width: 40, marginLeft: 3 }}
-                                                                    />
+                                                                    <FormControlLabel key={value} value={value.toString()}  control={<Radio />} label={value.toString()}  style={{ height: 20, width: 40, marginLeft: 3 }}/>
                                                                 ))}
                                                             </RadioGroup>
                                                         </FormControl>
@@ -657,13 +589,7 @@ function AboutUsDynamic() {
                                     </Button>
                                 </TabPanel>
                                 <Box sx={{ width: 'auto' }}>
-                                    <BottomNavigation
-                                        showLabels
-                                        value={valueBottom}
-                                        onChange={(event, newValue) => {
-                                            setValueBottom(newValue);
-                                        }}
-                                    >
+                                    <BottomNavigation  showLabels  value={valueBottom}   onChange={(event, newValue) => { setValueBottom(newValue); }} >
                                         <BottomNavigationAction label={<FontAwesomeIcon icon={fa1} style={{ fontSize: 11, paddingTop: 20 }} />} onClick={(event) => handleBottomNavigation(event)} />
                                         <BottomNavigationAction label={<FontAwesomeIcon icon={fa2} style={{ fontSize: 11, paddingTop: 20 }} />} onClick={(event) => handleBottomNavigation(event)} />
                                         <BottomNavigationAction label={<FontAwesomeIcon icon={fa3} style={{ fontSize: 11, paddingTop: 20 }} />} onClick={(event) => handleBottomNavigation(event)} />
@@ -678,14 +604,10 @@ function AboutUsDynamic() {
                                     <label style={{ marginTop: 10 }}>Shape</label>
                                     <div>
                                         <FormControl>
-                                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" style={{ marginLeft: 45, marginTop: 10 }} name="row-radio-buttons-group"
-                                                defaultValue="Square"
-                                                onChange={(e) => { setData((prev) => ({ ...prev, shape: e.target.value })) }}
-
-                                            >
-                                                <FormControlLabel value="Square" control={<Radio />} label={"Square"} style={{ height: 30 }} />
-                                                <FormControlLabel value="Rounded" control={<Radio />} label={"Rounded Square"} style={{ height: 30 }} />
-                                                <FormControlLabel value="Circle" control={<Radio />} label={"Circle"} style={{ height: 30 }}></FormControlLabel>
+                                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" style={{ marginLeft: 45, marginTop: 10 }} name="row-radio-buttons-group"defaultValue="Square" onChange={(e) => { setData((prev) => ({ ...prev, shape: e.target.value })) }} >
+                                                <FormControlLabel value="Square" control={<Radio />} label={"Square"} style={{ height: 30 }} onClick={() => setData((prev) => ({ ...prev, shape: "Square" }))} />
+                                                <FormControlLabel value="Rounded" control={<Radio />} label={"Rounded Square"} style={{ height: 30 }} onClick={() => setData((prev) => ({ ...prev, shape: "Rounded" }))} />
+                                                <FormControlLabel value="Circle" control={<Radio />} label={"Circle"} style={{ height: 30 }} onClick={() => setData((prev) => ({ ...prev, shape: "Circle" }))}></FormControlLabel>
                                             </RadioGroup>
                                         </FormControl>
                                     </div>
@@ -694,58 +616,56 @@ function AboutUsDynamic() {
                                     <label style={{ marginTop: 23 }}>Border</label>
                                     <div style={{ marginTop: 12 }}>
                                         <FormControl>
-                                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" style={{ marginLeft: 100, marginTop: 7 }} name="row-radio-buttons-group"
-                                                defaultValue="none"
-                                                onChange={(e) => setData((prev) => ({ ...prev, border: e.target.value }))}
-
-                                            >
-                                                <FormControlLabel value="sharp" control={<Radio />} label={<FontAwesomeIcon icon={faGripLinesVertical} style={{ fontSize: 28, width: 7 }} />} /> &nbsp;&nbsp;
-                                                <FormControlLabel value="thin" control={<Radio />} label={<FontAwesomeIcon icon={faGripLinesVertical} style={{ fontSize: 31, width: 10 }} />} />&nbsp;&nbsp;
-                                                <FormControlLabel value="thick" control={<Radio />} label={<FontAwesomeIcon icon={faGripLinesVertical} style={{ fontSize: 35 }} ></FontAwesomeIcon>} ></FormControlLabel>&nbsp;&nbsp;&nbsp;
-                                                <FormControlLabel value="none" control={<Radio />} label={"None"} ></FormControlLabel>
+                                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" style={{ marginLeft: 100, marginTop: 7 }} name="row-radio-buttons-group"   defaultValue="none" onChange={(e) => setData((prev) => ({ ...prev, border: e.target.value }))} >
+                                                <FormControlLabel value="sharp" control={<Radio />} label={<FontAwesomeIcon icon={faGripLinesVertical} style={{ fontSize: 28, width: 7 }} />} onClick={() => setData((prev) => ({ ...prev, border: "Sharp" }))} /> &nbsp;&nbsp;
+                                                <FormControlLabel value="thin" control={<Radio />} label={<FontAwesomeIcon icon={faGripLinesVertical} style={{ fontSize: 31, width: 10 }} />} onClick={() => setData((prev) => ({ ...prev, border: "Thin" }))} />&nbsp;&nbsp;
+                                                <FormControlLabel value="thick" control={<Radio />} label={<FontAwesomeIcon icon={faGripLinesVertical} style={{ fontSize: 35 }} ></FontAwesomeIcon>} onClick={() => setData((prev) => ({ ...prev, border: "Thick" }))}></FormControlLabel>&nbsp;&nbsp;&nbsp;
+                                                <FormControlLabel value="none" control={<Radio />} label={"None"} onClick={() => setData((prev) => ({ ...prev, border: "None" }))}></FormControlLabel>
                                             </RadioGroup>
                                         </FormControl>
                                     </div>
                                 </div>
-                                <div className='backgroundFlex' style={{ marginTop: 38 }}>
+                                <div className='backgroundFlex' style={{ marginTop: 25 }}>
                                     <label>Background Color</label>
-                                    <div className="picker">
-                                        <div
-                                            className="swatch"
-                                            style={{ backgroundColor: color }}
-                                            onClick={() => toggle(true)}
-                                        />
+                                    <div className="picker" style={{ marginLeft: 90 }}>
+                                        <div  className="swatch"  style={{ backgroundColor: color, marginTop: 3 }}  onClick={() => toggle(true)} />
+                                        {isOpen && ( <div className="popover" ref={popover}><HexColorPicker color={color} onChange={setColor} /></div> )}
+                                    </div>
+                                    <input type="text" className='form-control' style={{ width: 100, marginLeft: 20 }} value={color} onChange={(e) => { setColor(e.target.value) }}></input>
+                                    <div style={{ marginLeft: 20, marginTop: 5 }}>
+                                        Div 1
+                                    </div>
+                                </div>
 
-                                        {isOpen && (
-                                            <div className="popover" ref={popover}>
-                                                <HexColorPicker color={color} onChange={setColor} />
-                                            </div>
+                                <div className='backgroundFlex' style={{ marginTop: 8, marginLeft: 182 }}>
+                                    <div className="picker">
+                                        <div  className="swatch"  style={{ backgroundColor: secondColor, marginTop: 3 }}  onClick={() => setSecondBackground(true)}/>
+                                        {secondBackground && (<div className="popover" ref={popoverSecond}> <HexColorPicker color={secondColor} onChange={setSecondColor} /> </div> )}
+                                    </div>
+                                    <input type="text" className='form-control' style={{ width: 100, marginLeft: 20, }} value={secondColor} onChange={(e) => { setSecondColor(e.target.value) }}></input>
+                                    <div style={{ marginLeft: 20, marginTop: 5 }}>
+                                        Div 2
+                                    </div>
+                                </div>
+                                <div className='backgroundFlex' style={{ marginTop: 8, marginLeft: 182 }}>
+                                    <div className="picker">
+                                        <div  className="swatch"   style={{ backgroundColor: thirdColor, marginTop: 3 }}  onClick={() => setThirdBackground(true)} />
+                                        {thirdBackground && (
+                                            <div className="popover" ref={popoverThird}>  <HexColorPicker color={thirdColor} onChange={setThirdColor} /> </div>
                                         )}
                                     </div>
-                                    <input type="text" className='form-control' style={{ width: 100, marginLeft: 70, }} value={color} onChange={(e) => { setColor(e.target.value) }}></input>
+                                  
+                                    <input type="text" className='form-control' style={{ width: 100, marginLeft: 20, }} value={thirdColor} onChange={(e) => { setThirdColor(e.target.value) }}></input>
+                                    <div style={{ marginLeft: 20, marginTop: 5 }}> Div 3  </div>
                                 </div>
+
+
                                 <div className='previewButtonDiv'>
                                     <div>
                                         <Button aria-describedby={idDiv} variant="contained" style={{ backgroundColor: 'white', color: 'gray' }} onClick={handleClickDiv}>
                                             <VisibilityIcon />&nbsp; Preview
                                         </Button>
-                                        <Popover
-                                            id={idDiv}
-                                            open={openDiv}
-                                            anchorEl={anchorElDiv}
-                                            onClose={handleCloseDiv}
-                                            anchorReference="anchorPosition"
-                                            anchorPosition={{ top: 200, left: 868 }}
-                                            anchorOrigin={{
-                                                vertical: 'center',
-                                                horizontal: 'right',
-                                            }}
-                                            transformOrigin={{
-                                                vertical: 'center',
-                                                horizontal: 'left',
-                                            }}
-                                        >
-                                            {/* <Typography sx={{ p: 2 }}>The content of the Popover.</Typography> */}
+                                        <Popover  id={idDiv}    open={openDiv}   anchorEl={anchorElDiv}   onClose={handleCloseDiv}   anchorReference="anchorPosition"    anchorPosition={{ top: 200, left: 868 }}    anchorOrigin={{    vertical: 'center',   horizontal: 'right', }} transformOrigin={{ vertical: 'center',    horizontal: 'left',  }} >
                                             <iframe srcDoc={insertDivModal} width={400} height={400} sandbox='' ></iframe>
                                         </Popover>
                                     </div>
@@ -755,12 +675,7 @@ function AboutUsDynamic() {
                                 </div>
                                 <Box sx={{ width: 'auto' }}>
                                     <BottomNavigation
-                                        showLabels
-                                        value={valueBottom}
-                                        onChange={(event, newValue) => {
-                                            setValueBottom(newValue);
-                                        }}
-                                    >
+                                        showLabels   value={valueBottom} onChange={(event, newValue) => {  setValueBottom(newValue);}} >
                                         <BottomNavigationAction label={<FontAwesomeIcon icon={fa1} style={{ fontSize: 11, paddingTop: 40 }} />} onClick={(event) => handleBottomNavigation(event)} />
                                         <BottomNavigationAction label={<FontAwesomeIcon icon={fa2} style={{ fontSize: 11, paddingTop: 40 }} />} onClick={(event) => handleBottomNavigation(event)} />
                                         <BottomNavigationAction label={<FontAwesomeIcon icon={fa3} style={{ fontSize: 11, paddingTop: 40 }} />} onClick={(event) => handleBottomNavigation(event)} />
@@ -783,10 +698,7 @@ function AboutUsDynamic() {
                                 }}
                                 transformOrigin={{
                                     vertical: 'center',
-                                    horizontal: 'left',
-                                }}
-                            >
-                                {/* <Typography sx={{ p: 2 }}></Typography> */}
+                                    horizontal: 'left',  }}  >
                                 <iframe srcDoc={insertCodeModal} width={400} height={400} sandbox='' ></iframe>
                             </Popover>
                             <Form>
@@ -796,12 +708,12 @@ function AboutUsDynamic() {
                             </Form>
                             <div className='previewButton'>
                                 <div>
-                                    <Button aria-describedby={idInsert} variant="contained" style={{  backgroundColor: 'white', color: 'gray'}} onClick={handleClickInsert}>
+                                    <Button aria-describedby={idInsert} variant="contained" style={{ backgroundColor: 'white', color: 'gray' }} onClick={handleClickInsert}>
                                         <VisibilityIcon />&nbsp; Preview
                                     </Button>
                                 </div>
                                 <div>
-                                    <button type="button" className='btn btn-primary' style={{ marginLeft : 20}} onClick={() => handleInsertCode()}>Apply to Module</button>
+                                    <button type="button" className='btn btn-primary' style={{ marginLeft: 20 }} onClick={() => handleInsertCode()}>Apply to Module</button>
                                 </div>
                             </div>
                         </TabPanel>
@@ -832,21 +744,5 @@ function AboutUsDynamic() {
             </div>
         </>
     )
-    // <Grid container justifyContent="center" spacing={spacing} columns={8} style={{ border: '1px solid #ededed', marginLeft: 2, width: '100%' }}>
-
-    {/* {[0, 1, 2,3].map((value) => (
-                                                    <Grid key={value} item>
-                                                        <Paper
-                                                            sx={{
-                                                                height: 130,
-                                                                width: 80,
-                                                                border: '1px solid #77aadc',
-                                                                backgroundColor: (theme) =>
-                                                                    theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-                                                            }}
-                                                        />
-                                                    </Grid> */}
-    {/* ))} */ }
-    // </Grid>
 }
 export default AboutUsDynamic;
