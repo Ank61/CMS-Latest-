@@ -109,8 +109,8 @@ interface TabPanelProps {
     value: number;
 }
 type Data = {
-    columnNumber: Number//make cases
-    rowNumber: Number //if the number is 0, then only column
+    columnNumber: number//make cases
+    rowNumber: number //if the number is 0, then only column
     spacing: Number
     backgroundColor: String
     border: String
@@ -565,7 +565,6 @@ function AboutUsDynamic() {
                                                     <Box gridColumn="span 6">   <Paper sx={{ height: 60, width: 'auto', border: '1px solid #77aadc', backgroundColor: '#efebeb' }} />  </Box>
                                                 </Box>
                                                 : ""}
-
                                     </Grid>
                                         <Grid item xs={12}>
                                             <Paper sx={{ p: 2 }}>
@@ -636,17 +635,29 @@ function AboutUsDynamic() {
                                         Div 1
                                     </div>
                                 </div>
+                              {data.columnNumber==2 && data.rowNumber==0 ?     
+                               <div className='backgroundFlex' style={{ marginTop: 8, marginLeft: 182 }}>
+                               <div className="picker">
+                                   <div  className="swatch"  style={{ backgroundColor: secondColor, marginTop: 3 }}  onClick={() => setSecondBackground(true)}/>
+                                   {secondBackground && (<div className="popover" ref={popoverSecond}> <HexColorPicker color={secondColor} onChange={setSecondColor} /> </div> )}
+                               </div>
+                               <input type="text" className='form-control' style={{ width: 100, marginLeft: 20, }} value={secondColor} onChange={(e) => { setSecondColor(e.target.value) }}></input>
+                               <div style={{ marginLeft: 20, marginTop: 5 }}>
+                                   Div 2
+                               </div>
+                           </div>
+                            : ""}
 
-                                <div className='backgroundFlex' style={{ marginTop: 8, marginLeft: 182 }}>
-                                    <div className="picker">
-                                        <div  className="swatch"  style={{ backgroundColor: secondColor, marginTop: 3 }}  onClick={() => setSecondBackground(true)}/>
-                                        {secondBackground && (<div className="popover" ref={popoverSecond}> <HexColorPicker color={secondColor} onChange={setSecondColor} /> </div> )}
-                                    </div>
-                                    <input type="text" className='form-control' style={{ width: 100, marginLeft: 20, }} value={secondColor} onChange={(e) => { setSecondColor(e.target.value) }}></input>
-                                    <div style={{ marginLeft: 20, marginTop: 5 }}>
-                                        Div 2
-                                    </div>
-                                </div>
+                            {(data.columnNumber==2 && data.rowNumber>0)  || (data.columnNumber>2 && data.rowNumber===0) || (data.columnNumber===3 && data.rowNumber===0)
+                             ?  <div className='backgroundFlex' style={{ marginTop: 8, marginLeft: 182 }}>
+                               <div className="picker">
+                                   <div  className="swatch"  style={{ backgroundColor: secondColor, marginTop: 3 }}  onClick={() => setSecondBackground(true)}/>
+                                   {secondBackground && (<div className="popover" ref={popoverSecond}> <HexColorPicker color={secondColor} onChange={setSecondColor} /> </div> )}
+                               </div>
+                               <input type="text" className='form-control' style={{ width: 100, marginLeft: 20, }} value={secondColor} onChange={(e) => { setSecondColor(e.target.value) }}></input>
+                               <div style={{ marginLeft: 20, marginTop: 5 }}>
+                                   Div 2(in third)
+                               </div>
                                 <div className='backgroundFlex' style={{ marginTop: 8, marginLeft: 182 }}>
                                     <div className="picker">
                                         <div  className="swatch"   style={{ backgroundColor: thirdColor, marginTop: 3 }}  onClick={() => setThirdBackground(true)} />
@@ -654,11 +665,44 @@ function AboutUsDynamic() {
                                             <div className="popover" ref={popoverThird}>  <HexColorPicker color={thirdColor} onChange={setThirdColor} /> </div>
                                         )}
                                     </div>
-                                  
                                     <input type="text" className='form-control' style={{ width: 100, marginLeft: 20, }} value={thirdColor} onChange={(e) => { setThirdColor(e.target.value) }}></input>
-                                    <div style={{ marginLeft: 20, marginTop: 5 }}> Div 3  </div>
-                                </div>
+                                    <div style={{ marginLeft: 20, marginTop: 5 }}> Div 3(int third) </div>
+                                </div> 
+                                </div>:""} 
 
+                                {/* Fourth Div*/}
+                                {(data.columnNumber===3 && data.rowNumber>0) || (data.columnNumber===2 && data.rowNumber===2)
+                                ?<div className='backgroundFlex' style={{ marginTop: 8, marginLeft: 182 }}>
+                               <div className="picker">
+                                   <div  className="swatch"  style={{ backgroundColor: secondColor, marginTop: 3 }}  onClick={() => setSecondBackground(true)}/>
+                                   {secondBackground && (<div className="popover" ref={popoverSecond}> <HexColorPicker color={secondColor} onChange={setSecondColor} /> </div> )}
+                               </div>
+                               <input type="text" className='form-control' style={{ width: 100, marginLeft: 20, }} value={secondColor} onChange={(e) => { setSecondColor(e.target.value) }}></input>
+                               <div style={{ marginLeft: 20, marginTop: 5 }}>
+                                   Div 2(in fourth)
+                               </div>
+
+                                <div className='backgroundFlex' style={{ marginTop: 8, marginLeft: 182 }}>
+                                    <div className="picker">
+                                        <div  className="swatch"   style={{ backgroundColor: thirdColor, marginTop: 3 }}  onClick={() => setThirdBackground(true)} />
+                                        {thirdBackground && (
+                                            <div className="popover" ref={popoverThird}>  <HexColorPicker color={thirdColor} onChange={setThirdColor} /> </div>
+                                        )}
+                                    </div>
+                                    <input type="text" className='form-control' style={{ width: 100, marginLeft: 20, }} value={thirdColor} onChange={(e) => { setThirdColor(e.target.value) }}></input>
+                                    <div style={{ marginLeft: 20, marginTop: 5 }}> Div 3(int fourth) </div>
+                                </div> 
+                               
+                                <div className='backgroundFlex' style={{ marginTop: 8, marginLeft: 182 }}>
+                                    <div className="picker">
+                                        <div  className="swatch"   style={{ backgroundColor: thirdColor, marginTop: 3 }}  onClick={() => setThirdBackground(true)} />
+                                        {thirdBackground && (  <div className="popover" ref={popoverThird}>  <HexColorPicker color={thirdColor} onChange={setThirdColor} /> </div> )}
+                                    </div>
+                                    <input type="text" className='form-control' style={{ width: 100, marginLeft: 20, }} value={thirdColor} onChange={(e) => { setThirdColor(e.target.value) }}></input>
+                                    <div style={{ marginLeft: 20, marginTop: 5 }}> Div 4(in tfourth)  </div>
+                                </div>
+                                </div>
+                                 :""}
 
                                 <div className='previewButtonDiv'>
                                     <div>
