@@ -162,7 +162,6 @@ color :#2462a3;
 .backgroundButton{
     display: flex;
     flex-direction: row;
-    /* font-size :15px !important; */
 }
 .alignText{
 display: flex;

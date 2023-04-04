@@ -31,6 +31,7 @@
     "react-froala-wysiwyg": "^4.0.18",
     "react-helmet": "^6.1.0",
     "react-hot-toast": "^2.4.0",
+    "react-html-parser": "^2.0.2",
     "react-iframe": "^1.8.5",
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
@@ -63,6 +64,7 @@
     ]
   },
   "devDependencies": {
-    "@types/react-helmet": "^6.1.6"
+    "@types/react-helmet": "^6.1.6",
+    "@types/react-html-parser": "^2.0.2"
   }
 }

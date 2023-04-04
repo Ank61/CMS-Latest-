@@ -102,6 +102,10 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import outsideClickFourth from '../../../Common/outsideClickFourth';
 import Checkbox from '@mui/material/Checkbox';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import ReactDOMServer from 'react-dom/server';
+import ReactHtmlParser from 'react-html-parser'; 
 
 type moduleDetail = {
     moduleName: String
@@ -174,7 +178,7 @@ function AboutUsDynamic() {
         background: { start: "", end: "" }, color: ""
     })
     const [checkedButtonBorder, setCheckedButtonBorder] = React.useState(true);
-    const [ checkedButtonBorderOnly, setCheckedButtonBorderOnly] = React.useState(false)
+    const [checkedButtonBorderOnly, setCheckedButtonBorderOnly] = React.useState(false)
     const [imageURL, setImageURL] = useState<string>("")
     const [textOverImage, setTextOverImage] = useState<string>("")
     const [secondBackground, setSecondBackground] = useState(false)
@@ -209,6 +213,10 @@ function AboutUsDynamic() {
         setAnchorEl(event.currentTarget);
         a11yProps(0)
     };
+
+    const reactString = '<div>Hello, world!</div>';
+const htmlString = ReactDOMServer.renderToString(React.createElement('div', { dangerouslySetInnerHTML: { __html: reactString } }));
+    const[random ,setRandom]=useState("<div>Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit amet egestas eros, vitae egestas augue. Duis vel est augue</div>")
     const handleClose = () => {
         setAnchorEl(null);
         setModal(true)
@@ -220,10 +228,10 @@ function AboutUsDynamic() {
     }
     const handleChangeButtonBorder = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCheckedButtonBorder(event.target.checked);
-      };
-      const handleChangeButtonOnly = (event: React.ChangeEvent<HTMLInputElement>) => {
+    };
+    const handleChangeButtonOnly = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCheckedButtonBorderOnly(event.target.checked);
-      };
+    };
     //For Modal tab
     const [value, setValue] = React.useState(0);
     // const [customization , setCustomization] = useState<boolean>(false)
@@ -249,6 +257,12 @@ function AboutUsDynamic() {
     const [isOpen, toggle] = useState(false);
     const close = useCallback(() => toggle(false), []);
     outsideClickOutside(popover, close);
+    //For button modal => dropdown
+    const [borderStyle, setBorderStyle] = React.useState('solid');
+
+    const handleChangeBorderStyle = (event: SelectChangeEvent) => {
+        setBorderStyle(event.target.value);
+    };
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -943,32 +957,61 @@ function AboutUsDynamic() {
                                 <Typography sx={{ width: '33%', flexShrink: 0 }} style={{ fontSize: 15 }}>
                                     Border
                                 </Typography>
-                               
+
                             </AccordionSummary>
                             <AccordionDetails>
-                            <div className='backgroundButton'>
-                            <div>
-                            <Checkbox checked={checkedButtonBorder}  onChange={handleChangeButtonBorder}  inputProps={{ 'aria-label': 'controlled' }}/>
-                            </div>
-                            <div>
-                            <FormLabel style={{ marginTop: 4, fontSize: 14 }}>Smoothness </FormLabel>
-                            </div>
-                            <div>
-                            <Slider size="small" defaultValue={70} aria-label="Small" valueLabelDisplay="auto" />
-                            </div>
-                            </div>
+                                <div className='backgroundButton'>
+                                    <div>
+                                        <Checkbox checked={checkedButtonBorder} onChange={handleChangeButtonBorder} inputProps={{ 'aria-label': 'controlled' }} />
+                                    </div>
+                                    <div>
+                                        <FormLabel style={{ marginTop: 11, marginLeft: 20, fontSize: 14 }}>Smoothness </FormLabel>
+                                    </div>
+                                    <div>
+                                    <input type="text" className='form-control' style={{ width: 70, marginLeft: 50, height: 32 }}></input>
+                                    </div>
+                                    <div style={{ width: 170, marginLeft: 22, marginTop: 7 }}>
+                                        <Slider size="small" defaultValue={70} aria-label="Small" valueLabelDisplay="auto" />
+                                    </div>
+                                </div>
 
-                            <div className='backgroundButton'>
-                            <div>
-                            <Checkbox checked={checkedButtonBorderOnly}  onChange={handleChangeButtonOnly}  inputProps={{ 'aria-label': 'controlled' }}/>
-                            </div>
-                            <div>
-                            <FormLabel style={{ marginTop: 4, fontSize: 14 }}>Smoothness </FormLabel>
-                            </div>
-                            <div>
-                            <Slider size="small" defaultValue={70} aria-label="Small" valueLabelDisplay="auto" />
-                            </div>
-                            </div>
+                                <div className='backgroundButton'>
+                                    <div>
+                                        <Checkbox checked={checkedButtonBorderOnly} onChange={handleChangeButtonOnly} inputProps={{ 'aria-label': 'controlled' }} />
+                                    </div>
+                                    <div>
+                                        <FormLabel style={{ marginTop: 10, fontSize: 14, marginLeft: 20 }}>Border Color</FormLabel>
+                                    </div>
+                                    <div>
+                                        <input type="text" className='form-control' style={{ width: 90, marginLeft: 50, height: 32 }}></input>
+                                    </div>
+                                </div>
+
+                                <div className='backgroundButton'>
+                                    <div>
+                                        <FormLabel style={{ marginTop: 10, fontSize: 14, marginLeft: 63 }}>Border Style</FormLabel>
+                                    </div>
+                                    <div>
+                                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}  size="small">
+                                            <Select labelId="demo-simple-select-standard-label" id="demo-simple-select-standard" value={borderStyle} onChange={handleChangeBorderStyle} label="style" style={{fontSize : 14 , width : 75, marginLeft : 50}} defaultValue={"solid"}>    
+                                                <MenuItem value={"solid"} style={{fontSize : 14}}>Solid</MenuItem>
+                                                <MenuItem value={"dotted"} style={{fontSize : 14}}>Dotted</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+                                </div>
+
+                                <div className='backgroundButton'>
+                                    <div>
+                                        <FormLabel style={{ marginTop: 10, fontSize: 14, marginLeft: 63 }}>Border Width</FormLabel>
+                                    </div>
+                                    <div>
+                                    <input type="text" className='form-control' style={{ width: 70, marginLeft: 50, marginTop : 7,height: 32 }}></input>
+                                    </div>
+                                    <div style={{ width: 170, marginLeft: 22, marginTop: 7 }}>
+                                        <Slider size="small" defaultValue={70} aria-label="Small" valueLabelDisplay="auto" />
+                                    </div>
+                                </div>
 
                             </AccordionDetails>
                         </Accordion>
@@ -981,10 +1024,8 @@ function AboutUsDynamic() {
                                 <Typography sx={{ width: '33%', flexShrink: 0 }} style={{ fontSize: 15 }}>Effects</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <Typography>
-                                    Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit
-                                    amet egestas eros, vitae egestas augue. Duis vel est augue.
-                                </Typography>
+                            <div> { ReactHtmlParser (random) } </div>
+                                {/* {htmlString} */}
                             </AccordionDetails>
                         </Accordion>
 
