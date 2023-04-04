@@ -159,3 +159,12 @@ color :#2462a3;
     display: flex;
     flex-direction: row;
 }
+.backgroundButton{
+    display: flex;
+    flex-direction: row;
+    /* font-size :15px !important; */
+}
+.alignText{
+display: flex;
+justify-content: center;
+}

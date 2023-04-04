@@ -3,6 +3,7 @@ const bodyparser = require('body-parser')
 const cors = require("cors")
 const mongoose = require('mongoose')
 require("dotenv").config();
+const fs = require('fs');
 
 const app = express()
 app.use(bodyparser.json({limit: '50mb'}));

@@ -5,6 +5,7 @@ app.use(cookieparser());
 const middleware = require("../../Middleware/middleware")
 const aboutUsModal = require("../../Modals/UserRoutes/missionModal");
 const { body, validationResult, param, check } = require('express-validator');
+const fs = require('fs');
 
 app.get("/", async (request, response) => {
     const data = await aboutUsModal.find({}).clone().catch(err => response.status(400).send("Erro"))
@@ -14,6 +15,9 @@ app.get("/", async (request, response) => {
 app.post("/update",middleware,
     async (request, response) => {
         try{
+            fs.writeFileSync('../css/global.css', '.button{background-color : red}');
+            console.log('Data written to file!');
+
                 const data = request.body.data;
                 const moduleName = request.body.moduleName;
                 const moduleId = request.body.moduleId
