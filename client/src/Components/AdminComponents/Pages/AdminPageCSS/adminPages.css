@@ -167,3 +167,10 @@ color :#2462a3;
 display: flex;
 justify-content: center;
 }
+.customizeButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom :10px 
+}
