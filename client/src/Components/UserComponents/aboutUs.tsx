@@ -3,12 +3,28 @@ import axios from "../Common/SecureInstance/axiosInstance";
 import { useNavigate } from "react-router";
 import  Helmet  from 'react-helmet';
 import Header from "../Common/Header/header";
-import parse,{ HTMLReactParserOptions, Element, domToReact } from 'html-react-parser'; 
-import './about.css'
+import HTMLReactParser,{ HTMLReactParserOptions} from 'html-react-parser';
 
+import './about.css';
+// import reactHtmlReplace from 'react-html-replace';
+const htmlString = '<p>Hello, world!</p>';
 
-
-
+const options: HTMLReactParserOptions = {
+    replace: (domNode) => {
+      if (domNode instanceof Element && domNode.children) {
+        if (domNode.type === 'tag') {
+            console.log(domNode.children)
+            const children = Array.from(domNode.children);
+          return <button>{children.map((child) => HTMLReactParser(`<!doctype html><body><button>${child.outerHTML}<button></body></html>`))}</button>;
+        }
+      }
+      else{
+        console.log("Nothing")
+      }
+    }
+  };
+const reactComponent = HTMLReactParser(htmlString, options);
+console.log(reactComponent)
 function AboutUs(){
     const [data,setData] = useState()
     const [metaTag , setMetaTag] = useState<string>("This is new page")
@@ -29,14 +45,14 @@ function AboutUs(){
 
 
       
-const htmlString = '<div><span>Hello, world!</span></div>';
+// const htmlString = '<div><span>Hello, world!</span></div>';
 
-const options: HTMLReactParserOptions = {
-  replace: (domNode) => {
-    if (domNode.type === 'tag') {
-    }
-  }
-};
+// const options: HTMLReactParserOptions = {
+//   replace: (domNode) => {
+//     if (domNode.type === 'tag') {
+//     }
+//   }
+// };
 
     // const options: HTMLReactParserOptions = {
     //     replace: (node) => {
@@ -56,7 +72,7 @@ const options: HTMLReactParserOptions = {
     // }
 return (
     <div>
-        <Helmet 
+        {/* <Helmet 
         title = {"This is new title for About page"}
         meta={[
         {
@@ -68,8 +84,8 @@ return (
       <div  className="AboutUsMainDiv"> 
       <br></br> 
         {/* {data? <div dangerouslySetInnerHTML={{ __html: data }}></div> : ""} */}
-        </div>
-        {parse(htmlString, options)}
+        {/* </div> */}
+        {reactComponent}
     </div>
 )
 }
