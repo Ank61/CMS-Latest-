@@ -12,15 +12,22 @@ app.get("/", async (request, response) => {
     return response.status(200).send(data)
 })
 
-app.post("/update",middleware,
+app.post("/update",
     async (request, response) => {
+        
         try{
-            fs.writeFileSync('../css/global.css', '.button{background-color : red}');
-            console.log('Data written to file!');
+            console.log(request.body)
+            if(request.body.From==="Apply"){
+            if(request.body.Effect!=='none'){
+                let stringFirst = '.'+`${request.body.className}` + `${request.body.style}`;
+                let stringSecond = '.'+`${request.body.className}` +":hover" + `${request.body.EffectStyle}`;
+                let third =  `${stringFirst}` + '\n' + `${stringSecond}` ;
 
+                fs.writeFileSync('../client/src/Components/AdminComponents/Pages/AboutUs/aboutUsAdmin.css', `${third}`);
+                fs.writeFileSync('../client/src/Components/UserComponents/about.css', `${third}`);
                 const data = request.body.data;
                 const moduleName = request.body.moduleName;
-                const moduleId = request.body.moduleId
+                const moduleId = request.body.moduleId; //will thrw error not foun
                 console.log(typeof data , typeof moduleName , typeof moduleId)
                 const updatedResponse = await aboutUsModal.findOneAndUpdate(
                     { Modules: { $elemMatch: { moduleId: `${moduleId}` } } },
@@ -28,6 +35,20 @@ app.post("/update",middleware,
                     { new: true },
                   ).exec();
                 return response.status(200).send(updatedResponse)
+            }
+        }
+            else{
+                const data = request.body.data;
+                const moduleName = request.body.moduleName;
+                const moduleId = request.body.moduleId; //will thrw error not foun
+                console.log(typeof data , typeof moduleName , typeof moduleId)
+                const updatedResponse = await aboutUsModal.findOneAndUpdate(
+                    { Modules: { $elemMatch: { moduleId: `${moduleId}` } } },
+                    { $set: { 'Modules.$.moduleName': `${moduleName}`, 'Modules.$.data': `${data}` } },
+                    { new: true },
+                  ).exec();
+                return response.status(200).send(updatedResponse)
+            }
         }
         catch (err) {
             console.log(err)

@@ -11,8 +11,8 @@ import SplitscreenIcon from '@mui/icons-material/Splitscreen';
 import Stack from 'react-bootstrap/Stack';
 import toast, { Toaster, useToasterStore } from 'react-hot-toast';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
+import "./aboutUsAdmin.css";
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
-import { styled } from '@mui/material/styles';
 import Popover from '@mui/material/Popover';
 import 'froala-editor/js/froala_editor.pkgd.min.js';
 import 'froala-editor/js/plugins/font_size.min.js';
@@ -104,6 +104,8 @@ import outsideClickFourth from '../../../Common/outsideClickFourth';
 import Checkbox from '@mui/material/Checkbox';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
+import styled from 'styled-components';
+import "../AdminPageCSS/adminPages.css"
 // import ReactDOMServer from 'react-dom/server';
 import parse,{ HTMLReactParserOptions, Element } from 'html-react-parser'; 
 
@@ -170,8 +172,36 @@ function a11yProps(index: number) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
+interface ButtonProps {
+    data: {
+      backgroundColor: string;
+      borderWidth :number;
+      borderRadius :number;
+      paddingTop : number;
+      paddingRight :number;
+      paddingLeft:number;
+      paddingBottom:number;
+      hoverType : string;
+      borderStyle : string;
+      hoverColor : {start:string ,end : string}
+      hoverSolidColor : string
+    }
+    fourthColor :string
+    fifthColor :string
+  }
+const CustomHover = styled.button<ButtonProps>`
+  background-color: ${props =>props.color};
+  border-radius :  ${props =>props.data.borderRadius} + 'px';
+  border : ${props =>props.data.borderWidth + 'px' + ' '+ props.data.borderStyle + props.fourthColor}; 
+  padding-top : ${props =>props.data.paddingTop} + 'px';
+  padding-left :  ${props =>props.data.paddingLeft} + 'px';
+  padding-right :  ${props =>props.data.paddingRight} + 'px';
+  padding-bottom :  ${props =>props.data.paddingBottom} + 'px';
 
-
+  &:hover {
+    background-color:  ${props =>props.fifthColor}
+  }
+`;
 
 function AboutUsDynamic() {
     const [moduleDetails, setModuleDetails] = useState<moduleDetail>()
@@ -182,6 +212,7 @@ function AboutUsDynamic() {
     const [modal, setModal] = useState<boolean>(false)
     const [modalBackground, setModalBackground] = useState<boolean>(false)
     const [modalButton, setModalButton] = useState(false)
+    const [buttonHover , setButtonHover] = useState(false)
     const [buttonData, setButtonData] = useState<ButtonData>({
         backgroundType: "gradient",
         background: { start: "", end: "" },
@@ -198,6 +229,7 @@ function AboutUsDynamic() {
         hoverColor : {start:"",end : ""},
         hoverSolidColor : "",
     })
+    const [buttonRoute,setButtonRoute] = useState<string>("")
     const [checkedButtonBorder, setCheckedButtonBorder] = React.useState(true);
     const [checkedButtonBorderOnly, setCheckedButtonBorderOnly] = React.useState(false)
     const [imageURL, setImageURL] = useState<string>("")
@@ -219,6 +251,13 @@ function AboutUsDynamic() {
     const popoverFourth = React.useRef<HTMLInputElement>(null);
     const closeFourth = useCallback(() => setFourthBackground(false), [])
     outsideClickFourth(popoverFourth, closeFourth)
+
+    const [fifthBackground, setFifthBackground] = useState(false)
+    const [fifthColor, setFifthColor] = useState("#d6c9f1")
+    const popoverFifth = React.useRef<HTMLInputElement>(null);
+    const closeFifth = useCallback(() => setFifthBackground(false), [])
+    outsideClickFourth(popoverFifth, closeFifth)
+
     const [expanded, setExpanded] = React.useState<string | false>(false);
 
     const handleChangeAccordion =
@@ -322,12 +361,12 @@ function AboutUsDynamic() {
         const obj = {
             moduleId: moduleDetails?.moduleId,
             moduleName: `${moduleDetails?.moduleName}`,
-            data: `${editorContent}`
+            data: `${editorContent}`,
+            From : "Update"
         }
-        console.log(obj, typeof moduleDetails?.moduleId)
         axios.post("http://localhost:8080/aboutUs/update", obj)
             .then(response => {
-                if (response.data == "Logout") {
+                if (response.data ==="Logout") {
                     toast.error("Session expired")
                     setTimeout(() => {
                         navigate("/admin")
@@ -456,6 +495,47 @@ function AboutUsDynamic() {
         setSpacing(0)
         setData({ columnNumber: 0, rowNumber: 0, spacing: 0, backgroundColor: "", border: "none", shape: "Square", complex: "" })
     }
+    
+    const handleCheckboxHover = ()=>{
+        setButtonHover(!buttonHover ? true : false)
+    }
+   async function handleButtonModule(){
+        //fire an api ot write in admin useabout.css
+        if(buttonHover){
+            debugger;
+            const effectStyling = `{background-color :${fifthColor} }`
+            const obj = {
+                className : 'buttonHover1',
+                style : `{border-radius : ${buttonData.borderRadius};background-color : ${color} ; border :  ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor} ; padding-top : ${buttonData.paddingTop} ; padding-left : ${buttonData.paddingLeft} ; padding-right : ${buttonData.paddingRight};padding-bottom : ${buttonData.paddingBottom }}`,
+                Effect : 'Hover',
+                EffectStyle : effectStyling,
+                From : "Apply"
+        }
+            await axios.post("http://localhost:8080/aboutUs/update", obj)
+            .then(response => {
+                    console.log(response)
+            })
+            .catch(err => console.log(err))
+        }
+    
+        setModalButton(false);
+        setEditorContent((prev)=>prev + `<button  class="buttonHover1" id="buttonHover" onclick=${buttonRoute}>Click Me</button>`);
+        setButtonData({  backgroundType: "gradient",
+        background: { start: "", end: "" },
+        backgroundColor: "",
+        borderRadius : 0,
+        borderColor : "",
+        borderStyle : "Solid",
+        borderWidth : 0,
+        paddingTop : 0,
+        paddingLeft : 0,
+        paddingRight : 0,
+        paddingBottom : 0,
+        hoverType : "gradient",
+        hoverColor : {start:"",end : ""},
+        hoverSolidColor : "",})
+    }
+
     function handleCloseFullModal() {
         debugger;
         console.log(codeSelected)
@@ -494,8 +574,17 @@ function AboutUsDynamic() {
         setButtonData((prev)=>({...prev , borderWidth : newValue as number}));
       }
     const ButtonDataStyleLinear = { backgroundImage: `linear-gradient(to bottom, ${color}, ${secondColor})`,borderRadius : buttonData.borderRadius,backgroundColor : `${color}` , border :  ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom , ':hover':{backgroundColor :`${buttonData.hoverSolidColor}`}   }
-    const buttonDataStyle = {borderRadius : buttonData.borderRadius,backgroundColor : `${color}` , border :  ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom , ':hover':{backgroundColor :`${buttonData.hoverSolidColor}`}  }
-
+    const buttonDataStyle = {borderRadius : buttonData.borderRadius,backgroundColor : `${color}` , border :  ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom }
+//const mouseOver = {borderRadius : buttonData.borderRadius,backgroundColor : `${color}` , border :  ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom , ':hover':{backgroundColor :`${fifthColor}`}}
+//const mouseOut = {borderRadius : buttonData.borderRadius,backgroundColor : `${color}` , border :  ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom , ':hover':{backgroundColor :`${fifthColor}`}}  
+//     const buttonHover = styled.button`
+//     &.primaryy {
+//       background-color: green;
+//       &:hover {
+//         background-color: ${fifthColor};
+//       }
+//     }
+//   `;
     return (
         <>
             <div className="mainDiv">
@@ -976,7 +1065,10 @@ function AboutUsDynamic() {
                             <FormControl>
                                     <div className='backgroundButton' >
                                         <div>
-                                    <Typography sx={{ width: '33%', flexShrink: 0 }} style={{ fontSize: 15 }}>Hover</Typography>
+                                        <Checkbox onChange={handleCheckboxHover} />
+                                        </div>
+                                        <div>
+                                    <Typography sx={{ width: '33%', flexShrink: 0 }} style={{ fontSize: 15,marginTop : 10, marginLeft :15 }}>Hover</Typography>
                                     </div>
                                     <div>
                                         <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" defaultValue="gradient" name="row-radio-buttons-group" style={{ marginLeft: 110 }} >
@@ -989,31 +1081,40 @@ function AboutUsDynamic() {
                                 {buttonData.hoverType === "gradient" ?
                                     <div className="backgroundFlex">
                                         <div className='backgroundButton'>
-                                            <FormLabel style={{ marginTop: 8, fontSize: 14 }}>Start Color :</FormLabel>
-                                            <input type="text" className='form-control' style={{ width: 90, height: 30, marginLeft: 20 }}></input>
+                                            <FormLabel style={{ marginTop: 8, fontSize: 12,marginLeft :56 }}>Start Color :</FormLabel>
+                                            <input type="text" className='form-control' style={{ width: 72, height: 30, marginLeft: 10,fontSize :12 }}></input>
                                         </div>&nbsp;&nbsp;
                                         <div className='backgroundButton'>
-                                            <FormLabel style={{ marginTop: 8, fontSize: 14 }}>End Color :</FormLabel>
-                                            <input type="text" className='form-control' style={{ width: 90, marginLeft: 20, height: 30 }} ></input>
+                                            <FormLabel style={{ marginTop: 8, fontSize: 12 }}>End Color :</FormLabel>
+                                            <input type="text" className='form-control' style={{ width: 72, marginLeft: 10, height: 30,fontSize :12 }} ></input>
                                         </div>
                                     </div>
                                     : ""}
 
                                 {buttonData.hoverType === "solid" ?
                                     <div className='backgroundButton'>
-                                        <FormLabel style={{ marginTop: 8, fontSize: 14 }}>Color :</FormLabel>
-                                        <input type="text" className='form-control' style={{ width: 90, height: 30, marginLeft: 20 }}></input>
+                                        <FormLabel style={{ marginTop: 15, fontSize: 14,marginLeft : 150}}>Color :</FormLabel>
+                                        <div className="picker" style={{ marginLeft: 19, marginTop: 8 }}>
+                                        <div className="swatch" style={{ backgroundColor: fifthColor, marginTop: 3 }} onClick={() => setFifthBackground(true)} /> {fifthBackground && (<div className="popover" ref={popoverFifth}><HexColorPicker color={fifthColor} onChange={setFifthColor} /></div>)}
+                                        </div>
+                                        <input type="text" className='form-control' style={{ width: 90, height: 30, marginLeft: 20,marginTop : 10 }} value = {fifthColor} onChange={(e)=>setFifthColor(e.target.value)}></input>
                                     </div>
                                     : ""}
                                 {/*dO NOT DELETE IT !!!*/}
                                 {/* {parse("<div onclick>Hello World</div>", optio)} */}
                             </AccordionDetails>
                         </Accordion>
-
-
-                        {/* <label>Hover</label> */}
                         <div className='customizeButton'>
-                        <button style={buttonData.backgroundType!=="gradient" ? buttonDataStyle : ButtonDataStyleLinear}>Click Me</button>
+                            <div>
+                            {!buttonHover?
+                             <button  style={buttonData.backgroundType!=="gradient" ? buttonDataStyle : ButtonDataStyleLinear}>Click Me</button>
+                            :  <CustomHover data={buttonData}  color={color} fourthColor={fourthColor} fifthColor = {fifthColor}>Click Me</CustomHover>
+                            }
+                            </div>
+                        </div>
+                        <div className='backgroundButton'>
+                        <div style={{textAlign :'start'}}> <input type="text" className='form-control' style={{fontSize : 13 , width :150 }} value={buttonRoute} onChange={(e)=>setButtonRoute(e.target.value)} placeholder='Enter route path'></input></div>
+                        <div style={{textAlign :'end' ,marginLeft :170}}> <button type="button" className='btn btn-primary' style={{ marginLeft: 20,fontSize : 13 }} onClick={() => handleButtonModule()}>Apply to Module</button></div>
                         </div>
                     </Modal.Body>
                 </Modal>
