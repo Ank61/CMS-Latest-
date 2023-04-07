@@ -257,14 +257,15 @@ function AboutUsDynamic() {
     const popoverFifth = React.useRef<HTMLInputElement>(null);
     const closeFifth = useCallback(() => setFifthBackground(false), [])
     outsideClickFourth(popoverFifth, closeFifth)
-
     const [expanded, setExpanded] = React.useState<string | false>(false);
-
     const handleChangeAccordion =
         (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
             setExpanded(isExpanded ? panel : false);
         };
 
+//States for background Images 
+const [backgroundImageData , setBackgroundImageData] = useState({imagePaddingTop :0, imagePaddingLeft :0,imagePaddingRight : 0,imagePaddingBottom :0 , height : 0, width :0})
+const [backgroundImageModal , setBackgroundImageModal] = useState(false)
     let { id } = useParams();
     //For add button
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -282,30 +283,16 @@ function AboutUsDynamic() {
         setAnchorEl(null);
         setModalButton(true);
     }
+    const handleCloseBackground = ()=>{
+        setAnchorEl(null);
+        setBackgroundImageModal(true)
+    }
     const handleChangeButtonBorder = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCheckedButtonBorder(event.target.checked);
     };
     const handleChangeButtonOnly = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCheckedButtonBorderOnly(event.target.checked);
     };
-//  VERY IMPORTANT DO NOT DELETE IT!!!!!!!!!!!!!!!
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // const optio: HTMLReactParserOptions = {
-    //     replace: domNode => {
-    //       if (domNode instanceof Element && domNode.attribs) {
-    //         if (domNode.attribs.name === 'div' && domNode.attribs.onclick) {
-    //             console.log("Reached")
-    //             return <div onClick={handleCloseButtonModal}>{domNode.attribs.children}</div>;
-    //           }
-    //           else{
-    //             console.log("Got it ")
-    //           }
-    //       }
-    //       else{
-    //         return <div onClick={handleCloseButtonModal}>Hello</div>;
-    //       }
-    //     }
-    //   };
     //For Modal tab
     const [value, setValue] = React.useState(0);
     // const [customization , setCustomization] = useState<boolean>(false)
@@ -614,7 +601,7 @@ function AboutUsDynamic() {
                         <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
                             <MenuItem style={{ fontSize: 14 }} onClick={handleClose}> <ViewModuleIcon style={{ marginRight: 20, fontSize: 29 }} /> Divide Module</MenuItem>
                             <MenuItem onClick={handleCloseButton} style={{ fontSize: 14 }}><SmartButtonIcon style={{ marginRight: 20, fontSize: 31 }} /> Button</MenuItem>
-                            <MenuItem onClick={handleClose} style={{ fontSize: 14 }}><WallpaperIcon style={{ marginRight: 20, fontSize: 26 }} />   Background Image</MenuItem>
+                            <MenuItem onClick={handleCloseBackground} style={{ fontSize: 14 }}><WallpaperIcon style={{ marginRight: 20, fontSize: 26 }} />   Background Image</MenuItem>
                             <MenuItem onClick={handleClose} style={{ fontSize: 14 }}><AlignHorizontalCenterIcon style={{ marginRight: 20, fontSize: 28 }} /> Align Item</MenuItem>
                             <MenuItem onClick={handleClose} style={{ fontSize: 14 }}><FormatColorFillIcon style={{ marginRight: 20, fontSize: 27 }} /> Background Color</MenuItem>
                         </Menu>
@@ -1156,6 +1143,23 @@ function AboutUsDynamic() {
                             </div>
                             <button className="btn btn-primary" onClick={() => handleBackgroundModal()}>Upload</button>
                         </Stack>
+                    </Modal.Body>
+                </Modal>
+
+                <Modal
+                    show={backgroundImageModal}
+                    onHide={() => setBackgroundImageModal(false)}
+                    backdrop="static"
+                    keyboard={false}
+                    centered
+                >
+                    {/* <Modal.Header closeButton>
+                    </Modal.Header> */}
+                    <Modal.Body style={{ overflow: 'auto' }}>
+                    <div className='backgroundButton'>
+                            <div style={{width : 900,height : 500,backgroundColor : 'red'}}></div>
+                            <div style={{height: 500, width : 400 ,backgroundColor : 'blue'}} ></div>
+                        </div>
                     </Modal.Body>
                 </Modal>
             </div>
