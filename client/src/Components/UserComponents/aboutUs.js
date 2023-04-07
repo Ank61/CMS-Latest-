@@ -1,34 +1,67 @@
-import { useEffect, useState } from "react";
+import React,{ useEffect, useState } from "react";
 import axios from "../Common/SecureInstance/axiosInstance";
 import { useNavigate } from "react-router";
 import  Helmet  from 'react-helmet';
 import Header from "../Common/Header/header";
-import HTMLReactParser,{ HTMLReactParserOptions} from 'html-react-parser';
-
+import ReactHtmlParser from 'html-react-parser';
+import parse, { domToReact } from 'html-react-parser';
 import './about.css';
-// import reactHtmlReplace from 'react-html-replace';
-const htmlString = '<p>Hello, world!</p>';
 
-const options: HTMLReactParserOptions = {
-    replace: (domNode) => {
-      if (domNode instanceof Element && domNode.children) {
-        if (domNode.type === 'tag') {
-            console.log(domNode.children)
-            const children = Array.from(domNode.children);
-          return <button>{children.map((child) => HTMLReactParser(`<!doctype html><body><button>${child.outerHTML}<button></body></html>`))}</button>;
-        }
-      }
-      else{
-        console.log("Nothing")
-      }
-    }
-  };
-const reactComponent = HTMLReactParser(htmlString, options);
-console.log(reactComponent)
+const html = `
+  <div>
+  <button id=button1>Button1</button>
+  <button id=button2>Button 2</button>
+  <button id=button3 value="/home">Button 3</button>
+  </div>
+`;
+
+
+
 function AboutUs(){
     const [data,setData] = useState()
-    const [metaTag , setMetaTag] = useState<string>("This is new page")
+    const [metaTag , setMetaTag] = useState("This is new page")
     const navigate = useNavigate()
+    // const htmlString = '<div><p id="new">Hello, world!</p><div onClick="/thirdDiv"></div><div onClick="/secondDiv"></div></div>';
+const handleClick =(e ,route )=>{
+  console.log("button clicked" , e.target.value);
+  navigate(route)
+}
+const options = {
+  replace: ({ attribs, children }) => {
+    console.log(attribs)
+    if (!attribs) {
+      return;
+    }
+
+    if (attribs.id === 'buttonRoute') {
+      return React.createElement(
+        'button',
+       { onClick: (e)=>handleClick(e,attribs.value),
+      className : attribs.class},
+        domToReact(children, options)
+      );
+    }
+
+    if (attribs.class === 'prettify') {
+      return React.createElement(
+        'span',
+        { style: { color: 'hotpink' } },
+        domToReact(children, options)
+      );
+    }
+  }
+};
+const reactElement = parse(`${data}`, options);
+// const options = {
+//     replace: (domNode) => {
+//         if (domNode.type === 'tag'  && domNode.name==='div') {
+//             console.log(domNode.children)
+//           return <button value="this is vlaue" onClick={(e)=>handleClick(e ,'/home')}>{domNode.children[0].data}</button>;
+        
+//       }
+//     }
+//   };
+    // const reactComponent = parse(htmlString, options);
     useEffect(()=>{
         axios.get("http://localhost:8080/aboutUs/allData")
         .then(response=>{
@@ -44,7 +77,6 @@ function AboutUs(){
     ,[])
 
 
-      
 // const htmlString = '<div><span>Hello, world!</span></div>';
 
 // const options: HTMLReactParserOptions = {
@@ -72,7 +104,7 @@ function AboutUs(){
     // }
 return (
     <div>
-        {/* <Helmet 
+          <Helmet 
         title = {"This is new title for About page"}
         meta={[
         {
@@ -80,12 +112,10 @@ return (
           content: metaTag,
         } 
       ]}/>
-      <Header/>
-      <div  className="AboutUsMainDiv"> 
-      <br></br> 
+      <Header/> 
         {/* {data? <div dangerouslySetInnerHTML={{ __html: data }}></div> : ""} */}
         {/* </div> */}
-        {reactComponent}
+        {reactElement}
     </div>
 )
 }

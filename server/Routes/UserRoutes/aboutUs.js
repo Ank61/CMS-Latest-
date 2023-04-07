@@ -14,17 +14,43 @@ app.get("/", async (request, response) => {
 
 app.post("/update",
     async (request, response) => {
-        
+        const fileNameForApply = '../client/src/Components/AdminComponents/Pages/AboutUs/aboutUsAdmin.css';
+        const fileNameForUpdate = '../client/src/Components/UserComponents/about.css'
         try{
             console.log(request.body)
-            if(request.body.From==="Apply"){
-            if(request.body.Effect!=='none'){
+            if(request.body.From==="Apply"){//for Apply button module only
+            if(request.body.Effect!=='none'){ //that means i tfor hover only
                 let stringFirst = '.'+`${request.body.className}` + `${request.body.style}`;
                 let stringSecond = '.'+`${request.body.className}` +":hover" + `${request.body.EffectStyle}`;
                 let third =  `${stringFirst}` + '\n' + `${stringSecond}` ;
+                
+                fs.readFile(fileNameForApply, 'utf8', (err, data) => {
+                    if (err) throw err;
+                    const updatedData = data.startsWith(request.body.className);
+                    //if true then only then reeplace otherwise create new
+                    if(updatedData){
+                        fs.writeFile(fileNameForApply, third, 'utf8', (err) => {
+                            if (err) throw err;
+                            console.log('Text has been replaced in the file.');
+                          });
+                    }
+                    else{
+                        //not found hence create new
+                         //fs.writeFileSync(fileNameForApply, `${third}`);
+                        // fs.writeFileSync(fileNameForUpdate, `${third}`);
+                         fs.appendFile(fileNameForApply,`${third}`, (err) => {
+                            if (err) throw err;
+                            console.log('Text added to Adminfile.');
+                          });
+                          fs.appendFile(fileNameForUpdate,`${third}`, (err) => {
+                            if (err) throw err;
+                            console.log('Text added to userFile');
+                          });
+                    }
+                })
 
-                fs.writeFileSync('../client/src/Components/AdminComponents/Pages/AboutUs/aboutUsAdmin.css', `${third}`);
-                fs.writeFileSync('../client/src/Components/UserComponents/about.css', `${third}`);
+                // fs.writeFileSync(fileNameForApply, `${third}`);
+                // fs.writeFileSync(fileNameForUpdate, `${third}`);
                 const data = request.body.data;
                 const moduleName = request.body.moduleName;
                 const moduleId = request.body.moduleId; //will thrw error not foun
@@ -38,6 +64,7 @@ app.post("/update",
             }
         }
             else{
+                console.log("Reached updated")
                 const data = request.body.data;
                 const moduleName = request.body.moduleName;
                 const moduleId = request.body.moduleId; //will thrw error not foun
@@ -69,8 +96,9 @@ app.post("/createModule",
                 const data = request.body.data;
                 const moduleName = request.body.moduleName;
                 const forModuleId = await aboutUsModal.find({}).clone().catch(err => response.status(400).send("Erro"))
-               
-                if(forModuleId.length>0){
+               console.log("tis" , forModuleId)
+                if(forModuleId[0].Modules.length>0){
+                    console.log("Inseide for module")
                     const totalLengthIndex = forModuleId[0].Modules.length;
                     const lastItemIndex = totalLengthIndex-1;
                     const getModuleId = forModuleId[0].Modules[lastItemIndex]
@@ -82,12 +110,16 @@ app.post("/createModule",
                 }
                 else{
                     //create new
-                const updatedResponse = new aboutUsModal({Modules : [{
-                    moduleId :1,
-                    data : "",
-                    moduleName : `${moduleName}`
-                }]})
-                await updatedResponse.save();
+                    const updatedResponse = await aboutUsModal.findOneAndUpdate({},
+                        { $push: { Modules: { moduleName: `${moduleName}`, data: "", moduleId: 1 } } },
+                        { new: true }
+                    ).exec()
+                // const updatedResponse = new aboutUsModal({Modules : [{
+                //     moduleId :1,
+                //     data : "",
+                //     moduleName : `${moduleName}`
+                // }]})
+                // await updatedResponse.save();
                 return response.status(200).send(updatedResponse);
                 }
             }
