@@ -1,4 +1,4 @@
-import React,{ ReactElement,ChangeEvent,} from 'react';
+import React, { ReactElement, ChangeEvent, } from 'react';
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "react-router";
 import Layout from "../../../Common/Layout/layout";
@@ -12,6 +12,7 @@ import Stack from 'react-bootstrap/Stack';
 import toast, { Toaster, useToasterStore } from 'react-hot-toast';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import "./aboutUsAdmin.css";
+import CloseIcon from '@mui/icons-material/Close';
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
 import Popover from '@mui/material/Popover';
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -106,8 +107,14 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import styled from 'styled-components';
 import "../AdminPageCSS/adminPages.css"
-// import ReactDOMServer from 'react-dom/server';
-import parse,{ HTMLReactParserOptions, Element } from 'html-react-parser'; 
+import gradient from "../../../../Images/gradient.jpeg";
+import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
+import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop';
+import FormatIndentIncreaseIcon from '@mui/icons-material/FormatIndentIncrease';
+import FormatIndentDecreaseIcon from '@mui/icons-material/FormatIndentDecrease';
+import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
+import parse, { HTMLReactParserOptions, Element } from 'html-react-parser';
+import { url } from 'inspector';
 
 type moduleDetail = {
     moduleName: String
@@ -131,19 +138,19 @@ type Data = {
 
 type ButtonData = {
     backgroundType: string
-    background: { start: string ,end: string}
+    background: { start: string, end: string }
     backgroundColor: string
-    borderRadius : number
-    borderColor :string
-    borderStyle : string
-    borderWidth : number
-    paddingTop : number
-    paddingLeft:number
-    paddingRight : number
-    paddingBottom : number
-    hoverType : string
-    hoverColor : {start:string ,end : string}
-    hoverSolidColor : string
+    borderRadius: number
+    borderColor: string
+    borderStyle: string
+    borderWidth: number
+    paddingTop: number
+    paddingLeft: number
+    paddingRight: number
+    paddingBottom: number
+    hoverType: string
+    hoverColor: { start: string, end: string }
+    hoverSolidColor: string
 
 }
 function TabPanel(props: TabPanelProps) {
@@ -174,32 +181,32 @@ function a11yProps(index: number) {
 }
 interface ButtonProps {
     data: {
-      backgroundColor: string;
-      borderWidth :number;
-      borderRadius :number;
-      paddingTop : number;
-      paddingRight :number;
-      paddingLeft:number;
-      paddingBottom:number;
-      hoverType : string;
-      borderStyle : string;
-      hoverColor : {start:string ,end : string}
-      hoverSolidColor : string
+        backgroundColor: string;
+        borderWidth: number;
+        borderRadius: number;
+        paddingTop: number;
+        paddingRight: number;
+        paddingLeft: number;
+        paddingBottom: number;
+        hoverType: string;
+        borderStyle: string;
+        hoverColor: { start: string, end: string }
+        hoverSolidColor: string
     }
-    fourthColor :string
-    fifthColor :string
-  }
+    fourthColor: string
+    fifthColor: string
+}
 const CustomHover = styled.button<ButtonProps>`
-  background-color: ${props =>props.color};
-  border-radius :  ${props =>props.data.borderRadius + 'px'};
-  border : ${props =>props.data.borderWidth + 'px' + ' '+ props.data.borderStyle + props.fourthColor}; 
-  padding-top : ${props =>props.data.paddingTop + 'px' };
-  padding-left :  ${props =>props.data.paddingLeft + 'px'};
-  padding-right :  ${props =>props.data.paddingRight + 'px'};
-  padding-bottom :  ${props =>props.data.paddingBottom + 'px'};
+  background-color: ${props => props.color};
+  border-radius :  ${props => props.data.borderRadius + 'px'};
+  border : ${props => props.data.borderWidth + 'px' + ' ' + props.data.borderStyle + props.fourthColor}; 
+  padding-top : ${props => props.data.paddingTop + 'px'};
+  padding-left :  ${props => props.data.paddingLeft + 'px'};
+  padding-right :  ${props => props.data.paddingRight + 'px'};
+  padding-bottom :  ${props => props.data.paddingBottom + 'px'};
 
   &:hover {
-    background-color:  ${props =>props.fifthColor}
+    background-color:  ${props => props.fifthColor}
   }
 `;
 
@@ -212,24 +219,25 @@ function AboutUsDynamic() {
     const [modal, setModal] = useState<boolean>(false)
     const [modalBackground, setModalBackground] = useState<boolean>(false)
     const [modalButton, setModalButton] = useState(false)
-    const [buttonHover , setButtonHover] = useState(false)
+    const [buttonHover, setButtonHover] = useState(false)
     const [buttonData, setButtonData] = useState<ButtonData>({
         backgroundType: "solid",
         background: { start: "", end: "" },
         backgroundColor: "",
-        borderRadius : 0,
-        borderColor : "",
-        borderStyle : "Solid",
-        borderWidth : 0,
-        paddingTop : 0,
-        paddingLeft : 0,
-        paddingRight : 0,
-        paddingBottom : 0,
-        hoverType : "solid",
-        hoverColor : {start:"",end : ""},
-        hoverSolidColor : "",
+        borderRadius: 0,
+        borderColor: "",
+        borderStyle: "Solid",
+        borderWidth: 0,
+        paddingTop: 0,
+        paddingLeft: 0,
+        paddingRight: 0,
+        paddingBottom: 0,
+        hoverType: "solid",
+        hoverColor: { start: "", end: "" },
+        hoverSolidColor: "",
     })
-    const [buttonRoute,setButtonRoute] = useState<string>("")
+    const [backgroundImageUrl, setBackgroundImageURL] = useState<string>("")
+    const [buttonRoute, setButtonRoute] = useState<string>("")
     const [checkedButtonBorder, setCheckedButtonBorder] = React.useState(false);
     const [checkedButtonBorderOnly, setCheckedButtonBorderOnly] = React.useState(false)
     const [imageURL, setImageURL] = useState<string>("")
@@ -262,10 +270,19 @@ function AboutUsDynamic() {
         (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
             setExpanded(isExpanded ? panel : false);
         };
-
-//States for background Images 
-const [backgroundImageData , setBackgroundImageData] = useState({imagePaddingTop :0, imagePaddingLeft :0,imagePaddingRight : 0,imagePaddingBottom :0 , height : 0, width :0})
-const [backgroundImageModal , setBackgroundImageModal] = useState(false)
+    const [backgroundModalInput, setBackgroundModalInput] = React.useState('');
+    const handleBackgroundModalInput = (event: SelectChangeEvent) => {
+        setBackgroundModalInput(event.target.value);
+    };
+    //States for background Images 
+    const [backgroundHeight, setBackgroundHeight] = useState<number>(40)
+    const [backgroundWidth, setBackgroundWidth] = useState<number>(40)
+    const [backgroundImageData, setBackgroundImageData] = useState({ imagePaddingTop: 0, imagePaddingLeft: 0, imagePaddingRight: 0, imagePaddingBottom: 0, height: 0, width: 0 })
+    const [backgroundImageModal, setBackgroundImageModal] = useState(false)
+    const [applyBackground, setApplyBackground] = useState(false);
+    const [selectDiv , setSelectDiv] = useState(false)
+    const [divHeight , setDivHeight] = useState<number>(0);
+    const [divWidth , setDivWidth] = useState<number>(0);
     let { id } = useParams();
     //For add button
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -283,7 +300,7 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
         setAnchorEl(null);
         setModalButton(true);
     }
-    const handleCloseBackground = ()=>{
+    const handleCloseBackground = () => {
         setAnchorEl(null);
         setBackgroundImageModal(true)
     }
@@ -349,11 +366,11 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
             moduleId: moduleDetails?.moduleId,
             moduleName: `${moduleDetails?.moduleName}`,
             data: `${editorContent}`,
-            From : "Update"
+            From: "Update"
         }
         axios.post("http://localhost:8080/aboutUs/update", obj)
             .then(response => {
-                if (response.data ==="Logout") {
+                if (response.data === "Logout") {
                     toast.error("Session expired")
                     setTimeout(() => {
                         navigate("/admin")
@@ -365,32 +382,15 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
             })
             .catch(err => console.log(err))
     }
-
-    // function handleButton() {
-    //     setEditorContent((prev) => prev +
-    //         "<span style='display: inline-block; text-align: center; width : 170px ; height : 40px ; background-color : #0957a6; border-radius : 15px ; color : white'>Type something</span>")
-    // }
-    // function handleTwoDiv() {
-    //     //For two divs do not delete it
-    //     setEditorContent((prev) => prev +
-    //         "<div style='display : flex ; flex-direction: row;'><div style='width : 50% ;'>Hello</div><div style='width : 50% '>World</div></div>")
-    //     setModal(false)
-    // }
-
-    // function handleThreeDiv() {
-    //     setEditorContent((prev) => prev +
-    //         "<div style='display : flex ; flex-direction: row;'><div style='width : 33% ;'>Hello</div><div style='width : 33% '>World</div><div style='width : 33% '>World</div></div>")
-    //     setModal(false)
-    // }
-    function generateUniqueLetters(num:number) {
+    function generateUniqueLetters(num: number) {
         let result = '';
         const possibleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         for (let i = 0; i < num; i++) {
-          const randomIndex = Math.floor(Math.random() * possibleChars.length);
-          result += possibleChars.charAt(randomIndex);
+            const randomIndex = Math.floor(Math.random() * possibleChars.length);
+            result += possibleChars.charAt(randomIndex);
         }
         return result;
-      }
+    }
     function handleDelete() {
         const obj = { moduleId: `${moduleDetails?.moduleId}` }
         axios.post("http://localhost:8080/aboutUs/delete", obj).then(response => console.log(response)).catch(err => console.log(err))
@@ -419,6 +419,7 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
     }
     let insertCodeModal = `<!doctype html> <html> <head> </head> <body><div style='background-color : red'> ${insertCode}</div></body> </html>`;
     //For Creating Div Module
+    let backgorundModal = `<!doctype html> <html> <head> </head> <body><div style="background-color : red" draggable="true">Hello</div></body> </html>`;
     const [anchorElDiv, setAnchorElDiv] = React.useState<HTMLButtonElement | null>(null);
     const handleClickDiv = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorElDiv(event.currentTarget);
@@ -491,49 +492,51 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
         setSpacing(0)
         setData({ columnNumber: 0, rowNumber: 0, spacing: 0, backgroundColor: "", border: "none", shape: "Square", complex: "" })
     }
-    
-    const handleCheckboxHover = ()=>{
+
+    const handleCheckboxHover = () => {
         setButtonHover(!buttonHover ? true : false)
     }
-   async function handleButtonModule(){
-    toast.success("Updated css")
+    async function handleButtonModule() {
+        toast.success("Updated css")
         //fire an api ot write in admin useabout.css
         //genertae unique classname
         const uniqueLetters = generateUniqueLetters(10);
         console.log(uniqueLetters)
-        if(buttonHover){
+        if (buttonHover) {
             debugger;
             const effectStyling = `{background-color :${fifthColor} }`
             const obj = {
-                className : `${uniqueLetters}`,
-                style : `{border-radius : ${buttonData.borderRadius}px;background-color : ${color} ; border :  ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor} ; padding-top : ${buttonData.paddingTop}px ; padding-left : ${buttonData.paddingLeft}px; padding-right : ${buttonData.paddingRight}px ;padding-bottom : ${buttonData.paddingBottom }px;}`,
-                Effect : 'Hover',
-                EffectStyle : effectStyling,
-                From : "Apply"
-        }
+                className: `${uniqueLetters}`,
+                style: `{border-radius : ${buttonData.borderRadius}px;background-color : ${color} ; border :  ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor} ; padding-top : ${buttonData.paddingTop}px ; padding-left : ${buttonData.paddingLeft}px; padding-right : ${buttonData.paddingRight}px ;padding-bottom : ${buttonData.paddingBottom}px;}`,
+                Effect: 'Hover',
+                EffectStyle: effectStyling,
+                From: "Apply"
+            }
             await axios.post("http://localhost:8080/aboutUs/update", obj)
-            .then(response => {
+                .then(response => {
                     console.log(response)
-            })
-            .catch(err => console.log(err))
+                })
+                .catch(err => console.log(err))
         }
-    
+
         setModalButton(false);
-        setEditorContent((prev)=>prev + `<button  class=${uniqueLetters} id="buttonRoute" value=${buttonRoute} >Click Me</button>`);
-        setButtonData({  backgroundType: "solid",
-        background: { start: "", end: "" },
-        backgroundColor: "",
-        borderRadius : 0,
-        borderColor : "",
-        borderStyle : "Solid",
-        borderWidth : 0,
-        paddingTop : 0,
-        paddingLeft : 0,
-        paddingRight : 0,
-        paddingBottom : 0,
-        hoverType : "solid",
-        hoverColor : {start:"",end : ""},
-        hoverSolidColor : "",})
+        setEditorContent((prev) => prev + `<button  class=${uniqueLetters} id="buttonRoute" value=${buttonRoute} >Click Me</button>`);
+        setButtonData({
+            backgroundType: "solid",
+            background: { start: "", end: "" },
+            backgroundColor: "",
+            borderRadius: 0,
+            borderColor: "",
+            borderStyle: "Solid",
+            borderWidth: 0,
+            paddingTop: 0,
+            paddingLeft: 0,
+            paddingRight: 0,
+            paddingBottom: 0,
+            hoverType: "solid",
+            hoverColor: { start: "", end: "" },
+            hoverSolidColor: "",
+        })
         setButtonHover(false);
         setButtonRoute("")
     }
@@ -551,42 +554,207 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
         setModalButton(false)
     }
     const handlePaddingRight = (event: Event, newValue: number | number[]) => {
-        setButtonData((prev)=>({...prev , paddingRight : newValue as number}));
-      };
-      const handlePaddingLeft = (event: Event, newValue: number | number[]) => {
-        setButtonData((prev)=>({...prev , paddingLeft : newValue as number}));
-      };
-      const handlePaddingBottom = (event: Event, newValue: number | number[]) => {
-        setButtonData((prev)=>({...prev , paddingBottom : newValue as number}));
-      };
-      const handlePaddingTop = (event: Event, newValue: number | number[]) => {
-        setButtonData((prev)=>({...prev , paddingTop : newValue as number}));
-      };
-      const handleSmoothnessSlider : React.ChangeEventHandler<HTMLInputElement>= (event) =>{
-        return setButtonData((prev)=>({...prev , borderRadius :Number(event.target.value)}));
-      }
-      const handleSmoothnessSliderNew = (event: Event, newValue: number | number[])=>{
-        setButtonData((prev)=>({...prev , borderRadius : newValue as number}));
-      }
-      const handleSliderForWidth : React.ChangeEventHandler<HTMLInputElement>= (event) =>{
+        setButtonData((prev) => ({ ...prev, paddingRight: newValue as number }));
+    };
+    const handlePaddingLeft = (event: Event, newValue: number | number[]) => {
+        setButtonData((prev) => ({ ...prev, paddingLeft: newValue as number }));
+    };
+    const handlePaddingBottom = (event: Event, newValue: number | number[]) => {
+        setButtonData((prev) => ({ ...prev, paddingBottom: newValue as number }));
+    };
+    const handlePaddingTop = (event: Event, newValue: number | number[]) => {
+        setButtonData((prev) => ({ ...prev, paddingTop: newValue as number }));
+    };
+    const handleSmoothnessSlider: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+        return setButtonData((prev) => ({ ...prev, borderRadius: Number(event.target.value) }));
+    }
+    const handleSmoothnessSliderNew = (event: Event, newValue: number | number[]) => {
+        setButtonData((prev) => ({ ...prev, borderRadius: newValue as number }));
+    }
+    const handleSliderForWidth: React.ChangeEventHandler<HTMLInputElement> = (event) => {
         debugger;
-        return setButtonData((prev)=>({...prev , borderWidth :Number(event.target.value)}));
-      }
-      const handleSliderForWidthNew = (event: Event, newValue: number | number[])=>{
-        setButtonData((prev)=>({...prev , borderWidth : newValue as number}));
-      }
-    const ButtonDataStyleLinear = { backgroundImage: `linear-gradient(to bottom, ${color}, ${secondColor})`,borderRadius : buttonData.borderRadius,backgroundColor : `${color}` , border :  ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom , ':hover':{backgroundColor :`${buttonData.hoverSolidColor}`}   }
-    const buttonDataStyle = {borderRadius : checkedButtonBorder ?buttonData.borderRadius : 0,backgroundColor : `${color}` , border :  ` ${checkedButtonBorderOnly ? buttonData.borderWidth: 0}px  ${checkedButtonBorderOnly ? buttonData.borderStyle :'none'} ${checkedButtonBorderOnly ?fourthColor:""}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom }
-//const mouseOver = {borderRadius : buttonData.borderRadius,backgroundColor : `${color}` , border :  ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom , ':hover':{backgroundColor :`${fifthColor}`}}
-//const mouseOut = {borderRadius : buttonData.borderRadius,backgroundColor : `${color}` , border :  ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom , ':hover':{backgroundColor :`${fifthColor}`}}  
-//     const buttonHover = styled.button`
-//     &.primaryy {
-//       background-color: green;
-//       &:hover {
-//         background-color: ${fifthColor};
-//       }
-//     }
-//   `;
+        return setButtonData((prev) => ({ ...prev, borderWidth: Number(event.target.value) }));
+    }
+    const handleSliderForWidthNew = (event: Event, newValue: number | number[]) => {
+        setButtonData((prev) => ({ ...prev, borderWidth: newValue as number }));
+    }
+    const ButtonDataStyleLinear = { backgroundImage: `linear-gradient(to bottom, ${color}, ${secondColor})`, borderRadius: buttonData.borderRadius, backgroundColor: `${color}`, border: ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}`, paddingTop: buttonData.paddingTop, paddingLeft: buttonData.paddingLeft, paddingRight: buttonData.paddingRight, paddingBottom: buttonData.paddingBottom, ':hover': { backgroundColor: `${buttonData.hoverSolidColor}` } }
+    const buttonDataStyle = { borderRadius: checkedButtonBorder ? buttonData.borderRadius : 0, backgroundColor: `${color}`, border: ` ${checkedButtonBorderOnly ? buttonData.borderWidth : 0}px  ${checkedButtonBorderOnly ? buttonData.borderStyle : 'none'} ${checkedButtonBorderOnly ? fourthColor : ""}`, paddingTop: buttonData.paddingTop, paddingLeft: buttonData.paddingLeft, paddingRight: buttonData.paddingRight, paddingBottom: buttonData.paddingBottom }
+    //const mouseOver = {borderRadius : buttonData.borderRadius,backgroundColor : `${color}` , border :  ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom , ':hover':{backgroundColor :`${fifthColor}`}}
+    //const mouseOut = {borderRadius : buttonData.borderRadius,backgroundColor : `${color}` , border :  ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom , ':hover':{backgroundColor :`${fifthColor}`}}  
+    //     const buttonHover = styled.button`
+    //     &.primaryy {
+    //       background-color: green;
+    //       &:hover {
+    //         background-color: ${fifthColor};
+    //       }
+    //     }
+    //   `;
+    const [pressed, setPressed] = useState(false)
+    const [position, setPosition] = useState({ x: 1, y: 1 })
+    const ref = useRef<HTMLImageElement>(null)
+    const refDiv = useRef<HTMLDivElement>(null)
+    const [pressedDiv , setPressedDiv] = useState(false) 
+    const [positionDiv, setPositionDiv] = useState({ x: 1, y: 1 })
+    // Monitor changes to position state and update DOM
+    useEffect(() => {
+        console.log("position x", position.x, "position of y", position.y)
+        console.log("MArgin left", quickAndDirtyStyle.marginLeft, "MArginRight", quickAndDirtyStyle.marginTop)
+    }, [position])
+
+    // Update the current position if mouse is down
+    const onMouseMove = (event: React.MouseEvent<HTMLImageElement>) => {
+        event.preventDefault();
+        if (pressed) {
+            if (ref.current) {
+                ref.current.style.cursor = "grabbing";
+            }
+            setPosition({
+                x: position.x + event.movementX,
+                y: position.y + event.movementY
+            })
+        }
+        else {
+            if (ref.current) {
+                ref.current.style.cursor = "pointer"
+            }
+        }
+    }
+
+    const onMouseMoveDiv = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        console.log("Movement of Mouse" , event.pageX , event.clientY)
+        if (pressedDiv) {
+            if (refDiv.current) {
+                refDiv.current.style.cursor = "all-scroll";
+            }
+            setPositionDiv({
+                x: positionDiv.x + event.movementX,
+                y: positionDiv.y + event.movementY
+            })
+        }
+        else {
+            if (refDiv.current) {
+                refDiv.current.style.cursor = "default"
+            }
+        }
+    }
+
+    const outsideSection = `height : 230px;width : 450px;  background-color: white; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); border-radius : 14px;margin-left : 160px; margin-top : 110px;`
+    const applieBackgroundEditor = `width : ${backgroundWidth*10}px; height :${backgroundHeight*10}px ;background-image: url(${gradient}); background-position : center 50% ; background-size : cover; margin-left :${position.x}px;padding-top : ${position.y}px; `
+    function handleBackgroundModalButton() {
+        console.log("Position x", position.x, "position of y", position.y)
+
+        setEditorContent((prev) => prev + `<div><div style="${applieBackgroundEditor}"> <div style="${outsideSection}">This is test</div><div></div>`);
+        setBackgroundImageModal(false)
+        setPosition({
+            x: 0,
+            y: 0
+        })
+    }
+
+    // const styleModal={
+    //     marginLeft :228 ,
+    //     marginTop : position.y,
+    //     width : 300,
+    //     height :300,
+    //     backgroundColor : 'red'
+    // }
+    const quickAndDirtyStyle = {
+        width: backgroundWidth * 10,
+        height: backgroundHeight * 10,
+        cursor: "pointer",
+        marginLeft: position.x,
+        marginTop: position.y,
+    }
+    function handleBackgroundImageWidth(e: any) {
+        console.log(e.target.value)
+        setBackgroundWidth(e.target.value);
+    }
+    function handleBackgroundImageHeight(e: any) {
+        console.log(e.target.value)
+        setBackgroundHeight(e.target.value);
+    }
+    const backgroundData = {
+        width: backgroundWidth * 10,
+        height: backgroundHeight * 10,
+        backgroundColor: 'red',
+        backgroundImage: `url(${gradient})`,
+        backgroundPosition: 'center 50%',
+        backgroundSize: 'cover',
+        marginLeft: position.x,
+        marginTop: position.y,
+    }
+
+// For selecting div
+const divNormalStyling = {
+      height: 230,
+      width: 450,
+      backgroundColor: 'white',
+      boxShadow: '2px 2px 8px rgba(0, 0, 0, 0.2)',
+      borderRadius : 12,
+      marginLeft : positionDiv.x,
+      marginTop :  positionDiv.y,
+}
+const divSelected = {
+      height: 230,
+      width: 450,
+      backgroundColor: 'white',
+      boxShadow: '2px 2px 8px rgba(0, 0, 0, 0.2)',
+      borderRadius : 12,
+      marginLeft : positionDiv.x,
+      marginTop : positionDiv.y,
+      border : '5px solid #3c98e7'
+}
+
+const  positioning : React.CSSProperties={
+    position : 'absolute',
+    top : 7 + positionDiv.y,
+    left : 270 + positionDiv.x,
+    backgroundColor: 'white',
+    width : 'auto',
+    height: 30,
+  }
+const intialInvisible: React.CSSProperties = {
+    backgroundColor : 'red' ,
+    position :'absolute',
+    top :38+positionDiv.y,
+    left :17 +positionDiv.x,
+     height : 15,
+     width :15,
+     cursor: 'nw-resize',
+     opacity: 0,
+}
+  const invisibleRight: React.CSSProperties = {
+    position: 'absolute',
+    top :38  + positionDiv.y,
+    left :453  + positionDiv.x,
+    backgroundColor : 'red' ,
+    height : 15,
+    width :15,
+    cursor: 'ne-resize',
+    opacity: 0,
+  }
+  const invisibleSecondRight : React.CSSProperties = {
+    position: 'absolute',
+    top :255  + positionDiv.y,
+    left :455   + positionDiv.x,
+    backgroundColor : 'red' ,
+    height : 15,
+    width :15,
+    cursor: 'nw-resize',
+    opacity: 0,
+  }
+  const invisibleLeft : React.CSSProperties= {
+    position: 'absolute',
+    top :255  + positionDiv.y,
+    left :17  + positionDiv.x,
+    backgroundColor : 'red',
+    height : 15,
+    width :15,
+    cursor: 'ne-resize',
+    opacity: 0,
+  }
     return (
         <>
             <div className="mainDiv">
@@ -606,11 +774,6 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
                             <MenuItem onClick={handleClose} style={{ fontSize: 14 }}><FormatColorFillIcon style={{ marginRight: 20, fontSize: 27 }} /> Background Color</MenuItem>
                         </Menu>
                     </div>
-                    {/* <Button variant="secondary" style={{ marginLeft: 8, marginTop: 4 ,background : "white" ,color : "black"}} onClick={() => setModal(true)}>Divide Module <ViewModuleIcon/></Button>
-                <Button variant="secondary" style={{ marginLeft: 5, marginTop: 4 ,background : "white" ,color : "black" }} onClick={() => handleButton()}>Background Color <FormatColorFillIcon/></Button>
-                <Button variant="secondary" style={{ marginLeft: 5, marginTop: 4 ,background : "white" ,color : "black"}} onClick={() => handleButton()}>Add Button <SmartButtonIcon/></Button>
-                <Button variant="secondary" style={{ marginLeft: 5, marginTop: 4 ,background : "white" ,color : "black"}} onClick={() => handleBackground()}>Background Image with Text<WallpaperIcon/></Button>
-                <Button variant="secondary" style={{ marginLeft: 5, marginTop: 4 ,background : "white" ,color : "black"}} onClick={() => handleUpdate()}>Align Items <AlignHorizontalCenterIcon/></Button> */}
                     <div >
                         <button className="updateButton" ><VisibilityIcon /> Preview</button>
                         <button className="updateButton" onClick={() => handleUpdate()}><SendIcon /> Update</button>
@@ -950,7 +1113,7 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
                                 <Tab label={<ClearIcon onClick={() => handleCloseButtonModal()} />} ></Tab>
                             </div>
                         </Box>
-                        <Accordion  style={{backgroundColor : '#f5f5f5', marginTop : 20}} expanded={expanded === 'panel1'} onChange={handleChangeAccordion('panel1')}>
+                        <Accordion style={{ backgroundColor: '#f5f5f5', marginTop: 20 }} expanded={expanded === 'panel1'} onChange={handleChangeAccordion('panel1')}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header"  >
                                 <Typography sx={{ width: '33%', flexShrink: 0 }} style={{ fontSize: 15 }}>Background Color</Typography>
                             </AccordionSummary>
@@ -968,15 +1131,15 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
                                         <div className='backgroundButton'>
                                             <FormLabel style={{ marginTop: 8, fontSize: 14 }}>Start Color :</FormLabel>
                                             <div className="picker" style={{ marginLeft: 19 }}>
-                                        <div className="swatch" style={{ backgroundColor: color, marginTop: 3 }} onClick={() => toggle(true)} /> {isOpen && (<div className="popover" ref={popover}><HexColorPicker color={color} onChange={setColor} /></div>)}
-                                        </div>
+                                                <div className="swatch" style={{ backgroundColor: color, marginTop: 3 }} onClick={() => toggle(true)} /> {isOpen && (<div className="popover" ref={popover}><HexColorPicker color={color} onChange={setColor} /></div>)}
+                                            </div>
                                             <input type="text" className='form-control' style={{ width: 90, height: 30, marginLeft: 10 }} value={color} onChange={(e) => { setColor(e.target.value) }}></input>
                                         </div>&nbsp;&nbsp;&nbsp;
                                         <div className='backgroundButton'>
                                             <FormLabel style={{ marginTop: 8, fontSize: 14 }}>End Color :</FormLabel>
                                             <div className="picker" style={{ marginLeft: 19 }}>
-                                        <div className="swatch" style={{ backgroundColor: secondColor, marginTop: 3 }} onClick={() => setSecondBackground(true)} /> {secondBackground && (<div className="popover" ref={popoverSecond}><HexColorPicker color={secondColor} onChange={setSecondColor} /></div>)}
-                                        </div>
+                                                <div className="swatch" style={{ backgroundColor: secondColor, marginTop: 3 }} onClick={() => setSecondBackground(true)} /> {secondBackground && (<div className="popover" ref={popoverSecond}><HexColorPicker color={secondColor} onChange={setSecondColor} /></div>)}
+                                            </div>
                                             <input type="text" className='form-control' style={{ width: 90, marginLeft: 10, height: 30 }} value={secondColor} onChange={(e) => { setSecondColor(e.target.value) }}></input>
                                         </div>
                                     </div>
@@ -986,7 +1149,7 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
                                     <div className='backgroundButton'>
                                         <FormLabel style={{ marginTop: 8, fontSize: 14 }}>Color :</FormLabel>
                                         <div className="picker" style={{ marginLeft: 90 }}>
-                                        <div className="swatch" style={{ backgroundColor: color, marginTop: 3 }} onClick={() => toggle(true)} /> {isOpen && (<div className="popover" ref={popover}><HexColorPicker color={color} onChange={setColor} /></div>)}
+                                            <div className="swatch" style={{ backgroundColor: color, marginTop: 3 }} onClick={() => toggle(true)} /> {isOpen && (<div className="popover" ref={popover}><HexColorPicker color={color} onChange={setColor} /></div>)}
                                         </div>
                                         <input type="text" className='form-control' style={{ width: 90, height: 30, marginLeft: 20 }} value={color} onChange={(e) => { setColor(e.target.value) }}></input>
                                     </div>
@@ -994,27 +1157,27 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
                             </AccordionDetails>
                         </Accordion>
 
-                        <Accordion  style={{backgroundColor : '#f5f5f5'}} expanded={expanded === 'panel2'} onChange={handleChangeAccordion('panel2')}>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}aria-controls="panel2bh-content"  id="panel2bh-header" >
+                        <Accordion style={{ backgroundColor: '#f5f5f5' }} expanded={expanded === 'panel2'} onChange={handleChangeAccordion('panel2')}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel2bh-content" id="panel2bh-header" >
                                 <Typography sx={{ width: '33%', flexShrink: 0 }} style={{ fontSize: 15 }}>Align Text</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <div className='backgroundButton'>
                                     <div> <FormLabel style={{ marginTop: 4, fontSize: 14 }}>Left </FormLabel> </div>
-                                    <div style={{ width: 170, marginLeft: 14 }}> <Slider size="small"  aria-label="Small" valueLabelDisplay="auto"  value={buttonData.paddingLeft}   onChange={handlePaddingLeft}/> </div>
+                                    <div style={{ width: 170, marginLeft: 14 }}> <Slider size="small" aria-label="Small" valueLabelDisplay="auto" value={buttonData.paddingLeft} onChange={handlePaddingLeft} /> </div>
                                     <div><FormLabel style={{ marginTop: 4, fontSize: 14, marginLeft: 20 }}>Right </FormLabel> </div>
-                                    <div style={{ width: 170, marginLeft: 25, marginTop: 1 }}> <Slider size="small"  aria-label="Small" valueLabelDisplay="auto" value={buttonData.paddingRight} onChange={handlePaddingRight}/> </div>
+                                    <div style={{ width: 170, marginLeft: 25, marginTop: 1 }}> <Slider size="small" aria-label="Small" valueLabelDisplay="auto" value={buttonData.paddingRight} onChange={handlePaddingRight} /> </div>
                                 </div>
                                 <div className='backgroundButton'>
                                     <div>  <FormLabel style={{ marginTop: 4, fontSize: 14 }}>Top </FormLabel> </div>
-                                    <div style={{ width: 170, marginTop: 1, marginLeft: 14 }}><Slider size="small"  aria-label="Small" valueLabelDisplay="auto" value={buttonData.paddingTop} onChange={handlePaddingTop}/> </div>
+                                    <div style={{ width: 170, marginTop: 1, marginLeft: 14 }}><Slider size="small" aria-label="Small" valueLabelDisplay="auto" value={buttonData.paddingTop} onChange={handlePaddingTop} /> </div>
                                     <div> <FormLabel style={{ marginTop: 4, fontSize: 14, marginLeft: 20 }}>Bottom </FormLabel> </div>
-                                    <div style={{ width: 170, marginLeft: 14, marginTop: 1 }}><Slider size="small"  aria-label="Small" valueLabelDisplay="auto" value={buttonData.paddingBottom} onChange={handlePaddingBottom}/> </div>
+                                    <div style={{ width: 170, marginLeft: 14, marginTop: 1 }}><Slider size="small" aria-label="Small" valueLabelDisplay="auto" value={buttonData.paddingBottom} onChange={handlePaddingBottom} /> </div>
                                 </div>
                             </AccordionDetails>
                         </Accordion>
 
-                        <Accordion  style={{backgroundColor : '#f5f5f5'}} expanded={expanded === 'panel3'} onChange={handleChangeAccordion('panel3')}>
+                        <Accordion style={{ backgroundColor: '#f5f5f5' }} expanded={expanded === 'panel3'} onChange={handleChangeAccordion('panel3')}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel3bh-content" id="panel3bh-header" >
                                 <Typography sx={{ width: '33%', flexShrink: 0 }} style={{ fontSize: 15 }}> Border </Typography>
                             </AccordionSummary>
@@ -1023,83 +1186,83 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
                                     <div><Checkbox checked={checkedButtonBorder} onChange={handleChangeButtonBorder} inputProps={{ 'aria-label': 'controlled' }} /></div>
                                     <div> <FormLabel style={{ marginTop: 11, marginLeft: 20, fontSize: 14 }}>Smoothness </FormLabel> </div>
                                     <div> <input type="text" className='form-control' style={{ width: 70, marginLeft: 50, height: 32 }} value={buttonData.borderRadius} onChange={handleSmoothnessSlider}></input> </div>
-                                    <div style={{ width: 170, marginLeft: 22, marginTop: 7 }}> <Slider size="small"  aria-label="Small" valueLabelDisplay="auto" value={buttonData.borderRadius} onChange={handleSmoothnessSliderNew}/> </div>
+                                    <div style={{ width: 170, marginLeft: 22, marginTop: 7 }}> <Slider size="small" aria-label="Small" valueLabelDisplay="auto" value={buttonData.borderRadius} onChange={handleSmoothnessSliderNew} /> </div>
                                 </div>
                                 <div className='backgroundButton'>
                                     <div> <Checkbox checked={checkedButtonBorderOnly} onChange={handleChangeButtonOnly} inputProps={{ 'aria-label': 'controlled' }} /> </div>
                                     <div> <FormLabel style={{ marginTop: 10, fontSize: 14, marginLeft: 20 }}>Border Color</FormLabel>  </div>
                                     {/*Fourth color is used here*/}
                                     <div className="picker" style={{ marginLeft: 19 }}>
-                                    <div className="swatch" style={{ backgroundColor: fourthColor, marginTop: 3 }} onClick={() => setFourthBackground(true)} /> {fourthBackground && (<div className="popover" ref={popoverFourth}><HexColorPicker color={fourthColor} onChange={setFourthColor} /></div>)}
+                                        <div className="swatch" style={{ backgroundColor: fourthColor, marginTop: 3 }} onClick={() => setFourthBackground(true)} /> {fourthBackground && (<div className="popover" ref={popoverFourth}><HexColorPicker color={fourthColor} onChange={setFourthColor} /></div>)}
                                     </div>
-                                    <div> <input type="text" className='form-control' style={{ width: 90, marginLeft: 50, height: 32 }} value={ fourthColor}  onChange={(e) => { setColor(e.target.value) }}></input>  </div>
+                                    <div> <input type="text" className='form-control' style={{ width: 90, marginLeft: 50, height: 32 }} value={fourthColor} onChange={(e) => { setColor(e.target.value) }}></input>  </div>
                                 </div>
                                 <div className='backgroundButton'>
                                     <div> <FormLabel style={{ marginTop: 10, fontSize: 14, marginLeft: 63 }}>Border Style</FormLabel> </div>
                                     <div>
-                                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}  size="small">
-                                            <Select labelId="demo-simple-select-standard-label" id="demo-simple-select-standard" value={borderStyle} onChange={handleChangeBorderStyle} label="style" style={{fontSize : 14 , width : 75, marginLeft : 50}} defaultValue={"solid"}>    
-                                                <MenuItem value={"solid"} style={{fontSize : 14}} onClick={()=>setButtonData((prev)=>({...prev , borderStyle : "solid"}))} >Solid</MenuItem>
-                                                <MenuItem value={"dotted"} style={{fontSize : 14}} onClick={()=>setButtonData((prev)=>({...prev , borderStyle : "dotted"}))}>Dotted</MenuItem>
-                                                <MenuItem value={"dashed"} style={{fontSize : 14}} onClick={()=>setButtonData((prev)=>({...prev , borderStyle : "dashed"}))} >Dashed</MenuItem>
-                                                <MenuItem value={"double"} style={{fontSize : 14}} onClick={()=>setButtonData((prev)=>({...prev , borderStyle : "double"}))}>Double</MenuItem>
-                                                <MenuItem value={"ridge"} style={{fontSize : 14}} onClick={()=>setButtonData((prev)=>({...prev , borderStyle : "ridge"}))} >Ridge</MenuItem>
-                                                <MenuItem value={"groove"} style={{fontSize : 14}} onClick={()=>setButtonData((prev)=>({...prev , borderStyle : "groove"}))} >Groove</MenuItem>
-                                                <MenuItem value={"inset"} style={{fontSize : 14}} onClick={()=>setButtonData((prev)=>({...prev , borderStyle : "inset"}))} >Inset</MenuItem>
-                                                <MenuItem value={"outset"} style={{fontSize : 14}} onClick={()=>setButtonData((prev)=>({...prev , borderStyle : "outset"}))} >Outset</MenuItem>
+                                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} size="small">
+                                            <Select labelId="demo-simple-select-standard-label" id="demo-simple-select-standard" value={borderStyle} onChange={handleChangeBorderStyle} label="style" style={{ fontSize: 14, width: 75, marginLeft: 50 }} defaultValue={"solid"}>
+                                                <MenuItem value={"solid"} style={{ fontSize: 14 }} onClick={() => setButtonData((prev) => ({ ...prev, borderStyle: "solid" }))} >Solid</MenuItem>
+                                                <MenuItem value={"dotted"} style={{ fontSize: 14 }} onClick={() => setButtonData((prev) => ({ ...prev, borderStyle: "dotted" }))}>Dotted</MenuItem>
+                                                <MenuItem value={"dashed"} style={{ fontSize: 14 }} onClick={() => setButtonData((prev) => ({ ...prev, borderStyle: "dashed" }))} >Dashed</MenuItem>
+                                                <MenuItem value={"double"} style={{ fontSize: 14 }} onClick={() => setButtonData((prev) => ({ ...prev, borderStyle: "double" }))}>Double</MenuItem>
+                                                <MenuItem value={"ridge"} style={{ fontSize: 14 }} onClick={() => setButtonData((prev) => ({ ...prev, borderStyle: "ridge" }))} >Ridge</MenuItem>
+                                                <MenuItem value={"groove"} style={{ fontSize: 14 }} onClick={() => setButtonData((prev) => ({ ...prev, borderStyle: "groove" }))} >Groove</MenuItem>
+                                                <MenuItem value={"inset"} style={{ fontSize: 14 }} onClick={() => setButtonData((prev) => ({ ...prev, borderStyle: "inset" }))} >Inset</MenuItem>
+                                                <MenuItem value={"outset"} style={{ fontSize: 14 }} onClick={() => setButtonData((prev) => ({ ...prev, borderStyle: "outset" }))} >Outset</MenuItem>
                                             </Select>
                                         </FormControl>
                                     </div>
                                 </div>
                                 <div className='backgroundButton'>
                                     <div> <FormLabel style={{ marginTop: 10, fontSize: 14, marginLeft: 63 }}>Border Width</FormLabel></div> <div>
-                                    <input type="text" className='form-control' style={{ width: 70, marginLeft: 50, marginTop : 7,height: 32 }} value={ buttonData.borderWidth?? ' ' } onChange={handleSliderForWidth}></input> </div>
-                                    <div style={{ width: 170, marginLeft: 22, marginTop: 7 }}><Slider size="small"  aria-label="Small" valueLabelDisplay="auto" value ={buttonData.borderWidth ?? ' '}  onChange={handleSliderForWidthNew}/> </div>
+                                        <input type="text" className='form-control' style={{ width: 70, marginLeft: 50, marginTop: 7, height: 32 }} value={buttonData.borderWidth ?? ' '} onChange={handleSliderForWidth}></input> </div>
+                                    <div style={{ width: 170, marginLeft: 22, marginTop: 7 }}><Slider size="small" aria-label="Small" valueLabelDisplay="auto" value={buttonData.borderWidth ?? ' '} onChange={handleSliderForWidthNew} /> </div>
                                 </div>
                             </AccordionDetails>
                         </Accordion>
 
-                        <Accordion expanded={expanded === 'panel4'} onChange={handleChangeAccordion('panel4')} style={{backgroundColor : '#f5f5f5'}}>
-                            <AccordionSummary  expandIcon={<ExpandMoreIcon />}  aria-controls="panel4bh-content"  id="panel4bh-header"  >
+                        <Accordion expanded={expanded === 'panel4'} onChange={handleChangeAccordion('panel4')} style={{ backgroundColor: '#f5f5f5' }}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel4bh-content" id="panel4bh-header"  >
                                 <Typography sx={{ width: '33%', flexShrink: 0 }} style={{ fontSize: 15 }}>Advance </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                            <FormControl>
+                                <FormControl>
                                     <div className='backgroundButton' >
                                         <div>
-                                        <Checkbox onChange={handleCheckboxHover} />
+                                            <Checkbox onChange={handleCheckboxHover} />
                                         </div>
                                         <div>
-                                    <Typography sx={{ width: '33%', flexShrink: 0 }} style={{ fontSize: 15,marginTop : 10, marginLeft :15 }}>Hover</Typography>
-                                    </div>
-                                    <div>
-                                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" defaultValue="solid" name="row-radio-buttons-group" style={{ marginLeft: 110 }} >
-                                            <FormControlLabel value="gradient" control={<Radio size="small" />} label={<Typography variant="body2" color="textSecondary">Gradient</Typography>} onClick={() => setButtonData((prev) => ({ ...prev, hoverType: "gradient" }))} />
-                                            <FormControlLabel value="solid" control={<Radio size="small" />} label={<Typography variant="body2" color="textSecondary">Solid</Typography>} onClick={() => setButtonData((prev) => ({ ...prev, hoverType: "solid" }))} style={{ marginLeft: 30 }} />
-                                        </RadioGroup>
+                                            <Typography sx={{ width: '33%', flexShrink: 0 }} style={{ fontSize: 15, marginTop: 10, marginLeft: 15 }}>Hover</Typography>
+                                        </div>
+                                        <div>
+                                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" defaultValue="solid" name="row-radio-buttons-group" style={{ marginLeft: 110 }} >
+                                                <FormControlLabel value="gradient" control={<Radio size="small" />} label={<Typography variant="body2" color="textSecondary">Gradient</Typography>} onClick={() => setButtonData((prev) => ({ ...prev, hoverType: "gradient" }))} />
+                                                <FormControlLabel value="solid" control={<Radio size="small" />} label={<Typography variant="body2" color="textSecondary">Solid</Typography>} onClick={() => setButtonData((prev) => ({ ...prev, hoverType: "solid" }))} style={{ marginLeft: 30 }} />
+                                            </RadioGroup>
                                         </div>
                                     </div>
                                 </FormControl>
                                 {buttonData.hoverType === "gradient" ?
                                     <div className="backgroundFlex">
                                         <div className='backgroundButton'>
-                                            <FormLabel style={{ marginTop: 8, fontSize: 12,marginLeft :56 }}>Start Color :</FormLabel>
-                                            <input type="text" className='form-control' style={{ width: 72, height: 30, marginLeft: 10,fontSize :12 }}></input>
+                                            <FormLabel style={{ marginTop: 8, fontSize: 12, marginLeft: 56 }}>Start Color :</FormLabel>
+                                            <input type="text" className='form-control' style={{ width: 72, height: 30, marginLeft: 10, fontSize: 12 }}></input>
                                         </div>&nbsp;&nbsp;
                                         <div className='backgroundButton'>
                                             <FormLabel style={{ marginTop: 8, fontSize: 12 }}>End Color :</FormLabel>
-                                            <input type="text" className='form-control' style={{ width: 72, marginLeft: 10, height: 30,fontSize :12 }} ></input>
+                                            <input type="text" className='form-control' style={{ width: 72, marginLeft: 10, height: 30, fontSize: 12 }} ></input>
                                         </div>
                                     </div>
                                     : ""}
 
                                 {buttonData.hoverType === "solid" ?
                                     <div className='backgroundButton'>
-                                        <FormLabel style={{ marginTop: 15, fontSize: 14,marginLeft : 150}}>Color :</FormLabel>
+                                        <FormLabel style={{ marginTop: 15, fontSize: 14, marginLeft: 150 }}>Color :</FormLabel>
                                         <div className="picker" style={{ marginLeft: 19, marginTop: 8 }}>
-                                        <div className="swatch" style={{ backgroundColor: fifthColor, marginTop: 3 }} onClick={() => setFifthBackground(true)} /> {fifthBackground && (<div className="popover" ref={popoverFifth}><HexColorPicker color={fifthColor} onChange={setFifthColor} /></div>)}
+                                            <div className="swatch" style={{ backgroundColor: fifthColor, marginTop: 3 }} onClick={() => setFifthBackground(true)} /> {fifthBackground && (<div className="popover" ref={popoverFifth}><HexColorPicker color={fifthColor} onChange={setFifthColor} /></div>)}
                                         </div>
-                                        <input type="text" className='form-control' style={{ width: 90, height: 30, marginLeft: 20,marginTop : 10 }} value = {fifthColor} onChange={(e)=>setFifthColor(e.target.value)}></input>
+                                        <input type="text" className='form-control' style={{ width: 90, height: 30, marginLeft: 20, marginTop: 10 }} value={fifthColor} onChange={(e) => setFifthColor(e.target.value)}></input>
                                     </div>
                                     : ""}
                                 {/*dO NOT DELETE IT !!!*/}
@@ -1108,15 +1271,15 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
                         </Accordion>
                         <div className='customizeButton'>
                             <div>
-                            {!buttonHover?
-                             <button  style={buttonData.backgroundType!=="gradient" ? buttonDataStyle : ButtonDataStyleLinear}>Click Me</button>
-                            :  <CustomHover data={buttonData}  color={color} fourthColor={fourthColor} fifthColor = {fifthColor}>Click Me</CustomHover>
-                            }
+                                {!buttonHover ?
+                                    <button style={buttonData.backgroundType !== "gradient" ? buttonDataStyle : ButtonDataStyleLinear}>Click Me</button>
+                                    : <CustomHover data={buttonData} color={color} fourthColor={fourthColor} fifthColor={fifthColor}>Click Me</CustomHover>
+                                }
                             </div>
                         </div>
                         <div className='backgroundButton'>
-                        <div style={{textAlign :'start'}}> <input type="text" className='form-control' style={{fontSize : 13 , width :150 }} value={buttonRoute} onChange={(e)=>setButtonRoute(e.target.value)} placeholder='Enter Route Path'></input></div>
-                        <div style={{textAlign :'end' ,marginLeft :170}}> <button type="button" className='btn btn-primary' style={{ marginLeft: 20,fontSize : 13 }} onClick={() => handleButtonModule()}>Apply to Module</button></div>
+                            <div style={{ textAlign: 'start' }}> <input type="text" className='form-control' style={{ fontSize: 13, width: 150 }} value={buttonRoute} onChange={(e) => setButtonRoute(e.target.value)} placeholder='Enter Route Path'></input></div>
+                            <div style={{ textAlign: 'end', marginLeft: 170 }}> <button type="button" className='btn btn-primary' style={{ marginLeft: 20, fontSize: 13 }} onClick={() => handleButtonModule()}>Apply to Module</button></div>
                         </div>
                     </Modal.Body>
                 </Modal>
@@ -1151,14 +1314,105 @@ const [backgroundImageModal , setBackgroundImageModal] = useState(false)
                     onHide={() => setBackgroundImageModal(false)}
                     backdrop="static"
                     keyboard={false}
-                    centered
+                    size='xl'
                 >
-                    {/* <Modal.Header closeButton>
-                    </Modal.Header> */}
                     <Modal.Body style={{ overflow: 'auto' }}>
-                    <div className='backgroundButton'>
-                            <div style={{width : 900,height : 500,backgroundColor : 'red'}}></div>
-                            <div style={{height: 500, width : 400 ,backgroundColor : 'blue'}} ></div>
+                        <div className='backgroundButton'>
+                            <div style={{ width: 800, height: 566 }}>
+                                {/* {backgroundImageUrl ? <img src={backgroundImageUrl} alt="textIm" style={{ height: backgroundHeight * 10, width: backgroundWidth * 10 }} ></img> : */}
+                                {applyBackground ?
+                                    <div style={backgroundData}> 
+                                        Background Applied
+                                        {backgroundModalInput === "section" ?  
+                                        selectDiv ?   <div style={divSelected}  ref={refDiv} onClick={()=>setSelectDiv(false)} onMouseMove={onMouseMoveDiv} onMouseDown={() =>setPressedDiv(true) } onMouseUp={() => setPressedDiv(false)}>
+                                            <div style={positioning}>
+                                            <VerticalAlignBottomIcon style={{color : '#00559f', height : 31 ,width :37, padding :5 ,borderBottom :'1px solid #00559f' , borderTop :'1px solid #00559f',borderRight :'1px solid #00559f' , borderLeft :'1px solid #00559f'}}/>
+                                            <VerticalAlignTopIcon style={{color : '#00559f', height : 31 ,width :37, padding :5 ,borderBottom :'1px solid #00559f' , borderTop :'1px solid #00559f',borderRight :'1px solid #00559f'}}/>
+                                            <FormatIndentIncreaseIcon style={{color : '#00559f', height : 31 ,width :37, padding :5,borderBottom :'1px solid #00559f' , borderTop :'1px solid #00559f',borderRight :'1px solid #00559f'}}/>
+                                            <FormatIndentDecreaseIcon style={{color : '#00559f', height : 31 ,width :37, padding :5 ,borderBottom :'1px solid #00559f' , borderTop :'1px solid #00559f',borderRight :'1px solid #00559f'}}/>
+                                            <FormatAlignJustifyIcon style={{color : '#00559f', height : 31 ,width :37, padding :5 ,borderBottom :'1px solid #00559f' , borderTop :'1px solid #00559f',borderRight :'1px solid #00559f'}}/>
+                                            </div>
+                                            {/* Make four divs*/}
+                                            <div className='invisibleDiv'>
+                                            <div style={intialInvisible}></div>
+                                            <div style={invisibleRight}></div>
+                                            </div>
+                                            <div className='invisibleDiv'> 
+                                            <div style={invisibleSecondRight}></div>
+                                            <div style={invisibleLeft}></div>
+                                            </div>
+                                            This is test Applied
+                                            </div>:          
+                                                <div style={divNormalStyling} onClick={()=>setSelectDiv(true)}>This is test Initial</div>
+                                            : ""}
+
+                                    </div>
+                                    :
+                                    <img src={gradient} alt="ImageText" ref={ref} onMouseMove={onMouseMove} onMouseDown={() => setPressed(true)} onMouseUp={() => setPressed(false)} style={quickAndDirtyStyle}></img>}
+
+                            </div>
+
+
+                            {/* Controller section below!! */}
+
+                            <div style={{ height: 500, width: 'auto', borderLeft: '1px solid #dee2e6' }} >
+                                <div className='backgroundButton'>
+                                <h5 style={{ marginLeft : 60 }}>Background Image</h5>
+                                <CloseIcon style={{marginLeft :40 , cursor :'pointer'}} onClick={()=> setBackgroundImageModal(false)}/>
+                                </div>
+                                <div className='backgroundButton' style={{ fontSize: 14, marginTop: 20 }}>
+                                    <label style={{ marginTop: 10, marginLeft: 17, marginRight: 20 }}>URL</label>
+                                    <input style={{ marginLeft: 20, width: 'auto', fontSize: 14 }} className="form-control" type="text" placeholder='Enter you url' value={backgroundImageUrl} onChange={(e) => setBackgroundImageURL(e.target.value)}></input>
+                                </div>
+                                <div className='backgroundButton ' style={{ marginTop: 17 }}>
+                                    <label style={{ fontSize: 14, marginLeft: 17, marginRight: 20 }}>Height</label>
+                                    <Box width={200}>
+                                        <Slider
+                                            size="small"
+                                            aria-label="Small"
+                                            valueLabelDisplay="auto"
+                                            value={backgroundHeight}
+                                            onChange={(e) => handleBackgroundImageHeight(e)}
+                                        />
+                                    </Box>
+                                </div>
+                                <div className='backgroundButton' style={{ marginTop: 10 }}>
+                                    <label style={{ fontSize: 14, marginLeft: 17, marginRight: 20 }}>Width</label>
+                                    <Box width={200}>
+                                        <Slider
+                                            size="small"
+                                            aria-label="Small"
+                                            valueLabelDisplay="auto"
+                                            value={backgroundWidth}
+                                            onChange={(e) => handleBackgroundImageWidth(e)}
+                                        />
+                                    </Box>
+                                </div>
+                                <div className='backgroundButton'>
+                                <button type="button" className='btn btn-primary' style={{ marginLeft: 30, fontSize: 13, }} onClick={() => setApplyBackground(true)}>Set Background</button>
+                                <button type="button" className='btn btn-primary' style={{ marginLeft: 5, fontSize: 13, }} onClick={() => setApplyBackground(false)}>Unset Background</button>
+                                </div>
+                                <h5 style={{ textAlign: 'center', marginTop: 20 }}>Element on Top</h5>
+                                <div className='backgroundButton'>
+                                    <Checkbox defaultChecked size="small" style={{ marginTop: 15, marginLeft: 20 }} />
+                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} style={{ marginLeft: 20 }}>
+                                        <InputLabel id="demo-simple-select-standard-label" style={{ fontSize: 14 }}>Effect</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-standard-label"
+                                            id="demo-simple-select-standard"
+                                            value={backgroundModalInput}
+                                            onChange={handleBackgroundModalInput}
+                                            label="Effect"
+                                            style={{ backgroundColor: 'white' }}
+                                        >
+                                            <MenuItem value={'section'}>Section</MenuItem>
+                                            <MenuItem value={'text'}>Text</MenuItem>
+                                            <MenuItem value={"none"}>None</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </div>
+                                <button type="button" className='btn btn-primary' style={{ marginLeft: 100, fontSize: 13, marginTop: 60 }} onClick={() => handleBackgroundModalButton()}>Apply to Module</button>
+                            </div>
                         </div>
                     </Modal.Body>
                 </Modal>
