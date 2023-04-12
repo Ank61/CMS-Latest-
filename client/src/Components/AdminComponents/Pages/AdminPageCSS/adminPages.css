@@ -174,40 +174,11 @@ justify-content: center;
     margin-top: 30px;
     margin-bottom :20px 
 }
-/* .backgroundModal{
-    width: 1000px !important;
-    height: 500px !important;
-} */
+
 .full-width-modal .modal-content {
     max-width: 100%;
   }
 .invisibleDiv{
     display: flex;
-
 }
-/* .invisibleRight {
-    position: absolute;
-    top :148px;
-    left :647px;
-    background-color : red ;
-    height : 10px;
-    width :10px;
-}
-.invisbleSecondRight{
-    position: absolute;
-    top :352px;
-    left :647px;
-    background-color : red ;
-    height : 10px;
-    width :10px;
-}
-.invisbleLeft{
-    position: absolute;
-    top :352px;
-    left :220px;
-    background-color : red ;
-    height : 10px;
-    width :10px;
-    /* opacity: 0; */
-
 

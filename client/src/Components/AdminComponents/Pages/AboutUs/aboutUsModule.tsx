@@ -1,4 +1,4 @@
-import React, { ReactElement, ChangeEvent, } from 'react';
+import React from 'react';
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "react-router";
 import Layout from "../../../Common/Layout/layout";
@@ -9,8 +9,7 @@ import CropSquareOutlinedIcon from '@mui/icons-material/CropSquareOutlined';
 import 'froala-editor/js/plugins/char_counter.min.js';
 import SplitscreenIcon from '@mui/icons-material/Splitscreen';
 import Stack from 'react-bootstrap/Stack';
-import toast, { Toaster, useToasterStore } from 'react-hot-toast';
-import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
+import toast, { Toaster } from 'react-hot-toast';
 import "./aboutUsAdmin.css";
 import CloseIcon from '@mui/icons-material/Close';
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
@@ -54,8 +53,6 @@ import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useTheme } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
 import Slider from '@mui/material/Slider';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -63,22 +60,18 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import FormLabel from '@mui/material/FormLabel';
-import FormControl, { formControlClasses } from '@mui/material/FormControl';
+import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
 import Paper from '@mui/material/Paper';
 import ClearIcon from '@mui/icons-material/Clear';
-import { CloseButton } from 'react-bootstrap';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import CircleIcon from '@mui/icons-material/Circle';
 import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
 import ViewComfyOutlinedIcon from '@mui/icons-material/ViewComfyOutlined';
 import ViewQuiltOutlinedIcon from '@mui/icons-material/ViewQuiltOutlined';
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import LooksTwoIcon from '@mui/icons-material/LooksTwo';
 import '@fortawesome/fontawesome-free/css/fontawesome.css';
 import '@fortawesome/fontawesome-free/css/solid.css';
 import '@fortawesome/fontawesome-free/css/regular.css';
@@ -89,9 +82,6 @@ import { fa2 } from '@fortawesome/free-solid-svg-icons';
 import { fa3 } from '@fortawesome/free-solid-svg-icons';
 import { faGripLinesVertical } from '@fortawesome/free-solid-svg-icons';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import { faGripLines } from '@fortawesome/free-solid-svg-icons';
-import { faGripVertical } from '@fortawesome/free-solid-svg-icons';
-import SquareIcon from '@mui/icons-material/Square';
 import { HexColorPicker } from "react-colorful";
 import outsideClickOutside from "../../../Common/outsideClickOutside";
 import outsideClickSecond from "../../../Common/outsideClickSecond"
@@ -113,8 +103,8 @@ import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop';
 import FormatIndentIncreaseIcon from '@mui/icons-material/FormatIndentIncrease';
 import FormatIndentDecreaseIcon from '@mui/icons-material/FormatIndentDecrease';
 import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
-import parse, { HTMLReactParserOptions, Element } from 'html-react-parser';
-import { url } from 'inspector';
+
+
 
 type moduleDetail = {
     moduleName: String
@@ -127,8 +117,8 @@ interface TabPanelProps {
     value: number;
 }
 type Data = {
-    columnNumber: number//make cases
-    rowNumber: number //if the number is 0, then only column
+    columnNumber: number
+    rowNumber: number
     spacing: Number
     backgroundColor: String
     border: String
@@ -247,19 +237,16 @@ function AboutUsDynamic() {
     const popoverSecond = React.useRef<HTMLInputElement>(null);
     const closeSecond = useCallback(() => setSecondBackground(false), [])
     outsideClickSecond(popoverSecond, closeSecond)
-
     const [thirdBackground, setThirdBackground] = useState(false)
     const [thirdColor, setThirdColor] = useState("#f9e0c0")
     const popoverThird = React.useRef<HTMLInputElement>(null);
     const closeThird = useCallback(() => setThirdBackground(false), [])
     outsideClickThird(popoverThird, closeThird)
-
     const [fourthBackground, setFourthBackground] = useState(false)
     const [fourthColor, setFourthColor] = useState("#d6c9f1")
     const popoverFourth = React.useRef<HTMLInputElement>(null);
     const closeFourth = useCallback(() => setFourthBackground(false), [])
     outsideClickFourth(popoverFourth, closeFourth)
-
     const [fifthBackground, setFifthBackground] = useState(false)
     const [fifthColor, setFifthColor] = useState("#d6c9f1")
     const popoverFifth = React.useRef<HTMLInputElement>(null);
@@ -277,19 +264,25 @@ function AboutUsDynamic() {
     //States for background Images 
     const [backgroundHeight, setBackgroundHeight] = useState<number>(40)
     const [backgroundWidth, setBackgroundWidth] = useState<number>(40)
-    const [backgroundImageData, setBackgroundImageData] = useState({ imagePaddingTop: 0, imagePaddingLeft: 0, imagePaddingRight: 0, imagePaddingBottom: 0, height: 0, width: 0 })
     const [backgroundImageModal, setBackgroundImageModal] = useState(false)
     const [applyBackground, setApplyBackground] = useState(false);
-    const [selectDiv , setSelectDiv] = useState(false)
-    const [divHeight , setDivHeight] = useState<number>(0);
-    const [divWidth , setDivWidth] = useState<number>(0);
+    const [selectDiv, setSelectDiv] = useState(false)
+    const [divHeight, setDivHeight] = useState<number>(230);
+    const [divWidth, setDivWidth] = useState<number>(450);
+    const [pressDivCorner, setPressedDivCorner] = useState(false)
     let { id } = useParams();
     //For add button
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-        a11yProps(0)
+        if(!anchorEl){
+            debugger
+            setAnchorEl(event.currentTarget);
+            a11yProps(0)
+        }
+        else{
+            setAnchorEl(null);    
+        }
     };
     const handleClose = () => {
         setAnchorEl(null);
@@ -327,7 +320,6 @@ function AboutUsDynamic() {
     //For Bottom Navigation
     const [valueBottom, setValueBottom] = React.useState<number>(0);
     function handleBottomNavigation(event: React.MouseEvent<HTMLButtonElement>) {
-        console.log(valueBottom)
     }
     //For background select in div module
     const [color, setColor] = useState("#cce4ff");
@@ -351,7 +343,6 @@ function AboutUsDynamic() {
                     navigate("/admin")
                 }, 1000)
             } else {
-                console.log(response.data[0].Modules[`${id}`])
                 setModuleDetails(response.data[0].Modules[`${id}`])
                 setEditorContent(response.data[0].Modules[`${id}`].data)
             }
@@ -377,7 +368,6 @@ function AboutUsDynamic() {
                     }, 1000)
                 } else {
                     toast.success("Updated Successfully")
-                    console.log(response)
                 }
             })
             .catch(err => console.log(err))
@@ -413,7 +403,6 @@ function AboutUsDynamic() {
     const idInsert = openInsert ? 'simple-popover' : undefined;
     function handleInsertCode() {
         setEditorContent((prev) => prev + `${insertCode}`);
-        console.log(insertCode)
         setModal(false);
         setInsertCode("")
     }
@@ -498,10 +487,7 @@ function AboutUsDynamic() {
     }
     async function handleButtonModule() {
         toast.success("Updated css")
-        //fire an api ot write in admin useabout.css
-        //genertae unique classname
         const uniqueLetters = generateUniqueLetters(10);
-        console.log(uniqueLetters)
         if (buttonHover) {
             debugger;
             const effectStyling = `{background-color :${fifthColor} }`
@@ -542,8 +528,6 @@ function AboutUsDynamic() {
     }
 
     function handleCloseFullModal() {
-        debugger;
-        console.log(codeSelected)
         setModal(false)
         setCodeSelected(false)
         setValueBottom(0);
@@ -580,29 +564,13 @@ function AboutUsDynamic() {
     }
     const ButtonDataStyleLinear = { backgroundImage: `linear-gradient(to bottom, ${color}, ${secondColor})`, borderRadius: buttonData.borderRadius, backgroundColor: `${color}`, border: ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}`, paddingTop: buttonData.paddingTop, paddingLeft: buttonData.paddingLeft, paddingRight: buttonData.paddingRight, paddingBottom: buttonData.paddingBottom, ':hover': { backgroundColor: `${buttonData.hoverSolidColor}` } }
     const buttonDataStyle = { borderRadius: checkedButtonBorder ? buttonData.borderRadius : 0, backgroundColor: `${color}`, border: ` ${checkedButtonBorderOnly ? buttonData.borderWidth : 0}px  ${checkedButtonBorderOnly ? buttonData.borderStyle : 'none'} ${checkedButtonBorderOnly ? fourthColor : ""}`, paddingTop: buttonData.paddingTop, paddingLeft: buttonData.paddingLeft, paddingRight: buttonData.paddingRight, paddingBottom: buttonData.paddingBottom }
-    //const mouseOver = {borderRadius : buttonData.borderRadius,backgroundColor : `${color}` , border :  ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom , ':hover':{backgroundColor :`${fifthColor}`}}
-    //const mouseOut = {borderRadius : buttonData.borderRadius,backgroundColor : `${color}` , border :  ` ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}` , paddingTop : buttonData.paddingTop , paddingLeft : buttonData.paddingLeft , paddingRight : buttonData.paddingRight,paddingBottom : buttonData.paddingBottom , ':hover':{backgroundColor :`${fifthColor}`}}  
-    //     const buttonHover = styled.button`
-    //     &.primaryy {
-    //       background-color: green;
-    //       &:hover {
-    //         background-color: ${fifthColor};
-    //       }
-    //     }
-    //   `;
     const [pressed, setPressed] = useState(false)
     const [position, setPosition] = useState({ x: 1, y: 1 })
     const ref = useRef<HTMLImageElement>(null)
     const refDiv = useRef<HTMLDivElement>(null)
-    const [pressedDiv , setPressedDiv] = useState(false) 
+    const [pressedDiv, setPressedDiv] = useState(false)
     const [positionDiv, setPositionDiv] = useState({ x: 1, y: 1 })
-    // Monitor changes to position state and update DOM
-    useEffect(() => {
-        console.log("position x", position.x, "position of y", position.y)
-        console.log("MArgin left", quickAndDirtyStyle.marginLeft, "MArginRight", quickAndDirtyStyle.marginTop)
-    }, [position])
 
-    // Update the current position if mouse is down
     const onMouseMove = (event: React.MouseEvent<HTMLImageElement>) => {
         event.preventDefault();
         if (pressed) {
@@ -623,7 +591,10 @@ function AboutUsDynamic() {
 
     const onMouseMoveDiv = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
-        console.log("Movement of Mouse" , event.pageX , event.clientY)
+        if (pressDivCorner) {
+            setDivWidth(divWidth - event.movementX)
+            setDivHeight(divHeight - event.movementY)
+        }
         if (pressedDiv) {
             if (refDiv.current) {
                 refDiv.current.style.cursor = "all-scroll";
@@ -641,10 +612,8 @@ function AboutUsDynamic() {
     }
 
     const outsideSection = `height : 230px;width : 450px;  background-color: white; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); border-radius : 14px;margin-left : 160px; margin-top : 110px;`
-    const applieBackgroundEditor = `width : ${backgroundWidth*10}px; height :${backgroundHeight*10}px ;background-image: url(${gradient}); background-position : center 50% ; background-size : cover; margin-left :${position.x}px;padding-top : ${position.y}px; `
+    const applieBackgroundEditor = `width : ${backgroundWidth * 10}px; height :${backgroundHeight * 10}px ;background-image: url(${gradient}); background-position : center 50% ; background-size : cover; margin-left :${position.x}px;padding-top : ${position.y}px; `
     function handleBackgroundModalButton() {
-        console.log("Position x", position.x, "position of y", position.y)
-
         setEditorContent((prev) => prev + `<div><div style="${applieBackgroundEditor}"> <div style="${outsideSection}">This is test</div><div></div>`);
         setBackgroundImageModal(false)
         setPosition({
@@ -653,13 +622,6 @@ function AboutUsDynamic() {
         })
     }
 
-    // const styleModal={
-    //     marginLeft :228 ,
-    //     marginTop : position.y,
-    //     width : 300,
-    //     height :300,
-    //     backgroundColor : 'red'
-    // }
     const quickAndDirtyStyle = {
         width: backgroundWidth * 10,
         height: backgroundHeight * 10,
@@ -668,11 +630,9 @@ function AboutUsDynamic() {
         marginTop: position.y,
     }
     function handleBackgroundImageWidth(e: any) {
-        console.log(e.target.value)
         setBackgroundWidth(e.target.value);
     }
     function handleBackgroundImageHeight(e: any) {
-        console.log(e.target.value)
         setBackgroundHeight(e.target.value);
     }
     const backgroundData = {
@@ -686,75 +646,76 @@ function AboutUsDynamic() {
         marginTop: position.y,
     }
 
-// For selecting div
-const divNormalStyling = {
-      height: 230,
-      width: 450,
-      backgroundColor: 'white',
-      boxShadow: '2px 2px 8px rgba(0, 0, 0, 0.2)',
-      borderRadius : 12,
-      marginLeft : positionDiv.x,
-      marginTop :  positionDiv.y,
-}
-const divSelected = {
-      height: 230,
-      width: 450,
-      backgroundColor: 'white',
-      boxShadow: '2px 2px 8px rgba(0, 0, 0, 0.2)',
-      borderRadius : 12,
-      marginLeft : positionDiv.x,
-      marginTop : positionDiv.y,
-      border : '5px solid #3c98e7'
-}
+    // For selecting div
+    const divNormalStyling = {
+        height: divHeight,
+        width: divWidth,
+        backgroundColor: 'white',
+        boxShadow: '2px 2px 8px rgba(0, 0, 0, 0.2)',
+        borderRadius: 12,
+        marginLeft: positionDiv.x,
+        marginTop: positionDiv.y,
+    }
+    const divSelected: React.CSSProperties = {
+        position: 'relative',
+        height: divHeight,
+        width: divWidth,
+        backgroundColor: 'white',
+        boxShadow: '2px 2px 8px rgba(0, 0, 0, 0.2)',
+        borderRadius: 12,
+        marginLeft: positionDiv.x,
+        marginTop: positionDiv.y,
+        border: '5px solid #3c98e7'
+    }
 
-const  positioning : React.CSSProperties={
-    position : 'absolute',
-    top : 7 + positionDiv.y,
-    left : 270 + positionDiv.x,
-    backgroundColor: 'white',
-    width : 'auto',
-    height: 30,
-  }
-const intialInvisible: React.CSSProperties = {
-    backgroundColor : 'red' ,
-    position :'absolute',
-    top :38+positionDiv.y,
-    left :17 +positionDiv.x,
-     height : 15,
-     width :15,
-     cursor: 'nw-resize',
-     opacity: 0,
-}
-  const invisibleRight: React.CSSProperties = {
-    position: 'absolute',
-    top :38  + positionDiv.y,
-    left :453  + positionDiv.x,
-    backgroundColor : 'red' ,
-    height : 15,
-    width :15,
-    cursor: 'ne-resize',
-    opacity: 0,
-  }
-  const invisibleSecondRight : React.CSSProperties = {
-    position: 'absolute',
-    top :255  + positionDiv.y,
-    left :455   + positionDiv.x,
-    backgroundColor : 'red' ,
-    height : 15,
-    width :15,
-    cursor: 'nw-resize',
-    opacity: 0,
-  }
-  const invisibleLeft : React.CSSProperties= {
-    position: 'absolute',
-    top :255  + positionDiv.y,
-    left :17  + positionDiv.x,
-    backgroundColor : 'red',
-    height : 15,
-    width :15,
-    cursor: 'ne-resize',
-    opacity: 0,
-  }
+    const positioning: React.CSSProperties = {
+        position: 'absolute',
+        top: 0 + positionDiv.y,
+        left: 0 + positionDiv.x,
+        backgroundColor: 'white',
+        width: 'auto',
+        height: 26,
+    }
+    const intialInvisible: React.CSSProperties = {//TopRight
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: 10,
+        height: 10,
+        backgroundColor: 'red',
+        cursor: 'nw-resize',
+        opacity: 0,
+    }
+    const invisibleRight: React.CSSProperties = {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        width: 10,
+        height: 10,
+        backgroundColor: 'green',
+        cursor: 'ne-resize',
+        opacity: 0,
+    }
+    const invisibleSecondRight: React.CSSProperties = { //Bottom Right
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        width: 10,
+        height: 10,
+        backgroundColor: 'yellow',
+        cursor: 'nw-resize',
+        opacity: 0,
+    }
+    const invisibleLeft: React.CSSProperties = { //BottomLeft
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: 10,
+        height: 10,
+        backgroundColor: 'blue',
+        cursor: 'ne-resize',
+        opacity: 0,
+    }
     return (
         <>
             <div className="mainDiv">
@@ -762,16 +723,16 @@ const intialInvisible: React.CSSProperties = {
             </div>
             <div className='mainContentDiv'>
                 <div className="contentDiv">
-                    <div>
+                    <div >
                         <Button id="basic-button" aria-controls={open ? 'basic-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined} onClick={handleClick} >
-                            <div className="addButton"><AddIcon /></div>
+                            <div className="addButton">{open ? <CloseIcon/>:<AddIcon />}</div>
                         </Button>
-                        <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
+                        <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClick} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
                             <MenuItem style={{ fontSize: 14 }} onClick={handleClose}> <ViewModuleIcon style={{ marginRight: 20, fontSize: 29 }} /> Divide Module</MenuItem>
                             <MenuItem onClick={handleCloseButton} style={{ fontSize: 14 }}><SmartButtonIcon style={{ marginRight: 20, fontSize: 31 }} /> Button</MenuItem>
                             <MenuItem onClick={handleCloseBackground} style={{ fontSize: 14 }}><WallpaperIcon style={{ marginRight: 20, fontSize: 26 }} />   Background Image</MenuItem>
-                            <MenuItem onClick={handleClose} style={{ fontSize: 14 }}><AlignHorizontalCenterIcon style={{ marginRight: 20, fontSize: 28 }} /> Align Item</MenuItem>
-                            <MenuItem onClick={handleClose} style={{ fontSize: 14 }}><FormatColorFillIcon style={{ marginRight: 20, fontSize: 27 }} /> Background Color</MenuItem>
+                            <MenuItem onClick={handleClose} style={{ fontSize: 14 }} disabled><AlignHorizontalCenterIcon style={{ marginRight: 20, fontSize: 28 }} /> Align Item</MenuItem>
+                            <MenuItem onClick={handleClose} style={{ fontSize: 14 }} disabled><FormatColorFillIcon style={{ marginRight: 20, fontSize: 27 }} /> Background Color</MenuItem>
                         </Menu>
                     </div>
                     <div >
@@ -1191,7 +1152,7 @@ const intialInvisible: React.CSSProperties = {
                                 <div className='backgroundButton'>
                                     <div> <Checkbox checked={checkedButtonBorderOnly} onChange={handleChangeButtonOnly} inputProps={{ 'aria-label': 'controlled' }} /> </div>
                                     <div> <FormLabel style={{ marginTop: 10, fontSize: 14, marginLeft: 20 }}>Border Color</FormLabel>  </div>
-                                    {/*Fourth color is used here*/}
+
                                     <div className="picker" style={{ marginLeft: 19 }}>
                                         <div className="swatch" style={{ backgroundColor: fourthColor, marginTop: 3 }} onClick={() => setFourthBackground(true)} /> {fourthBackground && (<div className="popover" ref={popoverFourth}><HexColorPicker color={fourthColor} onChange={setFourthColor} /></div>)}
                                     </div>
@@ -1265,8 +1226,6 @@ const intialInvisible: React.CSSProperties = {
                                         <input type="text" className='form-control' style={{ width: 90, height: 30, marginLeft: 20, marginTop: 10 }} value={fifthColor} onChange={(e) => setFifthColor(e.target.value)}></input>
                                     </div>
                                     : ""}
-                                {/*dO NOT DELETE IT !!!*/}
-                                {/* {parse("<div onclick>Hello World</div>", optio)} */}
                             </AccordionDetails>
                         </Accordion>
                         <div className='customizeButton'>
@@ -1319,31 +1278,26 @@ const intialInvisible: React.CSSProperties = {
                     <Modal.Body style={{ overflow: 'auto' }}>
                         <div className='backgroundButton'>
                             <div style={{ width: 800, height: 566 }}>
-                                {/* {backgroundImageUrl ? <img src={backgroundImageUrl} alt="textIm" style={{ height: backgroundHeight * 10, width: backgroundWidth * 10 }} ></img> : */}
                                 {applyBackground ?
-                                    <div style={backgroundData}> 
-                                        Background Applied
-                                        {backgroundModalInput === "section" ?  
-                                        selectDiv ?   <div style={divSelected}  ref={refDiv} onClick={()=>setSelectDiv(false)} onMouseMove={onMouseMoveDiv} onMouseDown={() =>setPressedDiv(true) } onMouseUp={() => setPressedDiv(false)}>
-                                            <div style={positioning}>
-                                            <VerticalAlignBottomIcon style={{color : '#00559f', height : 31 ,width :37, padding :5 ,borderBottom :'1px solid #00559f' , borderTop :'1px solid #00559f',borderRight :'1px solid #00559f' , borderLeft :'1px solid #00559f'}}/>
-                                            <VerticalAlignTopIcon style={{color : '#00559f', height : 31 ,width :37, padding :5 ,borderBottom :'1px solid #00559f' , borderTop :'1px solid #00559f',borderRight :'1px solid #00559f'}}/>
-                                            <FormatIndentIncreaseIcon style={{color : '#00559f', height : 31 ,width :37, padding :5,borderBottom :'1px solid #00559f' , borderTop :'1px solid #00559f',borderRight :'1px solid #00559f'}}/>
-                                            <FormatIndentDecreaseIcon style={{color : '#00559f', height : 31 ,width :37, padding :5 ,borderBottom :'1px solid #00559f' , borderTop :'1px solid #00559f',borderRight :'1px solid #00559f'}}/>
-                                            <FormatAlignJustifyIcon style={{color : '#00559f', height : 31 ,width :37, padding :5 ,borderBottom :'1px solid #00559f' , borderTop :'1px solid #00559f',borderRight :'1px solid #00559f'}}/>
+                                    <div style={backgroundData}>
+                                        <div style={{ fontSize: 11 }}>Background</div>
+                                        {backgroundModalInput === "section" ?
+                                            selectDiv ? <>  <div style={divSelected} ref={refDiv} onClick={() => { setSelectDiv(false); setPressedDivCorner(false) }} onMouseMove={onMouseMoveDiv} onMouseDown={() => setPressedDiv(true)} onMouseUp={() => setPressedDiv(false)}>
+                                                <div style={intialInvisible} onMouseMove={onMouseMoveDiv} onMouseDown={() => setPressedDivCorner(true)} onMouseUp={() => setPressedDivCorner(false)}></div>
+                                                <div style={invisibleRight} onMouseMove={onMouseMoveDiv} onMouseDown={() => setPressedDivCorner(true)} onMouseUp={() => setPressedDivCorner(false)}></div>
+                                                <div style={invisibleLeft} onMouseMove={onMouseMoveDiv} onMouseDown={() => setPressedDivCorner(true)} onMouseUp={() => setPressedDivCorner(false)}></div>
+                                                <div style={invisibleSecondRight} onMouseMove={onMouseMoveDiv} onMouseDown={() => setPressedDivCorner(true)} onMouseUp={() => setPressedDivCorner(false)}></div>
+                                                This is test Applied
                                             </div>
-                                            {/* Make four divs*/}
-                                            <div className='invisibleDiv'>
-                                            <div style={intialInvisible}></div>
-                                            <div style={invisibleRight}></div>
-                                            </div>
-                                            <div className='invisibleDiv'> 
-                                            <div style={invisibleSecondRight}></div>
-                                            <div style={invisibleLeft}></div>
-                                            </div>
-                                            This is test Applied
-                                            </div>:          
-                                                <div style={divNormalStyling} onClick={()=>setSelectDiv(true)}>This is test Initial</div>
+                                                <div style={positioning}>
+                                                    <VerticalAlignBottomIcon style={{ color: '#00559f', height: 28, width: 31, padding: 3, borderBottom: '1px solid #00559f', borderTop: '1px solid #00559f', borderRight: '1px solid #00559f', borderLeft: '1px solid #00559f' }} />
+                                                    <VerticalAlignTopIcon style={{ color: '#00559f', height: 28, width: 31, padding: 3, borderBottom: '1px solid #00559f', borderTop: '1px solid #00559f', borderRight: '1px solid #00559f' }} />
+                                                    <FormatIndentIncreaseIcon style={{ color: '#00559f', height: 28, width: 31, padding: 3, borderBottom: '1px solid #00559f', borderTop: '1px solid #00559f', borderRight: '1px solid #00559f' }} />
+                                                    <FormatIndentDecreaseIcon style={{ color: '#00559f', height: 28, width: 31, padding: 3, borderBottom: '1px solid #00559f', borderTop: '1px solid #00559f', borderRight: '1px solid #00559f' }} />
+                                                    <FormatAlignJustifyIcon style={{ color: '#00559f', height: 28, width: 31, padding: 3, borderBottom: '1px solid #00559f', borderTop: '1px solid #00559f', borderRight: '1px solid #00559f' }} />
+                                                </div>
+                                            </> :
+                                                <div style={divNormalStyling} onClick={() => setSelectDiv(true)}>This is test Initial</div>
                                             : ""}
 
                                     </div>
@@ -1357,8 +1311,8 @@ const intialInvisible: React.CSSProperties = {
 
                             <div style={{ height: 500, width: 'auto', borderLeft: '1px solid #dee2e6' }} >
                                 <div className='backgroundButton'>
-                                <h5 style={{ marginLeft : 60 }}>Background Image</h5>
-                                <CloseIcon style={{marginLeft :40 , cursor :'pointer'}} onClick={()=> setBackgroundImageModal(false)}/>
+                                    <h5 style={{ marginLeft: 60 }}>Background Image</h5>
+                                    <CloseIcon style={{ marginLeft: 40, cursor: 'pointer' }} onClick={() => setBackgroundImageModal(false)} />
                                 </div>
                                 <div className='backgroundButton' style={{ fontSize: 14, marginTop: 20 }}>
                                     <label style={{ marginTop: 10, marginLeft: 17, marginRight: 20 }}>URL</label>
@@ -1389,8 +1343,8 @@ const intialInvisible: React.CSSProperties = {
                                     </Box>
                                 </div>
                                 <div className='backgroundButton'>
-                                <button type="button" className='btn btn-primary' style={{ marginLeft: 30, fontSize: 13, }} onClick={() => setApplyBackground(true)}>Set Background</button>
-                                <button type="button" className='btn btn-primary' style={{ marginLeft: 5, fontSize: 13, }} onClick={() => setApplyBackground(false)}>Unset Background</button>
+                                    <button type="button" className='btn btn-primary' style={{ marginLeft: 30, fontSize: 13, }} onClick={() => setApplyBackground(true)}>Set Background</button>
+                                    <button type="button" className='btn btn-primary' style={{ marginLeft: 5, fontSize: 13, }} onClick={() => setApplyBackground(false)}>Unset Background</button>
                                 </div>
                                 <h5 style={{ textAlign: 'center', marginTop: 20 }}>Element on Top</h5>
                                 <div className='backgroundButton'>
