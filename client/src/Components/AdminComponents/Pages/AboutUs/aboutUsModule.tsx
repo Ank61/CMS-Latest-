@@ -611,8 +611,8 @@ function AboutUsDynamic() {
         }
     }
 
-    const outsideSection = `height : 230px;width : 450px;  background-color: white; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); border-radius : 14px;margin-left : 160px; margin-top : 110px;`
-    const applieBackgroundEditor = `width : ${backgroundWidth * 10}px; height :${backgroundHeight * 10}px ;background-image: url(${gradient}); background-position : center 50% ; background-size : cover; margin-left :${position.x}px;padding-top : ${position.y}px; `
+    const outsideSection = `height : ${divHeight}px;width : ${divWidth}px;  background-color: white; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); border-radius : 14px;margin-left : ${positionDiv.x}px; margin-top : ${positionDiv.y}px;`
+    const applieBackgroundEditor = `width : ${backgroundWidth * 14}px; height :${backgroundHeight * 10}px ;background-image: url(${gradient}); background-position : center 50% ; background-size : cover; margin-left :${position.x}px;padding-top : ${position.y}px; `
     function handleBackgroundModalButton() {
         setEditorContent((prev) => prev + `<div><div style="${applieBackgroundEditor}"> <div style="${outsideSection}">This is test</div><div></div>`);
         setBackgroundImageModal(false)
