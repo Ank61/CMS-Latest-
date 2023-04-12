@@ -83,15 +83,15 @@ import { fa3 } from '@fortawesome/free-solid-svg-icons';
 import { faGripLinesVertical } from '@fortawesome/free-solid-svg-icons';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { HexColorPicker } from "react-colorful";
-import outsideClickOutside from "../../../Common/outsideClickOutside";
-import outsideClickSecond from "../../../Common/outsideClickSecond"
-import outsideClickThird from '../../../Common/outsideClickThird'
+import outsideClickOutside from "../../../Common//ColorPicker/outsideClickOutside";
+import outsideClickSecond from "../../../Common//ColorPicker/outsideClickSecond"
+import outsideClickThird from '../../../Common/ColorPicker/outsideClickThird'
 import { Form } from 'react-bootstrap';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import outsideClickFourth from '../../../Common/outsideClickFourth';
+import outsideClickFourth from '../../../Common/ColorPicker/outsideClickFourth';
 import Checkbox from '@mui/material/Checkbox';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
@@ -103,7 +103,7 @@ import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop';
 import FormatIndentIncreaseIcon from '@mui/icons-material/FormatIndentIncrease';
 import FormatIndentDecreaseIcon from '@mui/icons-material/FormatIndentDecrease';
 import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
-
+import networkConstant from '../../../Common/API/uri_constant';
 
 
 type moduleDetail = {
@@ -336,8 +336,8 @@ function AboutUsDynamic() {
 
     const navigate = useNavigate();
     useEffect(() => {
-        axios.get("http://localhost:8080/aboutUs").then(response => {
-            if (response.data == "Logout") {
+        axios.get(`${networkConstant.URL.aboutUS}`).then(response => {
+            if (response.data === "Logout") {
                 toast.error("Session expired")
                 setTimeout(() => {
                     navigate("/admin")
@@ -359,7 +359,7 @@ function AboutUsDynamic() {
             data: `${editorContent}`,
             From: "Update"
         }
-        axios.post("http://localhost:8080/aboutUs/update", obj)
+        axios.post(`${networkConstant.URL.updateAboutUs}`, obj)
             .then(response => {
                 if (response.data === "Logout") {
                     toast.error("Session expired")
@@ -383,7 +383,7 @@ function AboutUsDynamic() {
     }
     function handleDelete() {
         const obj = { moduleId: `${moduleDetails?.moduleId}` }
-        axios.post("http://localhost:8080/aboutUs/delete", obj).then(response => console.log(response)).catch(err => console.log(err))
+        axios.post(`${networkConstant.URL.deleteAboutUs}`, obj).then(response => console.log(response)).catch(err => console.log(err))
         navigate("/admin/aboutus")
         toast.error("Deleted successfully")
     }
@@ -498,7 +498,7 @@ function AboutUsDynamic() {
                 EffectStyle: effectStyling,
                 From: "Apply"
             }
-            await axios.post("http://localhost:8080/aboutUs/update", obj)
+            await axios.post(`${networkConstant.URL.updateAboutUs}`, obj)
                 .then(response => {
                     console.log(response)
                 })
@@ -722,7 +722,7 @@ function AboutUsDynamic() {
                 <Layout title="About Us" moduleName={moduleDetails ? moduleDetails.moduleName : " "}></Layout> <Toaster />
             </div>
             <div className='mainContentDiv'>
-                <div className="contentDiv">
+                <div className="contentDivMain">
                     <div >
                         <Button id="basic-button" aria-controls={open ? 'basic-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined} onClick={handleClick} >
                             <div className="addButton">{open ? <CloseIcon/>:<AddIcon />}</div>
@@ -1016,7 +1016,7 @@ function AboutUsDynamic() {
                                             <VisibilityIcon />&nbsp; Preview
                                         </Button>
                                         <Popover id={idDiv} open={openDiv} anchorEl={anchorElDiv} onClose={handleCloseDiv} anchorReference="anchorPosition" anchorPosition={{ top: 200, left: 868 }} anchorOrigin={{ vertical: 'center', horizontal: 'right', }} transformOrigin={{ vertical: 'center', horizontal: 'left', }} >
-                                            <iframe srcDoc={insertDivModal} width={400} height={400} sandbox='' ></iframe>
+                                            <iframe srcDoc={insertDivModal} width={400} height={400} sandbox='' title='Preview' ></iframe>
                                         </Popover>
                                     </div> <div>
                                         <button type="button" className='btn btn-primary' style={{ marginLeft: 20 }} onClick={() => handleInsertDiv()}>Apply to Module</button>
@@ -1035,7 +1035,7 @@ function AboutUsDynamic() {
                         }
                         <TabPanel value={value} index={1}>
                             <Popover id={idInsert} open={openInsert} anchorEl={anchorElInsert} onClose={handleCloseInsert} anchorReference="anchorPosition" anchorPosition={{ top: 200, left: 868 }} anchorOrigin={{ vertical: 'center', horizontal: 'right', }} transformOrigin={{ vertical: 'center', horizontal: 'left', }}  >
-                                <iframe srcDoc={insertCodeModal} width={400} height={400} sandbox='' ></iframe>
+                                <iframe srcDoc={insertCodeModal} width={400} height={400} sandbox='' title='Preview'></iframe>
                             </Popover>
                             <Form>
                                 <Form.Group controlId="exampleForm.ControlTextarea1">

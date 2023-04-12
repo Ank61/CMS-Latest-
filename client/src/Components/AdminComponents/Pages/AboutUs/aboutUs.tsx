@@ -6,6 +6,7 @@ import axios from "../../../Common/SecureInstance/axiosInstance";
 import AddIcon from '@mui/icons-material/Add';
 import Modal from 'react-bootstrap/Modal';
 import { Button } from "react-bootstrap";
+import networkConstant from "../../../Common/API/uri_constant";
 
 function AdminAboutUs() {
     type Modules = {
@@ -23,9 +24,9 @@ function AdminAboutUs() {
         if (!window.localStorage.getItem("Login")) {
             navigate("/admin")
         }
-        axios.get("http://localhost:8080/aboutUs")
+        axios.get(`${networkConstant.URL.aboutUS}`)
             .then(response => {
-                if (response.data == "Logout") {
+                if (response.data ==="Logout") {
                     navigate("/admin")
                 } else {
                     console.log(response.data[0].Modules)
@@ -44,12 +45,12 @@ function AdminAboutUs() {
             moduleName: title,
             data: ""
         }
-        await axios.post("http://localhost:8080/aboutUs/createModule", obj).then().catch(err => console.log(err))
+        await axios.post(`${networkConstant.URL.createAboutUs}`, obj).then().catch(err => console.log(err))
         setRender("2")
         setTimeout(()=>{
-            axios.get("http://localhost:8080/aboutUs")
+            axios.get(`${networkConstant.URL.aboutUS}`)
             .then(response => {
-                if (response.data == "Logout") {
+                if (response.data === "Logout") {
                     navigate("/admin")
                 } else {
                     console.log(response.data[0].Modules)

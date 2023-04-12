@@ -31,6 +31,7 @@ import { Button } from "react-bootstrap";
 import axios from "../../../Common/SecureInstance/axiosInstance";
 import { useNavigate } from "react-router";
 import 'bootstrap/dist/css/bootstrap.css';
+import networkConstant from '../../../Common/API/uri_constant';
 
 type moduleDetail = {
     moduleName: String
@@ -44,7 +45,7 @@ function Header() {
 
 
     useEffect(() => {
-        axios.get("http://localhost:8080/header").then(
+        axios.get(`${networkConstant.URL.header}`).then(
             response => {
                 setEditorContent(response.data[0].data)
             }
@@ -56,7 +57,7 @@ function Header() {
             headerId: "1",
             data: `${editorContent}`
         }
-        axios.post("http://localhost:8080/header/update", obj)
+        axios.post(`${networkConstant.URL.updateHeader}`, obj)
             .then(response => {
                 if (response.data === "Logout") {
                     navigate("/admin")

@@ -4,7 +4,7 @@ import "./login.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../Common/SecureInstance/axiosInstance';
-
+import networkConstant from "../../Common/API/uri_constant";
 
 const TOAST_LIMIT = 1;
 function Login() {
@@ -27,7 +27,7 @@ function Login() {
 
     async function handleSubmit(e){
         e.preventDefault()
-             await axios.post("http://localhost:8080/login", loginData).then((response) => {
+             await axios.post(`${networkConstant.URL.login}`, loginData).then((response) => {
             if (response.data.Login) {
                 window.localStorage.setItem("Login", true)
                 toast.success('Login Successfull!');

@@ -59,9 +59,15 @@
 .contentDiv{
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  margin-left: 200px;
+  margin-top: 40px;
 }
 
+.contentDivMain{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between ;
+}
 .pages{
     margin-top: 60px;
 }
