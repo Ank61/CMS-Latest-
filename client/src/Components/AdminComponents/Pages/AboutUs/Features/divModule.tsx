@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import Modal from 'react-bootstrap/Modal';
 import ClearIcon from '@mui/icons-material/Clear';
 import Tabs from '@mui/material/Tabs';
@@ -88,9 +88,7 @@ type DivModuleProps= {
     closeDiv : ()=>void;
   }
 function DivModule(props : DivModuleProps ){
-    // const [modal, setModal] = useState<boolean>(false)
     const [value, setValue] = React.useState(0);
-    // const [customization , setCustomization] = useState<boolean>(false)
     const [codeSelected, setCodeSelected] = useState<boolean>(false)
     const [valueBottom, setValueBottom] = React.useState<number>(0);
     const [spacing, setSpacing] = React.useState(0);
@@ -101,7 +99,6 @@ function DivModule(props : DivModuleProps ){
     const [color, setColor] = useState("#cce4ff");
     const popover = React.useRef<HTMLInputElement>(null);
     const [isOpen, toggle] = useState(false);
-    const [editorContent, setEditorContent] = useState<string>('');
     const close = useCallback(() => toggle(false), []);
     outsideClickOutside(popover, close)
     const [secondBackground, setSecondBackground] = useState(false)
