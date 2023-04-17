@@ -77,8 +77,8 @@ function AboutUsDynamic() {
     const [modalButton, setModalButton] = useState(false)
     const [backgroundImageModal, setBackgroundImageModal] = useState(false)
     const [tagModal, setTagModal] = useState<boolean>(false);
-    const [title , setTitle] = useState<string>("")
-    const [description , setDescription] = useState<string>("")
+    const [title, setTitle] = useState<string>("")
+    const [description, setDescription] = useState<string>("")
     let { id } = useParams();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -178,21 +178,34 @@ function AboutUsDynamic() {
     const closeBackground = (newData: string) => {
         setEditorContent((prev) => prev + `${newData}`);
     }
-    const handleMetaData=()=>{
+    const handleMetaData = () => {
         const metaData = {
-            title : title,
-            description : description
+            title: title,
+            description: description
         }
-        axios.post(`${networkConstant.URL.metaData}`,metaData).then(response=>console.log(response.data)).catch(err=>console.log(err))
-    setTagModal(false);
-    toast.success("Successfully Updated!")
-    
+        axios.post(`${networkConstant.URL.metaData}`, metaData).then(response => console.log(response.data)).catch(err => console.log(err))
+        setTagModal(false);
+        toast.success("Successfully Updated!")
+
     }
-    const handleTitle=(e:React.ChangeEvent<HTMLTextAreaElement> )=>{
-      setTitle(e.target?.value);
+    const handleTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setTitle(e.target?.value);
     }
-    const handleDescription = (e:React.ChangeEvent<HTMLTextAreaElement>)=>{
+    const handleDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setDescription(e.target.value);
+    }
+    const editorReff = useRef<FroalaEditor>(null);
+
+    const handleModelChange = () => {
+        debugger;
+        const editor = editorReff.current?.getEditor();
+        if (!editor) return;
+        debugger;
+        const selection = editor.selection.get();
+        const div = document.createElement('button');
+        div.innerText = 'New';
+        div.style.backgroundColor = 'yellow';
+        editor.html.insert(div.outerHTML, selection.index);
     }
     return (
         <>
@@ -201,9 +214,9 @@ function AboutUsDynamic() {
             </div>
             <div className='mainContentDiv'>
                 <div className="contentDivMain">
-                    <div >
+                    <div>
                         <Button id="basic-button" aria-controls={open ? 'basic-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined} onClick={handleClick} >
-                            <div className="addButton">{open ? <CloseIcon style={{height : 21}}/> : <AddIcon style={{height : 21}}/>}</div>
+                            <div className="addButton">{open ? <CloseIcon style={{ height: 21 }} /> : <AddIcon style={{ height: 21 }} />}</div>
                         </Button>
                         <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClick} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
                             <MenuItem style={{ fontSize: 14 }} onClick={handleClose}> <ViewModuleIcon style={{ marginRight: 20, fontSize: 29 }} /> Divide Module</MenuItem>
@@ -214,10 +227,11 @@ function AboutUsDynamic() {
                         </Menu>
                     </div>
                     <div>
-                        <button className='updateButton' onClick={()=>setTagModal(true)}><CodeIcon style={{height : 21}}/> Meta Tag</button>
-                        <button className="updateButton" ><VisibilityIcon style={{height : 21}}/> Preview</button>
-                        <button className="updateButton" onClick={() => handleUpdate()}><SendIcon style={{height : 20}}/> Update</button>
-                        <button className="updateButton" onClick={() => handleDelete()}><DeleteIcon style={{height : 21}} /></button>
+                        <button className='updateButton' onClick={handleModelChange}>Add Div</button>
+                        <button className='updateButton' onClick={() => setTagModal(true)}><CodeIcon style={{ height: 21 }} /> Meta Tag</button>
+                        <button className="updateButton" ><VisibilityIcon style={{ height: 21 }} /> Preview</button>
+                        <button className="updateButton" onClick={() => handleUpdate()}><SendIcon style={{ height: 20 }} /> Update</button>
+                        <button className="updateButton" onClick={() => handleDelete()}><DeleteIcon style={{ height: 21 }} /></button>
                     </div>
                 </div>
                 <div style={{ marginLeft: 10, marginRight: 10 }}>
@@ -225,7 +239,7 @@ function AboutUsDynamic() {
                         tag='textarea'
                         model={editorContent}
                         onModelChange={(newContent: string) => setEditorContent(newContent)}
-                        ref={editorRef}
+                        ref={editorReff}
                         config={{
                             charCounterCount: true,
                             height: 450,
@@ -246,26 +260,26 @@ function AboutUsDynamic() {
                 {/*Modal for Background Modal*/}
                 <BackgroundModule showing={backgroundImageModal} onHiding={closeBackground} closeBackground={closeBackgroundModule} />
                 {/*Modal for Meta Tag*/}
-                <Modal show={tagModal} onHide={()=>setTagModal(false)} backdrop="static" keyboard={false} centered  >
+                <Modal show={tagModal} onHide={() => setTagModal(false)} backdrop="static" keyboard={false} centered  >
                     <Modal.Body style={{ overflow: 'auto' }} >
 
-                    <div className='backgroundButton' >
-                    <h5 style={{marginLeft : 80}}>Change Meta Tag for About Us</h5>
-                    <div  onClick={()=>setTagModal(false)} className='metaTagButton'><ClearIcon /></div>
-                    </div>
-
-                        <div className='backgroundButton' style={{marginTop : 10}}>
-                        <label style={{marginTop : 30}}>Title : </label>
-                        <textarea  className='form-control' style={{width : 'auto' , marginLeft : 'auto' , fontSize : 14}} rows={3} cols={47} value={title} onChange={(e)=>handleTitle(e)}></textarea >
-                        </div>
-                        
-                        <div className='backgroundButton' style={{marginTop : 10}}>
-                        <label style={{marginTop : 30}}>Description : </label>
-                        <textarea  className='form-control' style={{width : 'auto' , marginLeft : 'auto',fontSize : 14}} rows={8} cols={47} value={description} onChange={(e)=>handleDescription(e)}></textarea >
+                        <div className='backgroundButton' >
+                            <h5 style={{ marginLeft: 80 }}>Change Meta Tag for About Us</h5>
+                            <div onClick={() => setTagModal(false)} className='metaTagButton'><ClearIcon /></div>
                         </div>
 
-                        <button type="button" className='btn btn-primary' style={{ marginLeft:400,marginTop : 20 ,height : 'auto',fontSize :13 ,width : 'auto' }}  onClick={handleMetaData}>Update</button>
-                        </Modal.Body>
+                        <div className='backgroundButton' style={{ marginTop: 10 }}>
+                            <label style={{ marginTop: 30 }}>Title : </label>
+                            <textarea className='form-control' style={{ width: 'auto', marginLeft: 'auto', fontSize: 14 }} rows={3} cols={47} value={title} onChange={(e) => handleTitle(e)}></textarea >
+                        </div>
+
+                        <div className='backgroundButton' style={{ marginTop: 10 }}>
+                            <label style={{ marginTop: 30 }}>Description : </label>
+                            <textarea className='form-control' style={{ width: 'auto', marginLeft: 'auto', fontSize: 14 }} rows={8} cols={47} value={description} onChange={(e) => handleDescription(e)}></textarea >
+                        </div>
+
+                        <button type="button" className='btn btn-primary' style={{ marginLeft: 400, marginTop: 20, height: 'auto', fontSize: 13, width: 'auto' }} onClick={handleMetaData}>Update</button>
+                    </Modal.Body>
                 </Modal>
             </div>
         </>

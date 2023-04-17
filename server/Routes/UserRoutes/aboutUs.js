@@ -17,7 +17,6 @@ app.post("/update",
         const fileNameForApply = '../client/src/Components/AdminComponents/Pages/AboutUs/aboutUsAdmin.css';
         const fileNameForUpdate = '../client/src/Components/UserComponents/about.css'
         try{
-            console.log(request.body)
             if(request.body.From==="Apply"){//for Apply button module only
             if(request.body.Effect!=='none'){ //that means i tfor hover only
                 let stringFirst = '.'+`${request.body.className}` + `${request.body.style}`;
@@ -31,24 +30,20 @@ app.post("/update",
                     if(updatedData){
                         fs.writeFile(fileNameForApply, third, 'utf8', (err) => {
                             if (err) throw err;
-                            console.log('Text has been replaced in the file.');
                           });
                     }
                     else{
                          fs.appendFile(fileNameForApply,`${third}`, (err) => {
                             if (err) throw err;
-                            console.log('Text added to Adminfile.');
                           });
                           fs.appendFile(fileNameForUpdate,`${third}`, (err) => {
                             if (err) throw err;
-                            console.log('Text added to userFile');
                           });
                     }
                 })
                 const data = request.body.data;
                 const moduleName = request.body.moduleName;
                 const moduleId = request.body.moduleId; //will thrw error not foun
-                console.log(typeof data , typeof moduleName , typeof moduleId)
                 const updatedResponse = await aboutUsModal.findOneAndUpdate(
                     { Modules: { $elemMatch: { moduleId: `${moduleId}` } } },
                     { $set: { 'Modules.$.moduleName': `${moduleName}`, 'Modules.$.data': `${data}` } },
@@ -58,11 +53,9 @@ app.post("/update",
             }
         }
             else{
-                console.log("Reached updated")
                 const data = request.body.data;
                 const moduleName = request.body.moduleName;
                 const moduleId = request.body.moduleId; //will thrw error not foun
-                console.log(typeof data , typeof moduleName , typeof moduleId)
                 const updatedResponse = await aboutUsModal.findOneAndUpdate(
                     { Modules: { $elemMatch: { moduleId: `${moduleId}` } } },
                     { $set: { 'Modules.$.moduleName': `${moduleName}`, 'Modules.$.data': `${data}` } },
@@ -90,9 +83,7 @@ app.post("/createModule",
                 const data = request.body.data;
                 const moduleName = request.body.moduleName;
                 const forModuleId = await aboutUsModal.find({}).clone().catch(err => response.status(400).send("Erro"))
-               console.log("tis" , forModuleId)
                 if(forModuleId[0].Modules.length>0){
-                    console.log("Inseide for module")
                     const totalLengthIndex = forModuleId[0].Modules.length;
                     const lastItemIndex = totalLengthIndex-1;
                     const getModuleId = forModuleId[0].Modules[lastItemIndex]
@@ -113,7 +104,6 @@ app.post("/createModule",
             }
         }
         catch (err) {
-            console.log(err)
             return response.status(400).send(err)
         }
     })
@@ -130,7 +120,6 @@ app.post("/createModule",
            return response.status(200).send(obj)
         }
         catch(err){
-            console.log(err)
             return response.status(400).send(err)
         }
     })
