@@ -35,9 +35,6 @@ app.post("/update",
                           });
                     }
                     else{
-                        //not found hence create new
-                         //fs.writeFileSync(fileNameForApply, `${third}`);
-                        // fs.writeFileSync(fileNameForUpdate, `${third}`);
                          fs.appendFile(fileNameForApply,`${third}`, (err) => {
                             if (err) throw err;
                             console.log('Text added to Adminfile.');
@@ -48,9 +45,6 @@ app.post("/update",
                           });
                     }
                 })
-
-                // fs.writeFileSync(fileNameForApply, `${third}`);
-                // fs.writeFileSync(fileNameForUpdate, `${third}`);
                 const data = request.body.data;
                 const moduleName = request.body.moduleName;
                 const moduleId = request.body.moduleId; //will thrw error not foun
@@ -114,12 +108,6 @@ app.post("/createModule",
                         { $push: { Modules: { moduleName: `${moduleName}`, data: "", moduleId: 1 } } },
                         { new: true }
                     ).exec()
-                // const updatedResponse = new aboutUsModal({Modules : [{
-                //     moduleId :1,
-                //     data : "",
-                //     moduleName : `${moduleName}`
-                // }]})
-                // await updatedResponse.save();
                 return response.status(200).send(updatedResponse);
                 }
             }
@@ -135,7 +123,11 @@ app.post("/createModule",
            const availableData = await aboutUsModal.find({}).clone()
            const initial = "";
            const data = await availableData[0].Modules.map(item=>item.data).reduce((accumulator, currentValue) => accumulator + currentValue,initial)
-           return response.status(200).send(data)
+        const obj={
+            data : data,
+            rest :availableData
+        }
+           return response.status(200).send(obj)
         }
         catch(err){
             console.log(err)
@@ -152,6 +144,17 @@ app.post("/createModule",
         return response.status(200).send(result)
         }
         catch(err){
+            return response.status(400).send(err) 
+        }
+    })
+    app.post("/meta" , async(request,response)=>{
+        try{
+             const title = request.body.title
+             const description = request.body.description;
+             await aboutUsModal.updateOne({'_id' :'642521483a2c6109b4aabbb4'},{title :`${title}` ,description : `${description}`})
+             .then(()=> response.status(200).send("success"))
+        }
+        catch{
             return response.status(400).send(err) 
         }
     })

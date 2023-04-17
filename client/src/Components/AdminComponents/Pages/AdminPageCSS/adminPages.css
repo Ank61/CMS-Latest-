@@ -55,6 +55,7 @@
 }
 .updateButton:hover{
     color: #d85b21;
+    border-color: #d85b21;
 }
 .addButton{
     background-color: white;
@@ -180,5 +181,16 @@ justify-content: center;
   }
 .invisibleDiv{
     display: flex;
+}
+.metaTagButton{
+    background-color:white;
+    color : black;
+    height : auto;
+    width : 27px;
+    margin-left: auto;
+}
+.metaTagButton:hover{
+    color :rgb(214, 33, 33);
+    cursor: pointer;
 }
 

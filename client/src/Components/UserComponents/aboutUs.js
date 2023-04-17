@@ -6,28 +6,18 @@ import Header from "../Common/Header/header";
 import parse, { domToReact } from 'html-react-parser';
 import './about.css';
 import networkConstant from "../Common/API/uri_constant";
-const html = `
-  <div>
-  <button id=button1>Button1</button>
-  <button id=button2>Button 2</button>
-  <button id=button3 value="/home">Button 3</button>
-  </div>
-`;
-
-
 
 function AboutUs(){
     const [data,setData] = useState()
-    const [metaTag , setMetaTag] = useState("This is new page")
+    const [title , setTitle] = useState("Initial Title")
+    const [description, setDescription] = useState("Initial Description")
     const navigate = useNavigate()
-    //const htmlString = '<div><p id="new">Hello, world!</p><div onClick="/thirdDiv"></div><div onClick="/secondDiv"></div></div>';
 const handleClick =(e ,route )=>{
   console.log("button clicked" , e.target.value);
   navigate(route)
 }
 const options = {
   replace: ({ attribs, children }) => {
-    console.log(attribs)
     if (!attribs) {
       return;
     }
@@ -55,11 +45,13 @@ const reactElement = parse(`${data}`, options);
     useEffect(()=>{
         axios.get(`${networkConstant.URL.userAboutUs}`)
         .then(response=>{
-            console.log(response.data)
             if (response.data ==="Logout") {
                 navigate("/admin")
             } else {
-            setData(response.data)
+              console.log(response.data.rest[0].title)
+              setTitle(response.data.rest[0].title)
+              setDescription(response.data.rest[0].description)
+              setData(response.data.data)
             }
         })
         .catch(err=>console.log(err))
@@ -71,11 +63,11 @@ const reactElement = parse(`${data}`, options);
 return (
     <div>
           <Helmet 
-        title = {"This is new title for About page"}
+        title = {`${title}`}
         meta={[
         {
           name: `description`,
-          content: metaTag,
+          content: description,
         } 
       ]}/>
       <Header/> 

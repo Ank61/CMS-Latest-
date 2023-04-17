@@ -7,7 +7,9 @@ import { useNavigate } from "react-router";
 import 'froala-editor/js/plugins/char_counter.min.js';
 import toast, { Toaster } from 'react-hot-toast';
 import "./aboutUsAdmin.css";
+import ClearIcon from '@mui/icons-material/Clear';
 import CloseIcon from '@mui/icons-material/Close';
+import Modal from 'react-bootstrap/Modal';
 import 'froala-editor/js/froala_editor.pkgd.min.js';
 import 'froala-editor/js/plugins/font_size.min.js';
 import 'froala-editor/js/plugins/font_family.min.js';
@@ -55,6 +57,7 @@ import networkConstant from '../../../Common/API/uri_constant';
 import DivModule from './Features/divModule';
 import ButtonModule from './Features/buttonModule';
 import BackgroundModule from './Features/backgroundModule';
+import CodeIcon from '@mui/icons-material/Code';
 
 type moduleDetail = {
     moduleName: String
@@ -73,7 +76,9 @@ function AboutUsDynamic() {
     const [modal, setModal] = useState<boolean>(false)
     const [modalButton, setModalButton] = useState(false)
     const [backgroundImageModal, setBackgroundImageModal] = useState(false)
-
+    const [tagModal, setTagModal] = useState<boolean>(false);
+    const [title , setTitle] = useState<string>("")
+    const [description , setDescription] = useState<string>("")
     let { id } = useParams();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -113,6 +118,8 @@ function AboutUsDynamic() {
             } else {
                 setModuleDetails(response.data[0].Modules[`${id}`])
                 setEditorContent(response.data[0].Modules[`${id}`].data)
+                setTitle(response.data[0].title)
+                setDescription(response.data[0].description)
             }
         }).catch(err => console.log(err))
     }, [])
@@ -171,6 +178,22 @@ function AboutUsDynamic() {
     const closeBackground = (newData: string) => {
         setEditorContent((prev) => prev + `${newData}`);
     }
+    const handleMetaData=()=>{
+        const metaData = {
+            title : title,
+            description : description
+        }
+        axios.post(`${networkConstant.URL.metaData}`,metaData).then(response=>console.log(response.data)).catch(err=>console.log(err))
+    setTagModal(false);
+    toast.success("Successfully Updated!")
+    
+    }
+    const handleTitle=(e:React.ChangeEvent<HTMLTextAreaElement> )=>{
+      setTitle(e.target?.value);
+    }
+    const handleDescription = (e:React.ChangeEvent<HTMLTextAreaElement>)=>{
+        setDescription(e.target.value);
+    }
     return (
         <>
             <div className="mainDiv">
@@ -180,7 +203,7 @@ function AboutUsDynamic() {
                 <div className="contentDivMain">
                     <div >
                         <Button id="basic-button" aria-controls={open ? 'basic-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined} onClick={handleClick} >
-                            <div className="addButton">{open ? <CloseIcon /> : <AddIcon />}</div>
+                            <div className="addButton">{open ? <CloseIcon style={{height : 21}}/> : <AddIcon style={{height : 21}}/>}</div>
                         </Button>
                         <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClick} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
                             <MenuItem style={{ fontSize: 14 }} onClick={handleClose}> <ViewModuleIcon style={{ marginRight: 20, fontSize: 29 }} /> Divide Module</MenuItem>
@@ -191,13 +214,13 @@ function AboutUsDynamic() {
                         </Menu>
                     </div>
                     <div>
-                        <button className='updateButton' onClick={handleAddDiv}>Add Div</button>
-                        <button className="updateButton" ><VisibilityIcon /> Preview</button>
-                        <button className="updateButton" onClick={() => handleUpdate()}><SendIcon /> Update</button>
-                        <button className="updateButton" onClick={() => handleDelete()}><DeleteIcon /></button>
+                        <button className='updateButton' onClick={()=>setTagModal(true)}><CodeIcon style={{height : 21}}/> Meta Tag</button>
+                        <button className="updateButton" ><VisibilityIcon style={{height : 21}}/> Preview</button>
+                        <button className="updateButton" onClick={() => handleUpdate()}><SendIcon style={{height : 20}}/> Update</button>
+                        <button className="updateButton" onClick={() => handleDelete()}><DeleteIcon style={{height : 21}} /></button>
                     </div>
                 </div>
-                <div style={{ marginLeft: 10, marginTop: 10, marginRight: 10 }}>
+                <div style={{ marginLeft: 10, marginRight: 10 }}>
                     <FroalaEditor
                         tag='textarea'
                         model={editorContent}
@@ -222,6 +245,28 @@ function AboutUsDynamic() {
                 <ButtonModule showing={modalButton} onHiding={closeButtonModule} closeButtonDiv={closeButtonModuleDiv} />
                 {/*Modal for Background Modal*/}
                 <BackgroundModule showing={backgroundImageModal} onHiding={closeBackground} closeBackground={closeBackgroundModule} />
+                {/*Modal for Meta Tag*/}
+                <Modal show={tagModal} onHide={()=>setTagModal(false)} backdrop="static" keyboard={false} centered  >
+                    <Modal.Body style={{ overflow: 'auto' }} >
+
+                    <div className='backgroundButton' >
+                    <h5 style={{marginLeft : 80}}>Change Meta Tag for About Us</h5>
+                    <div  onClick={()=>setTagModal(false)} className='metaTagButton'><ClearIcon /></div>
+                    </div>
+
+                        <div className='backgroundButton' style={{marginTop : 10}}>
+                        <label style={{marginTop : 30}}>Title : </label>
+                        <textarea  className='form-control' style={{width : 'auto' , marginLeft : 'auto' , fontSize : 14}} rows={3} cols={47} value={title} onChange={(e)=>handleTitle(e)}></textarea >
+                        </div>
+                        
+                        <div className='backgroundButton' style={{marginTop : 10}}>
+                        <label style={{marginTop : 30}}>Description : </label>
+                        <textarea  className='form-control' style={{width : 'auto' , marginLeft : 'auto',fontSize : 14}} rows={8} cols={47} value={description} onChange={(e)=>handleDescription(e)}></textarea >
+                        </div>
+
+                        <button type="button" className='btn btn-primary' style={{ marginLeft:400,marginTop : 20 ,height : 'auto',fontSize :13 ,width : 'auto' }}  onClick={handleMetaData}>Update</button>
+                        </Modal.Body>
+                </Modal>
             </div>
         </>
     )

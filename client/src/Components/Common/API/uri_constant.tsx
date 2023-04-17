@@ -10,6 +10,8 @@ const networkConstant = {
         header : 'http://localhost:8080/header',
         updateHeader : 'http://localhost:8080/header/update',
 
+        metaData :  'http://localhost:8080/aboutUs/meta',
+
         //User_Components_API
         userAboutUs : 'http://localhost:8080/aboutUs/allData'
 

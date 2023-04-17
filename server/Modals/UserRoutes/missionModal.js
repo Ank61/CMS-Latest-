@@ -17,7 +17,13 @@ const aboutUs = new schema({
             required :true,
             unique :true,
         }
-    }]
+    }],
+    title : {
+        type:String
+    },
+    description :{
+        type : String
+    }
 })
 
 const aboutUsModal = mongoose.model("AboutU", aboutUs)
