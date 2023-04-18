@@ -140,8 +140,8 @@ function DivModule(props : DivModuleProps ){
         setData({ columnNumber: 0, rowNumber: 0, spacing: 0, backgroundColor: "", border: "none", shape: "Square", complex: "" })
     }
     function handleInsertDiv() {
-        debugger;
         props.onHiding(`${insertDiv}`)
+        debugger;
         props.closeDiv()
         setCodeSelected(false)
         setValueBottom(0);

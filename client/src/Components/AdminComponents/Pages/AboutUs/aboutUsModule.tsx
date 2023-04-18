@@ -82,11 +82,33 @@ function AboutUsDynamic() {
     let { id } = useParams();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const [cursorPosition , setCurrentPosition] = useState<any>()
+    const [clicked , setClicked] = useState<number>(1)
+    const [selectionIndex , setSelectionIndex]=useState()
+    // useEffect(()=>{
+    //     debugger;
+    //     const editor = editorReff.current?.getEditor();
+    //     if (!editor) return;
+    //     else if(editor.selection){
+    //         debugger;
+    //         const selection = editor.selection.get();
+    //         setCurrentPosition(selection);
+    //     }
+    // },[clicked])
+    const froalaEditorMain = (newContent : string)=>{
+        debugger;
+        setEditorContent(newContent);
+        //Check onClick
+        // setClicked((prev)=>(prev+1))
+    }
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         if (!anchorEl) {
-            debugger
             setAnchorEl(event.currentTarget);
             a11yProps(0)
+            setCurrentPosition(editorReff.current)
+            var editor = editorReff.current?.getEditor();
+            var selection = editor.selection.get();
+            setSelectionIndex(selection)
         }
         else {
             setAnchorEl(null);
@@ -123,9 +145,7 @@ function AboutUsDynamic() {
             }
         }).catch(err => console.log(err))
     }, [])
-    // useEffect(() => {
-    //     setData((prev) => ({ ...prev, backgroundColor: color }))
-    // }, [color])
+
     function handleUpdate() {
         const obj = {
             moduleId: moduleDetails?.moduleId,
@@ -155,19 +175,23 @@ function AboutUsDynamic() {
     }
     const closeDivModule = (newData: string) => {
         debugger;
-        setEditorContent((prev) => prev + `${newData}`);
+        var editor = cursorPosition?.getEditor();
+        if (!editor) return;
+         var selection = editor.selection.get();
+         console.log("This is from Div module" , selectionIndex)
+        var div = `${newData}`
+        editor.html.insert(div,selectionIndex);
     };
     const closeDiv = () => {
-        debugger;
         setModal(false)
     }
-    const editorRef = useRef<FroalaEditor>(null);
-    function handleAddDiv() {
-        const editorInstance = editorRef.current
-        console.log(editorInstance)
-    }
+   
     const closeButtonModule = (newData: string) => {
-        setEditorContent((prev) => prev + `${newData}`);
+        var editor = cursorPosition?.getEditor();
+        if (!editor) return;
+        var div = `${newData}`;
+        editor.html.insert(div, selectionIndex);
+    
     }
     const closeButtonModuleDiv = () => {
         setModalButton(false);
@@ -176,7 +200,10 @@ function AboutUsDynamic() {
         setBackgroundImageModal(false)
     }
     const closeBackground = (newData: string) => {
-        setEditorContent((prev) => prev + `${newData}`);
+        const editor = cursorPosition?.getEditor();
+        if (!editor) return;
+         const div = `${newData}`
+        editor.html.insert(div,selectionIndex);
     }
     const handleMetaData = () => {
         const metaData = {
@@ -200,12 +227,11 @@ function AboutUsDynamic() {
         debugger;
         const editor = editorReff.current?.getEditor();
         if (!editor) return;
-        debugger;
         const selection = editor.selection.get();
-        const div = document.createElement('button');
-        div.innerText = 'New';
-        div.style.backgroundColor = 'yellow';
-        editor.html.insert(div.outerHTML, selection.index);
+        const div = '<button style="background-color : orange">Click meow</button>'
+        debugger;
+        editor.html.insert(div, selection.index);
+        debugger
     }
     return (
         <>
@@ -234,11 +260,11 @@ function AboutUsDynamic() {
                         <button className="updateButton" onClick={() => handleDelete()}><DeleteIcon style={{ height: 21 }} /></button>
                     </div>
                 </div>
-                <div style={{ marginLeft: 10, marginRight: 10 }}>
+                <div style={{ marginLeft: 10, marginRight: 10 }} onClick={()=> setClicked((prev)=>(prev+1))}>
                     <FroalaEditor
                         tag='textarea'
                         model={editorContent}
-                        onModelChange={(newContent: string) => setEditorContent(newContent)}
+                        onModelChange={froalaEditorMain}
                         ref={editorReff}
                         config={{
                             charCounterCount: true,
@@ -260,7 +286,7 @@ function AboutUsDynamic() {
                 {/*Modal for Background Modal*/}
                 <BackgroundModule showing={backgroundImageModal} onHiding={closeBackground} closeBackground={closeBackgroundModule} />
                 {/*Modal for Meta Tag*/}
-                <Modal show={tagModal} onHide={() => setTagModal(false)} backdrop="static" keyboard={false} centered  >
+                <Modal show={tagModal} onHide={() => setTagModal(false)} backdrop="static" keyboard={false} centered>
                     <Modal.Body style={{ overflow: 'auto' }} >
 
                         <div className='backgroundButton' >
