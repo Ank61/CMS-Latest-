@@ -40,7 +40,6 @@ type moduleDetail = {
 function Header() {
     const editor = useRef(null);
     const navigate = useNavigate();
-    const [moduleDetails, setModuleDetails] = useState<moduleDetail>()
     const [editorContent, setEditorContent] = useState<string>('');
 
 
@@ -85,12 +84,6 @@ function handleDiv(){
                 <Layout title="Header" moduleName=""/>
             </div>
             <div className="contentDiv">
-                <Button variant="secondary" style={{ marginLeft: 8, marginTop: 4 }} onClick={() => handleDiv()}>Add Div</Button>
-                <Button variant="secondary" style={{ marginLeft: 5, marginTop: 4 }} onClick={() => handleButton()}>Background Color</Button>
-                <Button variant="secondary" style={{ marginLeft: 5, marginTop: 4 }} onClick={() => handleUpdate()}>Add Button</Button>
-                <Button variant="secondary" style={{ marginLeft: 5, marginTop: 4 }} onClick={() => handleUpdate()}>Background Image</Button>
-                <Button variant="secondary" style={{ marginLeft: 5, marginTop: 4 }} onClick={() => handleUpdate()}>Align Items</Button>
-                <Button variant="primary" style={{ marginLeft: 375 }} onClick={() => handleUpdate()}>Update</Button>
                 <div style={{ marginLeft: 10, marginTop: 10, marginRight: 10 }}>
                     <FroalaEditor
                         ref={editor}
@@ -100,14 +93,13 @@ function handleDiv(){
                         config={{
                             charCounterCount: true,
                             height: 400,
-                            width: 1240,
+                            width: '100%',
                             autoFocus: true,
                             pluginsEnabled: ['fontFamily', 'fontSize', 'colors', 'textColor', 'image', "getPDF", "codeView", "inlineStyle", "inlineClass", "link", "video", "emoticons", "wordPaste", "embedly", "fontAwesome", "draggable", "lists", "paragraphStyle", "paragraphFormat", "quote", "align", "insertHTMLButton", "table"],
                             toolbarButtons: ['insertHTML', 'align', "quote", "draggable", "fontAwesome", "embedly", "wordPaste", "emoticons", "insertVideo", "insertLink", "inlineClass", "inlineStyle", "html", "getPDF", 'insertImage', 'backgroundColor', 'textColor', 'color', 'fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', '|', 'paragraphFormat', 'formatOL', 'formatUL', 'outdent', 'indent', '-', 'insertLink', 'insertFile', 'insertTable', '|', 'specialCharacters', 'selectAll', 'clearFormatting', '|', 'print', 'help', 'html', '|', 'undo', 'redo', 'trackChanges', 'markdown', "insertHR", 'uploadFile'],
                         }}
                     />
                 </div>
-                {JSON.stringify(editorContent)}
             </div>
         </>
     )

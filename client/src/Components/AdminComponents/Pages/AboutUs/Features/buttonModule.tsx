@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import Modal from 'react-bootstrap/Modal';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
@@ -16,20 +16,18 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import { HexColorPicker } from "react-colorful";
-import outsideClickOutside from "../../../../Common//ColorPicker/outsideClickOutside";
 import outsideClickSecond from "../../../../Common//ColorPicker/outsideClickSecond"
 import outsideClickThird from '../../../../Common/ColorPicker/outsideClickThird';
 import outsideClickFourth from '../../../../Common/ColorPicker/outsideClickFourth';
 import Checkbox from '@mui/material/Checkbox';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Slider from '@mui/material/Slider';
 import styled from 'styled-components';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from "../../../../Common/SecureInstance/axiosInstance";
 import networkConstant from '../../../../Common/API/uri_constant';
-
+import adminConstants from '../../../Constants/adminConstant';
 function a11yProps(index: number) {
     return {
         id: `simple-tab-${index}`,
@@ -167,7 +165,6 @@ function ButtonModule(props:buttonModuleProps) {
         setButtonData((prev) => ({ ...prev, borderRadius: newValue as number }));
     }
     const handleSliderForWidth: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-        debugger;
         return setButtonData((prev) => ({ ...prev, borderWidth: Number(event.target.value) }));
     }
     const handleSliderForWidthNew = (event: Event, newValue: number | number[]) => {
@@ -186,7 +183,7 @@ function ButtonModule(props:buttonModuleProps) {
     const buttonDataStyle = { borderRadius: checkedButtonBorder ? buttonData.borderRadius : 0, backgroundColor: `${color}`, border: ` ${checkedButtonBorderOnly ? buttonData.borderWidth : 0}px  ${checkedButtonBorderOnly ? buttonData.borderStyle : 'none'} ${checkedButtonBorderOnly ? fourthColor : ""}`, paddingTop: buttonData.paddingTop, paddingLeft: buttonData.paddingLeft, paddingRight: buttonData.paddingRight, paddingBottom: buttonData.paddingBottom }
     function generateUniqueLetters(num: number) {
         let result = '';
-        const possibleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        const possibleChars = adminConstants.aboutUs.possibleChars;
         for (let i = 0; i < num; i++) {
             const randomIndex = Math.floor(Math.random() * possibleChars.length);
             result += possibleChars.charAt(randomIndex);
@@ -212,10 +209,7 @@ function ButtonModule(props:buttonModuleProps) {
                 })
                 .catch(err => console.log(err))
         }
-
-        //setModalButton(false);
         props.closeButtonDiv()
-        //setEditorContent((prev) => prev + `<button  class=${uniqueLetters} id="buttonRoute" value=${buttonRoute} >Click Me</button>`);
         props.onHiding(`<button  class=${uniqueLetters} id="buttonRoute" value=${buttonRoute} >Click Me</button>`)
         setButtonData({
             backgroundType: "solid",

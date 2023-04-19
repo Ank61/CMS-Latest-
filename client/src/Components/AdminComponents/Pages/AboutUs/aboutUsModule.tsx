@@ -83,23 +83,11 @@ function AboutUsDynamic() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const [cursorPosition , setCurrentPosition] = useState<any>()
-    const [clicked , setClicked] = useState<number>(1)
     const [selectionIndex , setSelectionIndex]=useState()
-    // useEffect(()=>{
-    //     debugger;
-    //     const editor = editorReff.current?.getEditor();
-    //     if (!editor) return;
-    //     else if(editor.selection){
-    //         debugger;
-    //         const selection = editor.selection.get();
-    //         setCurrentPosition(selection);
-    //     }
-    // },[clicked])
+ 
     const froalaEditorMain = (newContent : string)=>{
         debugger;
         setEditorContent(newContent);
-        //Check onClick
-        // setClicked((prev)=>(prev+1))
     }
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         if (!anchorEl) {
@@ -174,24 +162,19 @@ function AboutUsDynamic() {
         toast.error("Deleted successfully")
     }
     const closeDivModule = (newData: string) => {
-        debugger;
         var editor = cursorPosition?.getEditor();
         if (!editor) return;
-         var selection = editor.selection.get();
-         console.log("This is from Div module" , selectionIndex)
         var div = `${newData}`
         editor.html.insert(div,selectionIndex);
-    };
+    }
     const closeDiv = () => {
         setModal(false)
     }
-   
     const closeButtonModule = (newData: string) => {
         var editor = cursorPosition?.getEditor();
         if (!editor) return;
         var div = `${newData}`;
         editor.html.insert(div, selectionIndex);
-    
     }
     const closeButtonModuleDiv = () => {
         setModalButton(false);
@@ -222,17 +205,14 @@ function AboutUsDynamic() {
         setDescription(e.target.value);
     }
     const editorReff = useRef<FroalaEditor>(null);
-
-    const handleModelChange = () => {
-        debugger;
-        const editor = editorReff.current?.getEditor();
-        if (!editor) return;
-        const selection = editor.selection.get();
-        const div = '<button style="background-color : orange">Click meow</button>'
-        debugger;
-        editor.html.insert(div, selection.index);
-        debugger
-    }
+     //Do not delete this
+    // const handleModelChange = () => {
+    //     const editor = editorReff.current?.getEditor();
+    //     if (!editor) return;
+    //     const selection = editor.selection.get();
+    //     const div = '<button style="background-color : orange">Click meow</button>'
+    //     editor.html.insert(div, selection.index);
+    // }
     return (
         <>
             <div className="mainDiv">
@@ -253,14 +233,14 @@ function AboutUsDynamic() {
                         </Menu>
                     </div>
                     <div>
-                        <button className='updateButton' onClick={handleModelChange}>Add Div</button>
+                        {/* <button className='updateButton' onClick={handleModelChange}>Add Div</button> */}
                         <button className='updateButton' onClick={() => setTagModal(true)}><CodeIcon style={{ height: 21 }} /> Meta Tag</button>
                         <button className="updateButton" ><VisibilityIcon style={{ height: 21 }} /> Preview</button>
                         <button className="updateButton" onClick={() => handleUpdate()}><SendIcon style={{ height: 20 }} /> Update</button>
                         <button className="updateButton" onClick={() => handleDelete()}><DeleteIcon style={{ height: 21 }} /></button>
                     </div>
                 </div>
-                <div style={{ marginLeft: 10, marginRight: 10 }} onClick={()=> setClicked((prev)=>(prev+1))}>
+                <div style={{ marginLeft: 10, marginRight: 10 }}>
                     <FroalaEditor
                         tag='textarea'
                         model={editorContent}
@@ -275,17 +255,11 @@ function AboutUsDynamic() {
                             toolbarButtons: ['insertHTML', 'align', "quote", "draggable", "fontAwesome", "embedly", "wordPaste", "emoticons", "insertVideo", "insertLink", "inlineClass", "inlineStyle", "html", "getPDF", 'insertImage', 'backgroundColor', 'textColor', 'color', 'fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', 'paragraphFormat', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertFile', 'insertTable', 'specialCharacters', 'selectAll', 'clearFormatting', 'print', 'help', 'html', 'undo', 'redo', 'trackChanges', 'markdown', "insertHR", 'uploadFile'],
                         }}
                     />
-                    <div>
-                    </div>
                 </div>
                 {JSON.stringify(editorContent)}
-                {/*Modal for Making Divs*/}
                 <DivModule showing={modal} onHiding={closeDivModule} closeDiv={closeDiv} />
-                {/*Modal for Button*/}
                 <ButtonModule showing={modalButton} onHiding={closeButtonModule} closeButtonDiv={closeButtonModuleDiv} />
-                {/*Modal for Background Modal*/}
                 <BackgroundModule showing={backgroundImageModal} onHiding={closeBackground} closeBackground={closeBackgroundModule} />
-                {/*Modal for Meta Tag*/}
                 <Modal show={tagModal} onHide={() => setTagModal(false)} backdrop="static" keyboard={false} centered>
                     <Modal.Body style={{ overflow: 'auto' }} >
 

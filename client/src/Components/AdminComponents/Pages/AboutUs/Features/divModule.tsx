@@ -141,7 +141,6 @@ function DivModule(props : DivModuleProps ){
     }
     function handleInsertDiv() {
         props.onHiding(`${insertDiv}`)
-        debugger;
         props.closeDiv()
         setCodeSelected(false)
         setValueBottom(0);
@@ -154,7 +153,6 @@ function DivModule(props : DivModuleProps ){
         setValue(newValue);
     };
     function handleInsertCode() {
-        debugger;
         props.onHiding(`${insertCode}`)
         props.closeDiv()
         setInsertCode("")
@@ -162,7 +160,7 @@ function DivModule(props : DivModuleProps ){
     const handleClickDiv = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorElDiv(event.currentTarget);
         if (data.columnNumber === 1 && data.rowNumber === 0) {
-            debugger;
+
             if (data.border === "sharp") setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr; grid-template-rows: 1fr; gap: 0px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;"> <div style=" background-color : ${color !== "#cce4ff" ? color : "#cce4ff"}; border : 1px solid black;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;min-height : 191px;">Div 1</div> </div> `)
             if (data.border === "thin") setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr; grid-template-rows: 1fr; gap: 0px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;"> <div style="background-color : ${color !== "#cce4ff" ? color : "#cce4ff"}; border : 3px solid black;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;min-height : 191px;">Div 1</div> </div> `)
             if (data.border === "thick") setInsertDiv(`<div style="display: grid; grid-template-columns: 1fr; grid-template-rows: 1fr; gap: 0px ${spacing === 2 ? 10 : spacing === 3 ? 15 : spacing === 4 ? 20 : spacing}px;"> <div style="background-color : ${color !== "#cce4ff" ? color : "#cce4ff"}; border : 5px solid black;border-radius : ${data.shape === "Square" ? 0 : data.shape === "Rounded" ? 15 : data.shape === "Circle" ? 60 : 0}px;min-height : 191px;">Div 1</div> </div> `)
