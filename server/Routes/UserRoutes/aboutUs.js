@@ -18,7 +18,15 @@ app.post("/update",
         const fileNameForUpdate = '../client/src/Components/UserComponents/about.css'
         try{
             if(request.body.From==="Apply"){//for Apply button module only
-            if(request.body.Effect!=='none'){ //that means i tfor hover only
+                if(request.body.Effect==="Developer"){
+                    fs.appendFile(fileNameForApply,`${request.body.CSS}`, (err) => {
+                        if (err) throw err;
+                      });
+                      fs.appendFile(fileNameForUpdate,`${request.body.CSS}`, (err) => {
+                        if (err) throw err;
+                      });
+                }
+            if(request.body.Effect==='Hover'){ //that means i tfor hover only
                 let stringFirst = '.'+`${request.body.className}` + `${request.body.style}`;
                 let stringSecond = '.'+`${request.body.className}` +":hover" + `${request.body.EffectStyle}`;
                 let third =  `${stringFirst}` + '\n' + `${stringSecond}` ;

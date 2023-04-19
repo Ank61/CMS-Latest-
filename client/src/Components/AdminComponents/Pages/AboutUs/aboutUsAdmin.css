@@ -1,0 +1,9 @@
+.gyYetLFLBG{border-radius : 8px;background-color : #cce4ff ; border :  3px Solid #d6c9f1 ; padding-top : 0px ; padding-left : 0px; padding-right : 0px ;padding-bottom : 0px;}
+.gyYetLFLBG:hover{background-color :#d6c9f1 }
+@media (max-width: 600px) {
+    .divColor{
+        background-color: blue;
+    }
+}.prime{
+background-color : red;
+}

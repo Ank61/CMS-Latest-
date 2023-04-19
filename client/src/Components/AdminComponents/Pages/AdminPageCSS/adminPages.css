@@ -57,6 +57,20 @@
     color: #d85b21;
     border-color: #d85b21;
 }
+.developerButton{
+        border: 1px solid #ededed;
+        border-radius: 4px;
+        font-size: 14px;
+        height: auto;
+        width :auto;
+        color: #5d7288;
+        background-color: white;
+        margin-left: 5px;
+        margin-top: 5px;
+}
+.developerButton:hover{
+    border-color: #ef0b60;
+}
 .addButton{
     background-color: white;
     color: #5d7288;
@@ -193,4 +207,10 @@ justify-content: center;
     color :rgb(214, 33, 33);
     cursor: pointer;
 }
-
+.columnGrid{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: large;
+    font-weight: 500;
+}

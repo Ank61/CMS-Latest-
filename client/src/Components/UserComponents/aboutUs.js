@@ -70,10 +70,10 @@ return (
           content: description,
         } 
       ]}/>
-      <Header/> 
-        {/* {data? <div dangerouslySetInnerHTML={{ __html: data }}></div> : ""} */}
-        {/* </div> */}
+      <Header/>
         {reactElement}
+        {/* {data? <div dangerouslySetInnerHTML={{ __html: data }}></div> : ""} */}
+        {JSON.stringify(data)}
     </div>
 )
 }
