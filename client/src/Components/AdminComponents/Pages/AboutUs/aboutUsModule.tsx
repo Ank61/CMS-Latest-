@@ -112,6 +112,14 @@ function a11yProp(index: number) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
+interface Item {
+    item: number|undefined|null;
+    label?: string|undefined;
+  }
+  interface newItem {
+    item : number |undefined|null;
+    label ?:string|undefined;
+  }
 
 function AboutUsDynamic() {
     const [moduleDetails, setModuleDetails] = useState<moduleDetail>()
@@ -138,6 +146,10 @@ function AboutUsDynamic() {
     //States for form button animantion
     const [showMore, setShowMore] = useState(false)
     const [value, setValue] = React.useState(0);
+    const [constantItem , setConstantItem] =  useState<number>()
+    const [multipleLabel , setMultipleLabel] = useState<Item[]>([])
+    const [mainOutput,setMainOutput] = useState<Item[]>([])
+    const [constantLabel , setConstantLabel] = useState<string>()
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
@@ -302,11 +314,17 @@ function AboutUsDynamic() {
         } 
         else {
             const indexToDelete = formArray.indexOf(item)
-            console.log(indexToDelete)
-            // const usedSplice = formArray.splice(index,1)
             const newArray = formArray.filter((_, index) => index !== indexToDelete);
             setFormArray(newArray)
         }
+    }
+    const handleDynamicLabel=(value:string,items : number)=>{
+        // console.log({item :item ,label : value})
+        setMultipleLabel((prev)=>[...prev,{item :items ,label : value}])
+         //const filteredArray = multipleLabel.lastIndexOf({item :items})
+         //console.log(filteredArray)
+         setConstantLabel(value)
+         setConstantItem(items)
     }
     return (
         <>
@@ -408,6 +426,7 @@ function AboutUsDynamic() {
                                         <button className='formButtonClick' style={{ marginLeft: 30, width: '7%', border: '1px solid #38b152' }} onClick={handlePlusArray}><AddIcon style={{ fontSize: 17, color: '#38b152' }} /></button><br></br>
                                         <div style={{ border: '1px solid #8fc4ff', marginTop: 20, borderRadius: 8, width: '80%', marginLeft: 40 }}>
                                             <div className='backgroundButton'>
+                                                {JSON.stringify(formArray)}
                                                 <div style={{ width: '75%' }}>
                                                     <div className='backgroundButton'>
                                                         &nbsp;
@@ -434,7 +453,7 @@ function AboutUsDynamic() {
                                                         <div className='backgroundButton'>
                                                             &nbsp;
                                                             <FormLabel style={{ fontSize: 13, marginTop: 5 ,marginLeft :'5%'}}>Label</FormLabel>
-                                                            <input type='text' className="form-control" style={{ height: 24, width: '100%', marginLeft: 70, fontSize :12, marginTop: 5 }} ></input>
+                                                            <input type='text' className="form-control" style={{ height: 24, width: '100%', marginLeft: 70, fontSize :12, marginTop: 5 }} onChange={(e)=>handleDynamicLabel(e.target.value,item)}></input>
                                                         </div>
                                                         <div className='backgroundButton' style={{ marginTop: 2 }}>
                                                             &nbsp;
@@ -475,12 +494,25 @@ function AboutUsDynamic() {
                                         {intialLabel}
                                         <input type="text" className='form-control' style={{height : 30, width : '60%',marginLeft :60,fontSize :12}} placeholder={intialPlaceholder}></input>
                                         </div>:""}  
-                                        {formArray ? formArray.map((item,index)=><>
+                                        {formArray ? formArray.map((items,index)=>
+                                        { 
+                                    const filteredArray = multipleLabel.filter(obj => obj.item === constantItem);
+                                     const lastMatchingItem = filteredArray[filteredArray.length - 1];
+                                        const lastObjects = Object.values(
+                                            multipleLabel.reduce((acc: {[key: number]: any}, cur)  => {
+                                              if (cur.item != null) {
+                                                acc[cur.item] = cur;
+                                              }
+                                              return acc;
+                                            }, {})
+                                          );
+                                          console.log(lastObjects)
+                                            return <>
                                         <div className='backgroundButton' style={{marginTop : 10}}>
-                                        {intialLabel}
+                                        {lastMatchingItem?.item === items? lastMatchingItem.label : lastObjects ?lastObjects[index].label:"Firsss"}
                                         <input type="text" className='form-control' style={{height : 30, width : '60%',marginLeft :60,fontSize :12}} placeholder={intialPlaceholder}></input>
                                         </div>
-                                        </>) : ""}       
+                                        </>}) : ""}       
                                 </div>
                             </div>
                         </div>
