@@ -12,16 +12,26 @@ function AboutUs(){
     const [title , setTitle] = useState("Initial Title")
     const [description, setDescription] = useState("Initial Description")
     const navigate = useNavigate()
+    const [allInputs , setAllInputs] = useState("");
 const handleClick =(e ,route )=>{
   console.log("button clicked" , e.target.value);
   navigate(route)
 }
+const handleSubmitButton = (e)=>{
+console.log("Clicked" ,allInputs )
+
+//axios.post(networkConstant.URL.submitButton , obj).then(response=>console.log(response)).catch(err=>console.log(err))
+}
+const handleAllInput = (e)=>{
+  setAllInputs((prev)=>prev + '     ' +e.target.value)
+  console.log("This is input of all",e.target.value)
+}
 const options = {
   replace: ({ attribs, children }) => {
+    console.log(attribs)
     if (!attribs) {
       return;
     }
-
     if (attribs.id === 'buttonRoute') {
       return React.createElement(
         'button',
@@ -30,7 +40,21 @@ const options = {
         domToReact(children, options)
       );
     }
-
+    if(attribs.id==="postIt"){
+      return React.createElement(
+        'button',
+        {onClick : (e)=>handleSubmitButton(e),
+        className : attribs.class},
+        domToReact(children, options)
+      )
+    }
+    if(attribs.class==="form-control"){
+      return React.createElement(
+        'input',
+        {onChange : (e)=>handleAllInput(e),
+        className : attribs.class},
+      )
+    }
     if (attribs.class === 'prettify') {
       return React.createElement(
         'span',
@@ -48,7 +72,6 @@ const reactElement = parse(`${data}`, options);
             if (response.data ==="Logout") {
                 navigate("/admin")
             } else {
-              console.log(response.data.rest[0].title)
               setTitle(response.data.rest[0].title)
               setDescription(response.data.rest[0].description)
               setData(response.data.data)

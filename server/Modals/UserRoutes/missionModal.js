@@ -23,6 +23,9 @@ const aboutUs = new schema({
     },
     description :{
         type : String
+    },
+    formData : {
+        type : String
     }
 })
 

@@ -155,4 +155,14 @@ app.post("/createModule",
             return response.status(400).send(err) 
         }
     })
+    app.post("/submitData" , async(request, response)=>{
+        try{
+            const allData = request.body.data;
+            await aboutUsModal.updateOne({'_id' :'642521483a2c6109b4aabbb4'},{formData : `${allData}`})
+            .then(()=>response.status(200).send("Posted Successfully"))
+        }
+        catch{
+            return response.status(400).send(err)
+        }
+    })
 module.exports = app;

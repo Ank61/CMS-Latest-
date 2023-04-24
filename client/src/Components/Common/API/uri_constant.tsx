@@ -6,7 +6,7 @@ const networkConstant = {
         createAboutUs : 'http://localhost:8080/aboutUs/createModule',
         updateAboutUs : 'http://localhost:8080/aboutUs/update',
         deleteAboutUs : 'http://localhost:8080/aboutUs/delete',
-
+        submitButton : 'http://localhost:8080/aboutUs/submitData',
         header : 'http://localhost:8080/header',
         updateHeader : 'http://localhost:8080/header/update',
 

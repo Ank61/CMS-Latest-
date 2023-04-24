@@ -239,3 +239,16 @@ justify-content: center;
 .noOutline{
     outline:none;
 }
+.nextButton{
+    font-size : 29px !important;
+     background-color : #1976d2;
+     color : white;
+     margin-top : 6%;
+    margin-left : 5%;
+    border-radius: 20px;
+}
+.nextButton:hover{
+color : #1976d2;
+background-color: white;
+cursor : pointer;
+}
