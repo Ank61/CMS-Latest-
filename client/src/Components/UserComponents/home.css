@@ -1,0 +1,12 @@
+.wrapperr{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.columnswise{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border: 3px solid black;
+}

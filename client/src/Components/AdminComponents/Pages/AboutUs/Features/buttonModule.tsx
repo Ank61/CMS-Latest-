@@ -191,7 +191,6 @@ function ButtonModule(props:buttonModuleProps) {
         return result;
     }
     async function handleButtonModule() {
-        toast.success("Updated css")
         const uniqueLetters = generateUniqueLetters(10);
         if (buttonHover) {
             debugger;
@@ -208,9 +207,13 @@ function ButtonModule(props:buttonModuleProps) {
                     console.log(response)
                 })
                 .catch(err => console.log(err))
+                props.onHiding(`<button  class=${uniqueLetters} id="buttonRoute" value=${buttonRoute} >Click Me</button>`)
+        }
+        else{
+            //not hover
+            props.onHiding(`<button  style="border-radius : ${buttonData.borderRadius}px;background-color : ${color} ; border :  ${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor} ; padding-top : ${buttonData.paddingTop}px ; padding-left : ${buttonData.paddingLeft}px; padding-right : ${buttonData.paddingRight}px ;padding-bottom : ${buttonData.paddingBottom}px;" reactStyle={{borderRadius : ${buttonData.borderRadius},backgroundColor : '${color}', border :  '${buttonData.borderWidth}px ${buttonData.borderStyle} ${fourthColor}' , paddingTop : ${buttonData.paddingTop},paddingLeft : ${buttonData.paddingLeft},paddingRight : ${buttonData.paddingRight},paddingBottom : ${buttonData.paddingBottom}}} class="NonFocus" value=${buttonRoute}  >Click Me</button>`)
         }
         props.closeButtonDiv()
-        props.onHiding(`<button  class=${uniqueLetters} id="buttonRoute" value=${buttonRoute} >Click Me</button>`)
         setButtonData({
             backgroundType: "solid",
             background: { start: "", end: "" },

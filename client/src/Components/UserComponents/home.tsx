@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import axios from "../Common/SecureInstance/axiosInstance";
-
+import "./home.css"
 
 function AboutUs(){
     useEffect(()=>{
@@ -11,8 +11,11 @@ function AboutUs(){
     ,[])
 
     return (
-        <div>
-            This is user's home page
+        <div className="wrapperr">
+        <div className="columnswise">
+         <h4>Site under construction!</h4>
+         <h6>Talentelgia Technologies</h6>
+        </div>
         </div>
     )
     }

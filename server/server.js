@@ -1,6 +1,7 @@
 const express = require("express")
 const bodyparser = require('body-parser')
 const cors = require("cors")
+const path = require('path')
 const mongoose = require('mongoose')
 require("dotenv").config();
 const fs = require('fs');
@@ -29,8 +30,11 @@ let header = require("./Routes/UserRoutes/header")
 app.use("/login" , login)
 app.use("/aboutUs" , mission)
 app.use("/header" , header)
-
-
-app.listen(process.env.BACKEND_PORT,()=> {
-    console.log("Server running on the port",process.env.BACKEND_PORT)
+app.use(express.static(path.join(__dirname, '../build')))
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../build'))
+})
+const port = process.env.PORT || process.env.BACKEND_PORT;
+app.listen(port,()=> {
+    console.log("Server running on the port",port)
 })

@@ -70,7 +70,9 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
-
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 type moduleDetail = {
     moduleName: String
     moduleId: Number
@@ -114,10 +116,11 @@ function a11yProp(index: number) {
     };
 }
 interface Item {
-    item: number|undefined|null;
-    label?: string|undefined;
-    placeholder? :string |undefined
-  }
+    item: number | undefined | null;
+    label?: string | undefined;
+    placeholder?: string | undefined
+    required? :boolean|undefined
+}
 
 
 function AboutUsDynamic() {
@@ -140,17 +143,20 @@ function AboutUsDynamic() {
     const [formModal, setFormModal] = useState(false)
     const [formData, setFormData] = useState();
     const [formOuter, setFormOuter] = React.useState('div');
-    const [intialLabel,setInitialLabel] = useState("")
-    const [intialPlaceholder,setInitialPlaceholder] = useState("")
+    const [intialLabel, setInitialLabel] = useState("")
+    const [intialPlaceholder, setInitialPlaceholder] = useState("")
+    const [intialRequired, setIntialReqiured] = useState(false)
     //States for form button animantion
     const [showMore, setShowMore] = useState(false)
     const [value, setValue] = React.useState(0);
-    const [constantItem , setConstantItem] =  useState<number>()
-    const [multipleLabel , setMultipleLabel] = useState<Item[]>([])
-    const [constantLabel , setConstantLabel] = useState<string>()
-    const [showSubmitButton , setShowSubmitButton] = useState(false)
-    const [buttonText , setButtonText] = useState("")
-    const [finalForm , setFinalForm] = useState<any[]|undefined>()
+    const [constantItem, setConstantItem] = useState<number>()
+    const [multipleLabel, setMultipleLabel] = useState<Item[]>([])
+    const [constantLabel, setConstantLabel] = useState<string>()
+    const [constantPlaceholder, setConstantPlaceholder] = useState<string>()
+    const [showSubmitButton, setShowSubmitButton] = useState(false)
+    const [buttonText, setButtonText] = useState("")
+    const [finalForm, setFinalForm] = useState<any[] | undefined>()
+
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         debugger;
         setValue(newValue);
@@ -256,7 +262,7 @@ function AboutUsDynamic() {
     const closeBackground = (newData: string) => {
         const editor = cursorPosition?.getEditor();
         if (!editor) return;
-        const div = `${newData}`
+        const div = `${newData}`;
         editor.html.insert(div, selectionIndex);
     }
     const handleMetaData = () => {
@@ -313,64 +319,72 @@ function AboutUsDynamic() {
     const handleRemove = (e: React.MouseEvent, item: number) => {
         if (formArray.length === 1) {
             setFormArray([])
-        } 
+        }
         else {
             const indexToDelete = formArray.indexOf(item)
             const newArray = formArray.filter((_, index) => index !== indexToDelete);
             setFormArray(newArray)
         }
     }
-    const handleDynamicLabel=(value:string,items : number)=>{
-        setMultipleLabel((prev)=>[...prev,{item :items ,label : value}])
-         setConstantLabel(value)
-         setConstantItem(items)
-    }
-    const handleDynamicPlaceholder = (placeholder : string , items : number)=>{
-        setMultipleLabel((prev)=>[...prev,{item :items ,label : constantLabel, placeholder : placeholder}])
+    const handleDynamicLabel = (value: string, items: number) => {
+        setMultipleLabel((prev) => [...prev, { item: items, label: value,placeholder : constantPlaceholder,required : multipleLabel[items-1]?.required ? true : false}])
+        setConstantLabel(value)
         setConstantItem(items)
     }
-    const handleSubmitButton =()=>{
+    const handleDynamicPlaceholder = (placeholder: string, items: number) => {
+        setMultipleLabel((prev) => [...prev, { item: items, label: constantLabel, placeholder: placeholder,required : multipleLabel[items-1]?.required ? true : false }])
+        setConstantItem(items)
+        setConstantPlaceholder(placeholder)
+    }
+    const handleSubmitButton = () => {
         setShowSubmitButton(!showSubmitButton)
         setFinalForm(lastObjects)
     }
-    const handleFormData = ()=>{
+    const handleFormData = () => {
         // const components = finalForm ?finalForm.map((item :any,index :any)=>{return <div key={index}>{item.item}<input className = "form-control" type="text" placeholder={item.placeholder}></input></div>}) : "";
         // console.log("This si " , components)
-        let result : any;
-       switch(finalForm?.length){
+        let result: any;
+        switch (finalForm?.length) {
             case 1:
-                result= `<div style="height : 200px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder}></input></div> <button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button><div>`;
-            break;
+                result = `<div style="height : 200px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder}></input></div> <button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button><div>`;
+                break;
             case 2:
-                result= `<div style="height : 300px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button><div>`
-            break;
-            case 3 :
+                result = `<div style="height : 300px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button><div>`
+                break;
+            case 3:
                 result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
-            case 4 :
+            case 4:
                 result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
-            case 5 :
+            case 5:
                 result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[4].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
-            case 6 :
+            case 6:
                 result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
-            case 7 :
+            case 7:
                 result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[6].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[6].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
-            case 8 :
+            case 8:
                 result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[6].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[6].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[7].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[7].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
-            case 9 :
+            case 9:
                 result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[6].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[6].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[7].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[7].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[8].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[8].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
-            }
-     setEditorContent((prev)=>prev + result)
-    setFormModal(false)
-    console.log("This si final data" ,result)
+        }
+        var editor = cursorPosition?.getEditor();
+        if (!editor) return;
+        var div = `${result}`;
+        editor.html.insert(div, selectionIndex);
+        //setEditorContent((prev)=>prev + result)
+        setFormModal(false)
+        console.log("This si final data", result)
     }
-    var lastObjects : any;
+    var lastObjects: any;
+    const handleCheckBoxForm =(value:any , items : number)=>{
+        setMultipleLabel((prev) => [...prev, { item: items, required :}])
+    }
     return (
         <>
             <div className="mainDiv">
@@ -395,7 +409,7 @@ function AboutUsDynamic() {
                         {/* <button className='updateButton' onClick={handleModelChange}>Add Div</button> */}
                         <button className='developerButton' style={{ color: '#ef0b60' }} onClick={handleBootstrap}><BoltIcon style={{ height: 21, color: '#ef0b60' }} />Developer</button>
                         <button className='updateButton' onClick={() => setTagModal(true)}><CodeIcon style={{ height: 21 }} /> Meta Tag</button>
-                        <button className="updateButton" ><VisibilityIcon style={{ height: 21 }} /> Preview</button>
+                        <button className="updateButton" onClick={() => window.open('http://localhost:3000/aboutus', '_blank')}><VisibilityIcon style={{ height: 21 }} /> Present View</button>
                         <button className="updateButton" onClick={() => handleUpdate()}><SendIcon style={{ height: 20 }} /> Update</button>
                         <button className="updateButton" onClick={() => handleDelete()}><DeleteIcon style={{ height: 21 }} /></button>
                     </div>
@@ -436,7 +450,7 @@ function AboutUsDynamic() {
                         <button className='btn btn-primary' style={{ marginLeft: '88%', fontSize: 12, marginTop: 10 }} onClick={handleDeveloper}>Apply To Module</button>
                     </Modal.Body>
                 </Modal>
-                {/* For fornm Data*/}     
+                {/* For fornm Data*/}
                 <Modal show={formModal} onHide={() => setFormModal(true)} backdrop="static" keyboard={false} centered size="xl">
                     <Modal.Body style={{ overflow: 'auto' }} >
                         <div className='backgroundButton'>
@@ -444,128 +458,142 @@ function AboutUsDynamic() {
                                 <Box sx={{ width: '100%' }}>
                                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-                                            <Tab label="Text Input" {...a11yProp(0)} style={{fontSize :12}}/>
-                                            <Tab label="Submit Button" {...a11yProp(1)} style={{fontSize :12}}/>
+                                            <Tab label="Text Input" {...a11yProp(0)} style={{ fontSize: 12 }} />
+                                            <Tab label="Submit Button" {...a11yProp(1)} style={{ fontSize: 12 }} />
                                         </Tabs>
                                     </Box>
                                     <TabPanel value={value} index={0}>
-                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                    <Select
-                                        labelId="demo-simple-select-standard-label"
-                                        id="demo-simple-select-standard"
-                                        value={formOuter}
-                                        onChange={handleChangeForm}
-                                        label="Age"
-                                        style={{ fontSize: 14, width: '80%', backgroundColor: 'white' }}
-                                    >
-                                        <MenuItem value="div" style={{ fontSize: 13 }}>Div</MenuItem>
-                                    </Select>
-                                </FormControl>
-                                <br></br>
-                                {!showMore ? <div className="formButtons" >
-                                    <button className="formButtonClick" style={{ width: '40%', alignSelf: 'center', height: 40, fontSize: 13, marginTop: 10, marginBottom: 20 }} onClick={() => setShowMore(true)}>Add Text Input</button>
-                                </div> : <button className="formButtonClick" style={{ width: '50%', fontSize: 13, height: 40, marginLeft: '20%', marginTop: 10 }} >Add Text Input</button>}
-                                {showMore ?
-                                    <>
-                                        <button className='formButtonClick' style={{ marginLeft: 30, width: '7%', border: '1px solid #38b152' }} onClick={handlePlusArray}><AddIcon style={{ fontSize: 17, color: '#38b152' }} /></button><br></br>
-                                        <div className='backgroundButton'>
-                                        <div style={{ border: '1px solid #8fc4ff', marginTop: 20, borderRadius: 8, width: '80%', marginLeft: 40 }}>
-                                            <div className='backgroundButton'>
-                                                <div style={{ width: '75%' }}>
-                                                    <div className='backgroundButton'>
-                                                        &nbsp;
-                                                        <FormLabel style={{ fontSize: 13, marginTop: 5 ,marginLeft :'5%'}}>Label  </FormLabel>
-                                                        <input type='text' className="form-control " style={{ height: 24, width: '100%', fontSize :12,marginLeft: 70, marginTop: 5 }} onChange={(e)=>setInitialLabel(e.target.value)}></input>
-                                                    </div>
-                                                    <div className='backgroundButton' style={{ marginTop: 2 }}>
-                                                        &nbsp;
-                                                        <FormLabel style={{ fontSize: 13,marginLeft :'5%' }}>Placeholder  </FormLabel>
-                                                        <input type='text' className="form-control" style={{ height: 24, width: '100%', marginLeft: 33, fontSize :12, marginBottom: 5 }} onChange={(e)=>setInitialPlaceholder(e.target.value)}></input>
-                                                    </div>
-                                                </div>
-                                                <div style={{ width: '25%' }}>
-                                                    <button className="formButtonClick" style={{ marginLeft: '30%', width: 'auto', height: 25, marginTop: '13%', border: '1px solid #f71701' }} onClick={() => setShowMore(false)}>
-                                                        <RemoveIcon style={{ fontSize: 17, color: '#f71701' }} />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {formArray.length<1 ? <ArrowCircleRightIcon className="nextButton"/> : ""}
-                                        </div>
-                                        {formArray ? formArray.map((item, index) => (
-                                             <div className='backgroundButton'>
-                                            <div style={{ border: '1px solid #8fc4ff', marginTop: 20, borderRadius: 8, width: '80%', marginLeft: 40 }}>
+                                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                            <Select
+                                                labelId="demo-simple-select-standard-label"
+                                                id="demo-simple-select-standard"
+                                                value={formOuter}
+                                                onChange={handleChangeForm}
+                                                label="Age"
+                                                style={{ fontSize: 14, width: '80%', backgroundColor: 'white' }}
+                                            >
+                                                <MenuItem value="div" style={{ fontSize: 13 }}>Div</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                        <br></br>
+                                        {!showMore ? <div className="formButtons" >
+                                            <button className="formButtonClick" style={{ width: '40%', alignSelf: 'center', height: 40, fontSize: 13, marginTop: 10, marginBottom: 20 }} onClick={() => setShowMore(true)}>Add Text Input</button>
+                                        </div> : <button className="formButtonClick" style={{ width: '50%', fontSize: 13, height: 40, marginLeft: '20%', marginTop: 10 }} >Add Text Input</button>}
+                                        {showMore ?
+                                            <>
+                                                <button className='formButtonClick' style={{ marginLeft: 30, width: '7%', border: '1px solid #38b152' }} onClick={handlePlusArray}><AddIcon style={{ fontSize: 17, color: '#38b152' }} /></button><br></br>
                                                 <div className='backgroundButton'>
-                                                    <div style={{ width: '75%' }}>
+                                                    <div style={{ border: '1px solid #8fc4ff', marginTop: 20, borderRadius: 8, width: '80%', marginLeft: 40 }}>
                                                         <div className='backgroundButton'>
-                                                            &nbsp;
-                                                            <FormLabel style={{ fontSize: 13, marginTop: 5 ,marginLeft :'5%'}}>Label</FormLabel>
-                                                            <input type='text' className="form-control" style={{ height: 24, width: '100%', marginLeft: 70, fontSize :12, marginTop: 5 }} onChange={(e)=>handleDynamicLabel(e.target.value,item)}></input>
-                                                        </div>
-                                                        <div className='backgroundButton' style={{ marginTop: 2 }}>
-                                                            &nbsp;
-                                                            <FormLabel style={{ fontSize: 13,marginLeft :'5%' }}>Placeholder  </FormLabel>
-                                                            <input type='text' className="form-control" style={{ height: 24, width: '100%', marginLeft: 33, fontSize :12, marginBottom: 5 }} onChange={(e)=>handleDynamicPlaceholder(e.target.value,item)}></input>
+                                                            <div style={{ width: '75%' }}>
+                                                                <div className='backgroundButton'>
+                                                                    &nbsp;
+                                                                    <FormLabel style={{ fontSize: 13, marginTop: 5, marginLeft: '5%' }}>Label  </FormLabel>
+                                                                    <input type='text' className="form-control " style={{ height: 24, width: '100%', fontSize: 12, marginLeft: 70, marginTop: 5 }} onChange={(e) => setInitialLabel(e.target.value)}></input>
+                                                                </div>
+                                                                <div className='backgroundButton' style={{ marginTop: 2 }}>
+                                                                    &nbsp;
+                                                                    <FormLabel style={{ fontSize: 13, marginLeft: '5%' }}>Placeholder  </FormLabel>
+                                                                    <input type='text' className="form-control" style={{ height: 24, width: '100%', marginLeft: 33, fontSize: 12, marginBottom: 5 }} onChange={(e) => setInitialPlaceholder(e.target.value)}></input>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ width: '25%' }}>
+                                                                <button className="formButtonClick" style={{ marginLeft: '30%', width: 'auto', height: 25, marginTop: '13%', border: '1px solid #f71701' }} onClick={() => setShowMore(false)}>
+                                                                    <RemoveIcon style={{ fontSize: 17, color: '#f71701' }} />
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div style={{ width: '25%' }}>
-                                                        <button className="formButtonClick" style={{ marginLeft: '30%', width: 'auto', height: 25, marginTop: '13%', border: '1px solid #f71701' }} onClick={(e) => handleRemove(e,item)}>
-                                                            <RemoveIcon style={{ fontSize: 17, color: '#f71701' }} />
-                                                        </button>
+                                                    <div className='backgroundButton' style={{ fontSize: 12, marginTop: 12 }}>
+                                                        <div style={{ marginTop: 14 }}> <Checkbox defaultChecked size="small" checked={intialRequired} onClick={() => setIntialReqiured(!intialRequired)} /></div>
+                                                        <label style={{ marginTop: 24 }}>Required</label>
                                                     </div>
+                                                    {formArray.length < 1 ? <ArrowCircleRightIcon className="nextButton" /> : ""}
                                                 </div>
-                                            </div>
-                                        {index===formArray.length-1?  
+                                                {formArray ? formArray.map((item, index) => (
+                                                    <div className='backgroundButton'>
+                                                        <div style={{ border: '1px solid #8fc4ff', marginTop: 20, borderRadius: 8, width: '80%', marginLeft: 40 }}>
+                                                            <div className='backgroundButton'>
+                                                                <div style={{ width: '75%' }}>
+                                                                    <div className='backgroundButton'>
+                                                                        &nbsp;
+                                                                        <FormLabel style={{ fontSize: 13, marginTop: 5, marginLeft: '5%' }}>Label</FormLabel>
+                                                                        <input type='text' className="form-control" style={{ height: 24, width: '100%', marginLeft: 70, fontSize: 12, marginTop: 5 }} onChange={(e) => handleDynamicLabel(e.target.value, item)}></input>
+                                                                    </div>
+                                                                    <div className='backgroundButton' style={{ marginTop: 2 }}>
+                                                                        &nbsp;
+                                                                        <FormLabel style={{ fontSize: 13, marginLeft: '5%' }}>Placeholder  </FormLabel>
+                                                                        <input type='text' className="form-control" style={{ height: 24, width: '100%', marginLeft: 33, fontSize: 12, marginBottom: 5 }} onChange={(e) => handleDynamicPlaceholder(e.target.value, item)}></input>
+                                                                    </div>
+                                                                </div>
+                                                                <div style={{ width: '25%' }}>
+                                                                    <button className="formButtonClick" style={{ marginLeft: '30%', width: 'auto', height: 25, marginTop: '13%', border: '1px solid #f71701' }} onClick={(e) => handleRemove(e, item)}>
+                                                                        <RemoveIcon style={{ fontSize: 17, color: '#f71701' }} />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className='backgroundButton' style={{ fontSize: 12, marginTop: 12 }}>
+                                                            <div style={{ marginTop: 14 }}> <Checkbox defaultChecked size="small" checked={} onClick={(e)=>handleCheckBoxForm(e,item)}/></div>
+                                                            <label style={{ marginTop: 24 }}>Required</label>
+                                                        </div>
+                                                        {/* {index===formArray.length-1?  
                                         <ArrowCircleRightIcon className="nextButton" style={{border:'none'}} onClick={(e)=>handleChange(e,1)}/>
-                                      : ""} </div>
-                                        )) : ""}
-                                    </>
-                                    : ""}
+                                      : ""}  */}
+                                                    </div>
+                                                )) : ""}
+                                                {formArray.length > 0 ?
+                                                    <div className='backgroundButton' >
+                                                        <button className='btn btn-primary' style={{ fontSize: 12, marginLeft: 'auto' }}> Next <KeyboardArrowRightIcon style={{ fontSize: 21 }} onClick={(e) => handleChange(e, 1)}></KeyboardArrowRightIcon></button>
+                                                    </div>
+                                                    : ""}
+                                            </>
+                                            : ""}
                                     </TabPanel>
                                     <TabPanel value={value} index={1}>
-                                    <div className='formButtons'>
-                                    <button className="formButtonClick" style={{ width: '40%', alignSelf: 'center', height: 40, fontSize: 13 }} onClick={handleSubmitButton}>Add Submit Button</button>
-                                <div className='backgroundButton' style={{ fontSize : 14 ,marginTop : 30 ,alignSelf : 'center'}}>
-                                <h6 style={{marginTop : 4}}>Text</h6>
-                                <input type="text"  className='form-control' placeholder='Change text' style={{fontSize :12,marginLeft : '10%' }}  onChange={(e)=>setButtonText(e.target.value)}></input>
-                                </div>
-                                <button className="btn btn-primary" style={{fontSize :12, width : '50%' ,alignSelf : 'center', marginTop : '30%'}} onClick={handleFormData}>Apply to module</button>
-                                </div>
+                                        <div className='formButtons'>
+                                            <button className="formButtonClick" style={{ width: '40%', alignSelf: 'center', height: 40, fontSize: 13 }} onClick={handleSubmitButton}>Add Submit Button</button>
+                                            <div className='backgroundButton' style={{ fontSize: 14, marginTop: 30, alignSelf: 'center' }}>
+                                                <h6 style={{ marginTop: 4 }}>Text</h6>
+                                                <input type="text" className='form-control' placeholder='Change text' style={{ fontSize: 12, marginLeft: '10%' }} onChange={(e) => setButtonText(e.target.value)}></input>
+                                            </div>
+                                            <button className="btn btn-primary" style={{ fontSize: 12, width: '50%', alignSelf: 'center', marginTop: '30%' }} onClick={handleFormData}>Apply to module</button>
+                                        </div>
                                     </TabPanel>
                                 </Box>
                             </div>
                             <div style={{ height: '100%', width: '50%', borderLeft: '1px solid #a4a4a4' }}>
                                 <div className='backgroundButton'>
                                     <h5 style={{ marginLeft: '30%' }}>Output</h5>
-                                    <div style={{ marginLeft: 'auto' }}><CloseIcon style={{ fontSize: 25 }} /></div>
+                                    <div style={{ marginLeft: 'auto' }} onClick={() => setFormModal(false)}><CloseIcon style={{ fontSize: 25 }} /></div>
                                 </div>
                                 {/* For output make it auto*/}
-                                <div style={{ height: 460, width: 550, marginLeft: 10 ,border : '1px solid #e1e1e1'}} className='column'>
-                                    {showMore?  
-                                    <div className="backgroundButton" style={{marginTop:30,fontSize:14}}>
-                                        <h6 style={{fontSize:13, marginRight : 'auto'}}>{JSON.stringify(intialLabel)}</h6>
-                                        <input type="text" className='form-control' style={{height : 30, width : '60%',marginLeft :60,fontSize :12}} placeholder={JSON.stringify(intialPlaceholder)}></input>
-                                        </div>:""}  
-                                        {formArray ? formArray.map((items,index)=>
-                                        { 
-                                    const filteredArray = multipleLabel.filter(obj => obj.item === constantItem);
-                                     const lastMatchingItem = filteredArray[filteredArray.length - 1];
-                                      lastObjects = Object.values(
-                                            multipleLabel.reduce((acc: {[key: number]: any}, cur)  => {
-                                              if (cur.item != null) {
-                                                acc[cur.item] = cur;
-                                              }
-                                              return acc;
+                                <div style={{ height: 460, width: 550, marginLeft: 10, border: '1px solid #e1e1e1' }} className='column'>
+                                    {showMore ?
+                                        <div className="backgroundButton" style={{ marginTop: 30, fontSize: 14 }}>
+                                            <h6 style={{ fontSize: 13, marginRight: 'auto' }}>{JSON.stringify(intialLabel)}</h6>
+                                            {intialRequired ? <h6 style={{ color: 'red' }}>*</h6> : ""}
+                                            <input type="text" className='form-control' style={{ height: 30, width: '60%', marginLeft: 60, fontSize: 12 }} placeholder={JSON.stringify(intialPlaceholder)}></input>
+                                        </div> : ""}
+                                    {formArray ? formArray.map((items, index) => {
+                                        const filteredArray = multipleLabel.filter(obj => obj.item === constantItem);
+                                        const lastMatchingItem = filteredArray[filteredArray.length - 1];
+                                        lastObjects = Object.values(
+                                            multipleLabel.reduce((acc: { [key: number]: any }, cur) => {
+                                                if (cur.item != null) {
+                                                    acc[cur.item] = cur;
+                                                }
+                                                return acc;
                                             }, {})
-                                          );
-                                          console.log(lastObjects)
+                                        );
                                         return <>
-                                        <div className='backgroundButton' style={{marginTop : 10 }}>
-                                        <h6 style={{fontSize:13, marginRight : 'auto',marginTop :7}}>{lastMatchingItem?.item === items? JSON.stringify(lastMatchingItem.label) : lastObjects[index] ?JSON.stringify(lastObjects[index].label):""}</h6>
-                                        <input type="text" className='form-control' style={{height : 30, width : '60%',marginLeft :60,fontSize :12}} placeholder={lastMatchingItem?.item === items? JSON.stringify(lastMatchingItem.placeholder) : lastObjects[index] ?JSON.stringify(lastObjects[index].placeholder):""}></input>
-                                        </div>
-                                        </>}) : ""} 
-                                        {showSubmitButton ? <button className='btn btn-primary submitButton' id="postIt" style={{fontSize : 12 , marginTop : 20}}>{buttonText ? buttonText : "Submit"}</button>: ""}      
+                                            <div className='backgroundButton' style={{ marginTop: 10 }}>
+                                                <h6 style={{ fontSize: 13, marginRight: 'auto', marginTop: 7 }}>{lastMatchingItem?.item === items ? JSON.stringify(lastMatchingItem.label) : lastObjects[index] ? JSON.stringify(lastObjects[index].label) : ""}</h6>
+                                                <input type="text" className='form-control' style={{ height: 30, width: '60%', marginLeft: 60, fontSize: 12 }} placeholder={lastMatchingItem?.item === items ? JSON.stringify(lastMatchingItem.placeholder) : lastObjects[index] ? JSON.stringify(lastObjects[index].placeholder) : ""}></input>
+                                            </div>
+                                        </>
+                                    }) : ""}
+                                    {showSubmitButton ? <button className='btn btn-primary submitButton' id="postIt" style={{ fontSize: 12, marginTop: 20 }}>{buttonText ? buttonText : "Submit"}</button> : ""}
                                 </div>
                             </div>
                         </div>

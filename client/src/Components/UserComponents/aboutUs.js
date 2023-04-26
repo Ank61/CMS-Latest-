@@ -23,6 +23,11 @@ const handleClick =(e ,route )=>{
   console.log("button clicked" , e.target.value);
   navigate(route)
 }
+const handleClickNotfocus = (e ,route)=>{
+  debugger;
+  console.log("button clicked" , e.target.value);
+  navigate(route)
+}
 const handleSubmitButton = (e)=>{
 console.log("Clicked" ,allInputs)
 var getAllString = allInputs.split(';');
@@ -67,10 +72,19 @@ const options = {
       return;
     }
     if (attribs.id === 'buttonRoute') {
+      console.log(attribs.style )
       return React.createElement(
         'button',
        { onClick: (e)=>handleClick(e,attribs.value),
-      className : attribs.class},
+      className : attribs.class,},
+        domToReact(children, options)
+      )
+    }
+    if (attribs.class === 'NonFocus') {
+      return React.createElement(
+        'button',
+       { onClick: (e)=>handleClickNotfocus(e,attribs.value),
+       },
         domToReact(children, options)
       )
     }
@@ -78,7 +92,8 @@ const options = {
       return React.createElement(
         'button',
         {onClick : (e)=>handleSubmitButton(e),
-        className : attribs.class},
+        className : attribs.class,
+      style:{}},
         domToReact(children, options)
       )
     }
@@ -132,7 +147,7 @@ return (
       <Header/>
         {reactElement}
         {/* {data? <div dangerouslySetInnerHTML={{ __html: data }}></div> : ""} */}
-        {JSON.stringify(data)}
+        {/* {JSON.stringify(data)} */}
     </div>
 )
 }
