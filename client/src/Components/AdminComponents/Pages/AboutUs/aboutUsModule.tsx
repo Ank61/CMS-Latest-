@@ -61,7 +61,7 @@ import CodeIcon from '@mui/icons-material/Code';
 import MetaTagModal from './Features/metaTagModal';
 import BoltIcon from '@mui/icons-material/Bolt';
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { SelectChangeEvent } from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import { FormLabel } from 'react-bootstrap';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -73,6 +73,9 @@ import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import Select from 'react-select';
+
 type moduleDetail = {
     moduleName: String
     moduleId: Number
@@ -119,7 +122,7 @@ interface Item {
     item: number | undefined | null;
     label?: string | undefined;
     placeholder?: string | undefined
-    required? :boolean|undefined
+    required?: boolean | undefined
 }
 
 
@@ -141,11 +144,11 @@ function AboutUsDynamic() {
     const [developerHTML, setDeveloperHTML] = useState<string>('')
     const [developerCSS, setDeveloperCSS] = useState<string>('')
     const [formModal, setFormModal] = useState(false)
-    const [formData, setFormData] = useState();
     const [formOuter, setFormOuter] = React.useState('div');
     const [intialLabel, setInitialLabel] = useState("")
     const [intialPlaceholder, setInitialPlaceholder] = useState("")
     const [intialRequired, setIntialReqiured] = useState(false)
+    const [intialValidation , setIntialValidation] = useState<string>("")
     //States for form button animantion
     const [showMore, setShowMore] = useState(false)
     const [value, setValue] = React.useState(0);
@@ -156,7 +159,13 @@ function AboutUsDynamic() {
     const [showSubmitButton, setShowSubmitButton] = useState(false)
     const [buttonText, setButtonText] = useState("")
     const [finalForm, setFinalForm] = useState<any[] | undefined>()
-    var lastMatchingItem:Item;
+    var lastMatchingItem: Item;
+    const options = [
+        { value: 'Email', label: 'Email' },
+        { value: 'Password', label: 'Password' },
+        { value: 'Number', label: 'Number' },
+    ];
+
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         debugger;
         setValue(newValue);
@@ -327,12 +336,12 @@ function AboutUsDynamic() {
         }
     }
     const handleDynamicLabel = (value: string, items: number) => {
-        setMultipleLabel((prev) => [...prev, { item: items, label: value,placeholder : constantPlaceholder,required :lastMatchingItem?.required ? true : false}])
+        setMultipleLabel((prev) => [...prev, { item: items, label: value, placeholder: constantPlaceholder, required: lastMatchingItem?.required ? true : false }])
         setConstantLabel(value)
         setConstantItem(items)
     }
     const handleDynamicPlaceholder = (placeholder: string, items: number) => {
-        setMultipleLabel((prev) => [...prev, { item: items, label: constantLabel, placeholder: placeholder,required : multipleLabel[items-1]?.required ? true : false }])
+        setMultipleLabel((prev) => [...prev, { item: items, label: constantLabel, placeholder: placeholder, required: multipleLabel[items - 1]?.required ? true : false }])
         setConstantItem(items)
         setConstantPlaceholder(placeholder)
     }
@@ -346,31 +355,32 @@ function AboutUsDynamic() {
         let result: any;
         switch (finalForm?.length) {
             case 1:
-                result = `<div style="height : 200px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" id='${intialLabel}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder='${intialPlaceholder}' required='${intialRequired}'></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label}'></input></div> <button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button><div>`;
+                result = `<div style="height : 200px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" id='${intialLabel} ${intialValidation}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder='${intialPlaceholder}' required='${intialRequired}'></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder===undefined? "":finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label}, ${finalForm[0].validations}' ></input></div> <button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button><div>`;
+                console.log("These are finial from admin side" , finalForm)
                 break;
             case 2:
-                result = `<div style="height : 300px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder='${intialPlaceholder}' required='${intialRequired}' ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder}' required='${finalForm[0].required}'></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button><div>`
+                result = `<div style="height : 300px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" id='${intialLabel} ${intialValidation}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder='${intialPlaceholder}' required='${intialRequired}' ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder===undefined? "":finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label} ${finalForm[0].validations}' ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button><div>`
                 break;
             case 3:
-                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder} required=${finalForm[0].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} required=${finalForm[2].required}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
+                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control"  id='${intialLabel} ${intialValidation}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder===undefined? "":finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label} ${finalForm[0].validations}' ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} required=${finalForm[2].required}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
             case 4:
-                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder} required=${finalForm[0].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
+                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" id='${intialLabel} ${intialValidation}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder===undefined? "":finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label} ${finalForm[0].validations}' ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
             case 5:
-                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder} required=${finalForm[0].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[4].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
+                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" id='${intialLabel} ${intialValidation}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder===undefined? "":finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label} ${finalForm[0].validations}' ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[4].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
             case 6:
-                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder} required=${finalForm[0].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
+                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" id='${intialLabel} ${intialValidation}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder===undefined? "":finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label} ${finalForm[0].validations}' ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
             case 7:
-                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder} required=${finalForm[0].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[6].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[6].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
+                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" id='${intialLabel} ${intialValidation}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder===undefined? "":finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label} ${finalForm[0].validations}' ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[6].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[6].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
             case 8:
-                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder} required=${finalForm[0].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[6].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[6].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[7].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[7].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
+                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" id='${intialLabel} ${intialValidation}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder===undefined? "":finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label} ${finalForm[0].validations}' ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[6].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[6].placeholder}></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[7].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[7].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
             case 9:
-                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[0].placeholder} required=${finalForm[0].required}></input></div><div style="display:flex;flex-direction :row">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[6].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[6].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[7].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[7].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[8].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[8].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
+                result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" id='${intialLabel} ${intialValidation}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder===undefined? "":finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label} ${finalForm[0].validations}' ></input></div><div style="display:flex;flex-direction :row">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[6].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[6].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[7].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[7].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[8].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[8].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
         }
         var editor = cursorPosition?.getEditor();
@@ -382,9 +392,26 @@ function AboutUsDynamic() {
         console.log("This si final data", result)
     }
     var lastObjects: any;
-    const handleCheckBoxForm =(value:any , items : number,index : number)=>{
-         setMultipleLabel((prev) => [...prev, { item: items, label : lastMatchingItem?.label,placeholder : lastMatchingItem?.placeholder,required :value.target.checked}])
+    const handleCheckBoxForm = (value: any, items: number, index: number) => {
+        setMultipleLabel((prev) => [...prev, { item: items, label: lastMatchingItem?.label, placeholder: lastMatchingItem?.placeholder, required: value.target.checked }])
     }
+    const handleMultiSelect = (event: any) => {
+        console.log(event);
+        let classString = "";
+        event.map((item: any, index: number) => {
+          classString += " " + item.value;
+          console.log(item);
+        });
+        setIntialValidation(classString)
+      };
+      const handleMultiSelectDynamic = (event : any,index : any)=>{
+        let classString = "";
+        event.map((item: any, index: number) => {
+          classString += " " + item.value;
+        });
+        setMultipleLabel((prev) => [...prev, { item: index, label: lastMatchingItem?.label, placeholder: lastMatchingItem?.placeholder, required: lastMatchingItem?.required, validations :classString}])
+        console.log(event, "Position : " , index,classString)
+      }
     return (
         <>
             <div className="mainDiv">
@@ -463,8 +490,8 @@ function AboutUsDynamic() {
                                         </Tabs>
                                     </Box>
                                     <TabPanel value={value} index={0}>
-                                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                            <Select
+                                        {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}> */}
+                                        {/* <Select
                                                 labelId="demo-simple-select-standard-label"
                                                 id="demo-simple-select-standard"
                                                 value={formOuter}
@@ -473,9 +500,8 @@ function AboutUsDynamic() {
                                                 style={{ fontSize: 14, width: '80%', backgroundColor: 'white' }}
                                             >
                                                 <MenuItem value="div" style={{ fontSize: 13 }}>Div</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                        <br></br>
+                                            </Select> */}
+                                        {/* </FormControl> */}
                                         {!showMore ? <div className="formButtons" >
                                             <button className="formButtonClick" style={{ width: '40%', alignSelf: 'center', height: 40, fontSize: 13, marginTop: 10, marginBottom: 20 }} onClick={() => setShowMore(true)}>Add Text Input</button>
                                         </div> : <button className="formButtonClick" style={{ width: '50%', fontSize: 13, height: 40, marginLeft: '20%', marginTop: 10 }} >Add Text Input</button>}
@@ -498,16 +524,34 @@ function AboutUsDynamic() {
                                                                 </div>
                                                             </div>
                                                             <div style={{ width: '25%' }}>
-                                                                <button className="formButtonClick" style={{ marginLeft: '30%', width: 'auto', height: 25, marginTop: '13%', border: '1px solid #f71701' }} onClick={() => setShowMore(false)}>
+                                                                {/* <button className="formButtonClick" style={{ marginLeft: '30%', width: 'auto', height: 25, marginTop: '13%', border: '1px solid #f71701' }} onClick={() => setShowMore(false)}>
                                                                     <RemoveIcon style={{ fontSize: 17, color: '#f71701' }} />
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className='backgroundButton' style={{ fontSize: 12, marginTop: 12 }}>
+                                                                </button> */}
+                                                                <div style={{position : 'relative'}}>
+                                                                        <CloseIcon style={{ fontSize: 17, color: '#f71701' ,position : 'absolute' ,top : 0,right:0,cursor :'pointer' }}  onClick={() => setShowMore(false)} />
+                                                                </div>
+                                                                <div className='backgroundButton' style={{ fontSize: 12, marginTop: 12 }}>
                                                         <div style={{ marginTop: 14 }}> <Checkbox defaultChecked size="small" checked={intialRequired} onClick={() => setIntialReqiured(!intialRequired)} /></div>
                                                         <label style={{ marginTop: 24 }}>Required</label>
                                                     </div>
+                                                            </div>
+                                                        </div>
+                                                        <Select
+                                                            // defaultValue={[options[2], options[3]]}
+                                                            closeMenuOnSelect={true}
+                                                            isMulti
+                                                            name="colors"
+                                                            options={options}
+                                                            onChange={handleMultiSelect}
+                                                            className="basic-multi-select selectMultiple"
+                                                            classNamePrefix="apply validation"
+                                                            styles={{}}
+                                                        />
+                                                    </div>
+                                                    {/* <div className='backgroundButton' style={{ fontSize: 12, marginTop: 12 }}>
+                                                        <div style={{ marginTop: 14 }}> <Checkbox defaultChecked size="small" checked={intialRequired} onClick={() => setIntialReqiured(!intialRequired)} /></div>
+                                                        <label style={{ marginTop: 24 }}>Required</label>
+                                                    </div> */}
                                                     {formArray.length < 1 ? <ArrowCircleRightIcon className="nextButton" /> : ""}
                                                 </div>
                                                 {formArray ? formArray.map((item, index) => (
@@ -527,22 +571,34 @@ function AboutUsDynamic() {
                                                                     </div>
                                                                 </div>
                                                                 <div style={{ width: '25%' }}>
-                                                                    <button className="formButtonClick" style={{ marginLeft: '30%', width: 'auto', height: 25, marginTop: '13%', border: '1px solid #f71701' }} onClick={(e) => handleRemove(e, item)}>
-                                                                        <RemoveIcon style={{ fontSize: 17, color: '#f71701' }} />
-                                                                    </button>
+                                                                    {/* <button className="formButtonClick" style={{ marginLeft: '30%', width: 'auto', height: 25, marginTop: '13%' }} onClick={(e) => handleRemove(e, item)}> */}
+                                                                        <div style={{position : 'relative'}}>
+                                                                        <CloseIcon style={{ fontSize: 17, color: '#f71701' ,position : 'absolute' ,top : 0,right:0,cursor :'pointer' }} onClick={(e) => handleRemove(e, item)} />
+                                                                    {/* </button> */}
+                                                                    </div>
+                                                                    <div className='backgroundButton' style={{ fontSize: 12, marginTop: 12 }}>
+                                                            <div style={{ marginTop: 14 }}> <Checkbox defaultChecked size="small" onClick={(e) => handleCheckBoxForm(e, item, index)} /></div>
+                                                            <label style={{ marginTop: 24 }}>Required</label>
+                                                             </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div className='backgroundButton' style={{ fontSize: 12, marginTop: 12 }}>
-                                                            <div style={{ marginTop: 14 }}> <Checkbox defaultChecked size="small" onClick={(e)=>handleCheckBoxForm(e,item ,index)}/></div>
-                                                            <label style={{ marginTop: 24 }}>Required</label>
+                                                            <Select
+                                                            // defaultValue={[options[2], options[3]]}
+                                                            isMulti
+                                                            name="colors"
+                                                            options={options}
+                                                            onChange={(e)=>handleMultiSelectDynamic(e,item)}
+                                                            className="basic-multi-select selectMultiple"
+                                                            classNamePrefix="apply validation"
+                                                            styles={{}}
+                                                        />
                                                         </div>
                                                     </div>
                                                 )) : ""}
                                                 {formArray.length > 0 ?
-                                                    <div className='backgroundButton' >
-                                                        <button className='btn btn-primary' style={{ fontSize: 12, marginLeft: 'auto' }}> Next <KeyboardArrowRightIcon style={{ fontSize: 21 }} onClick={(e) => handleChange(e, 1)}></KeyboardArrowRightIcon></button>
-                                                    </div>
+                                                     <div style={{display :'flex', alignItems:'center' , justifyContent:'center' ,marginTop : 20}} >
+                                                        <button className='btn btn-primary' onClick={(e) => handleChange(e, 1)} style={{ fontSize: 12,width : '80%'}}> Next <KeyboardArrowRightIcon style={{ fontSize: 21 }} ></KeyboardArrowRightIcon></button>
+                                                     </div>
                                                     : ""}
                                             </>
                                             : ""}
@@ -574,7 +630,7 @@ function AboutUsDynamic() {
                                         </div> : ""}
                                     {formArray ? formArray.map((items, index) => {
                                         const filteredArray = multipleLabel.filter(obj => obj.item === constantItem);
-                                         lastMatchingItem = filteredArray[filteredArray.length - 1];
+                                        lastMatchingItem = filteredArray[filteredArray.length - 1];
                                         lastObjects = Object.values(
                                             multipleLabel.reduce((acc: { [key: number]: any }, cur) => {
                                                 if (cur.item != null) {
@@ -586,7 +642,7 @@ function AboutUsDynamic() {
                                         return <>
                                             <div className='backgroundButton' style={{ marginTop: 10 }}>
                                                 <h6 style={{ fontSize: 13, marginRight: 'auto', marginTop: 7 }}>{lastMatchingItem?.item === items ? JSON.stringify(lastMatchingItem.label) : lastObjects[index] ? JSON.stringify(lastObjects[index].label) : ""}</h6>
-                                                { lastObjects[index]?.required ? <div style={{color : 'red'}}>*</div> : "" }
+                                                {lastObjects[index]?.required ? <div style={{ color: 'red' }}>*</div> : ""}
                                                 <input type="text" className='form-control' style={{ height: 30, width: '60%', marginLeft: 60, fontSize: 12 }} placeholder={lastMatchingItem?.item === items ? JSON.stringify(lastMatchingItem.placeholder) : lastObjects[index] ? JSON.stringify(lastObjects[index].placeholder) : ""}></input>
                                             </div>
                                         </>

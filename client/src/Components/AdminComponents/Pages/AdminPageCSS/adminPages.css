@@ -252,3 +252,10 @@ color : #1976d2;
 background-color: white;
 cursor : pointer;
 }
+.selectMultiple{
+    font-size: 12px;
+    margin-top:7px ;
+    margin-bottom: 7px;
+    margin-left: 5%;
+    margin-right: 5%;
+}

@@ -6,6 +6,7 @@ import Header from "../Common/Header/header";
 import parse, { domToReact } from 'html-react-parser';
 import './about.css';
 import networkConstant from "../Common/API/uri_constant";
+import toast, { Toaster } from 'react-hot-toast';
 
 function AboutUs() {
   const [data, setData] = useState()
@@ -13,13 +14,16 @@ function AboutUs() {
   const [description, setDescription] = useState("Initial Description")
   const navigate = useNavigate()
   const [allInputs, setAllInputs] = useState("");
+  const [globalRedIput , setGlobalRedInput] = useState(false)
  // const [InputArray, setInputArray] = useState([])
 
   var Array = []
   let numInputs = 0;
-  var InputCounter = 0;
   var isEmptyOrWhitespace;
   var ShowError=0;
+  var EmailPresent=false;
+  // var GlobalRedInput;
+  //Regex constants
   const handleClick = (e, route) => {
     navigate(route)
   }
@@ -28,34 +32,36 @@ function AboutUs() {
   }
   const handleSubmitButton = (e) => {
     const checkFields = document.querySelectorAll("input");
+    if(globalRedIput===true){ 
+    //one of the input is red
+    toast.error("Invalid Input")
+    }
+    else{
     checkFields.forEach((input, index) => {
       const regex = /^\s*$/;
       isEmptyOrWhitespace = regex.test(input.value);
       if (isEmptyOrWhitespace===true) {
-        console.log("In the error",index)
         var elementId = document.getElementById(input.id);
         elementId.style.backgroundColor = "red";
         ShowError=1;
+        toast.error("Invalid Input")
         return
-        //setInputArray((prev) => ([...prev, { name: input.id, Index: index, isEmpty: true }]))
       }
-      //   setInputArray((prev)=>([...prev, { name: input.id, Index: index, isEmpty: false }]))
       })
       if(ShowError===0){
       console.log("Reached")
       var getAllString = allInputs.split(';');
         var fullString = allInputs;
         var getItem, lastOccurrenceIndex, getStartingIndex, finalFirst, splitFinal;
-        for (let i = 0; i < numInputs; i++){
+        console.log(numInputs)
+        for (let i = 0; i <numInputs; i++){
           if (i === 0) {
             getItem = 3;
             getStartingIndex = getAllString[getItem];
             lastOccurrenceIndex = fullString.lastIndexOf(getStartingIndex);
             finalFirst = fullString.slice(lastOccurrenceIndex);
             splitFinal = finalFirst.split(";");
-            console.log(splitFinal[0]);
             Array.push(splitFinal[0]);
-            console.log(splitFinal)
           } else {
             getStartingIndex = splitFinal.slice(i);
             lastOccurrenceIndex = fullString.lastIndexOf(getStartingIndex[0 + i]);
@@ -64,19 +70,42 @@ function AboutUs() {
             Array.push(splitFinal[0]);
           }
         }
-        axios.post(networkConstant.URL.submitButton, Array).then(response => console.log(response)).catch(err => console.log(err))
+        axios.post(networkConstant.URL.submitButton, Array).then(response => toast.success("Submitted Successfully!")).catch(err => console.log(err))
         const inputFields = document.querySelectorAll("input");
         inputFields.forEach(input => {
           input.value = '';
         });
       }
     }
-  
-  const handleRequiredInput = (e, id) => {
-    var element = document.getElementById(id)
-    element.style.backgroundColor = "white";
   }
-  const handleAllInput = (e) => {
+  const handleRequiredInput = (e, id,attribs) => {
+    let intialArrayOfId = attribs.id.split("  ")
+        let finalArrayOfId = intialArrayOfId.slice(1);
+        finalArrayOfId.map((item,index)=>{
+        EmailPresent=false
+        if(item==='Email'){
+          EmailPresent=true
+          }
+          else{
+            console.log("False hit",item)
+            EmailPresent = false;
+          }
+        })
+    if(EmailPresent){
+      const Email = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      var checkEmail = Email.test(e.target.value)
+      if(checkEmail===true){
+        let element = document.getElementById(id)
+        element.style.backgroundColor = "white";
+        setGlobalRedInput(false)
+        setAllInputs((prev) => prev + ';' + e.target.value)
+      }
+      else{
+        var element = document.getElementById(id)
+        element.style.backgroundColor = "red";
+        setGlobalRedInput(true)
+      }
+    }
     setAllInputs((prev) => prev + ';' + e.target.value)
   }
   const options = {
@@ -115,20 +144,10 @@ function AboutUs() {
         )
       }
       if (attribs.required === "true") {
+        numInputs++
         return <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '7%' }}>
-          <input type="text" className="form-control" onChange={(e) => handleRequiredInput(e, attribs.id)} style={{ height: 30, marginRight: '10%', width: 'auto' }} id={attribs.id}></input>
+          <input type="text" className="form-control" placeholder={attribs.placeholder!==""?attribs.placeholder:"Enter value"} onChange={(e) => handleRequiredInput(e, attribs.id,attribs)} style={{ height: 30, marginRight: '10%', width: 'auto',fontSize : 13}} id={attribs.id}></input>
         </div>
-
-      }
-      if (attribs.class === "form-control") {
-        numInputs++;
-        return React.createElement(
-          'input',
-          {
-            onChange: (e) => handleAllInput(e),
-            className: attribs.class
-          },
-        )
       }
       if (attribs.class === 'prettify') {
         return React.createElement(
@@ -157,6 +176,7 @@ function AboutUs() {
 
   return (
     <div>
+      <Toaster/>
       <Helmet
         title={`${title}`}
         meta={[
