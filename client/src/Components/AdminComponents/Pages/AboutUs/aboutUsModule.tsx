@@ -75,6 +75,8 @@ import Checkbox from '@mui/material/Checkbox'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import Select from 'react-select';
+import LaptopIcon from '@mui/icons-material/Laptop';
+import SmartphoneIcon from '@mui/icons-material/Smartphone';
 
 type moduleDetail = {
     moduleName: String
@@ -159,6 +161,7 @@ function AboutUsDynamic() {
     const [showSubmitButton, setShowSubmitButton] = useState(false)
     const [buttonText, setButtonText] = useState("")
     const [finalForm, setFinalForm] = useState<any[] | undefined>()
+    const [checkSize,setCheckSize] = useState<boolean>(false)
     var lastMatchingItem: Item;
     const options = [
         { value: 'Email', label: 'Email' },
@@ -434,6 +437,8 @@ function AboutUsDynamic() {
                     </div>
                     <div>
                         {/* <button className='updateButton' onClick={handleModelChange}>Add Div</button> */}
+                        <button style={!checkSize? {border:'none', backgroundColor : '#f5f5f5',marginRight : 7} : {opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight : 7}} onClick={()=>setCheckSize(false)}><LaptopIcon/></button>
+                <button style={!checkSize?{opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight :20} :{border:'none', backgroundColor : '#f5f5f5',marginRight :20}} onClick={()=>setCheckSize(true)}><SmartphoneIcon/></button>
                         <button className='developerButton' style={{ color: '#ef0b60' }} onClick={handleBootstrap}><BoltIcon style={{ height: 21, color: '#ef0b60' }} />Developer</button>
                         <button className='updateButton' onClick={() => setTagModal(true)}><CodeIcon style={{ height: 21 }} /> Meta Tag</button>
                         <button className="updateButton" onClick={() => window.open('http://localhost:3000/aboutus', '_blank')}><VisibilityIcon style={{ height: 21 }} /> Present View</button>
@@ -442,6 +447,7 @@ function AboutUsDynamic() {
                     </div>
                 </div>
                 <div style={{ marginLeft: 10, marginRight: 10 }}>
+                    {!checkSize ?
                     <FroalaEditor
                         tag='textarea'
                         model={editorContent}
@@ -454,8 +460,23 @@ function AboutUsDynamic() {
                             autoFocus: true,
                             pluginsEnabled: ['fontFamily', 'fontSize', 'colors', 'textColor', 'image', "getPDF", "codeView", "inlineStyle", "inlineClass", "link", "video", "emoticons", "wordPaste", "embedly", "fontAwesome", "draggable", "lists", "paragraphStyle", "paragraphFormat", "quote", "align", "insertHTMLButton", "table"],
                             toolbarButtons: ['insertHTML', 'align', "quote", "draggable", "fontAwesome", "embedly", "wordPaste", "emoticons", "insertVideo", "insertLink", "inlineClass", "inlineStyle", "html", "getPDF", 'insertImage', 'backgroundColor', 'textColor', 'color', 'fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', 'paragraphFormat', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertFile', 'insertTable', 'specialCharacters', 'selectAll', 'clearFormatting', 'print', 'help', 'html', 'undo', 'redo', 'trackChanges', 'markdown', "insertHR", 'uploadFile'],
-                        }}
-                    />
+                        }} 
+                    /> : ""}
+                    {checkSize?  
+                    <FroalaEditor
+                    tag='textarea'
+                    model={editorContent}
+                    onModelChange={froalaEditorMain}
+                    ref={editorReff}
+                    config={{
+                        charCounterCount: true,
+                        height: 450,
+                        width: 375,
+                        autoFocus: true,
+                        pluginsEnabled: ['fontFamily', 'fontSize', 'colors', 'textColor', 'image', "getPDF", "codeView", "inlineStyle", "inlineClass", "link", "video", "emoticons", "wordPaste", "embedly", "fontAwesome", "draggable", "lists", "paragraphStyle", "paragraphFormat", "quote", "align", "insertHTMLButton", "table"],
+                        toolbarButtons: ['insertHTML', 'align', "quote", "draggable", "fontAwesome", "embedly", "wordPaste", "emoticons", "insertVideo", "insertLink", "inlineClass", "inlineStyle", "html", "getPDF", 'insertImage', 'backgroundColor', 'textColor', 'color', 'fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', 'paragraphFormat', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertFile', 'insertTable', 'specialCharacters', 'selectAll', 'clearFormatting', 'print', 'help', 'html', 'undo', 'redo', 'trackChanges', 'markdown', "insertHR", 'uploadFile'],
+                    }} 
+                />  :""}
                 </div>
                 {JSON.stringify(editorContent)}
                 <DivModule showing={modal} onHiding={closeDivModule} closeDiv={closeDiv} />
@@ -470,8 +491,11 @@ function AboutUsDynamic() {
                                 <textarea className="form-control" placeholder='Enter HTML Code' rows={22} cols={85} style={{ fontSize: 12, width: 'auto', boxShadow: 'none' }} onChange={(e) => setDeveloperHTML(e.target.value)} />
                             </div>
                             <div className='columnGrid'>
+                                <div className='backgroundButton' style={{width : '80%',cursor : 'pointer'}}>
                                 <label>CSS</label>
-                                <textarea className="form-control" placeholder='Enter CSS Code' rows={22} cols={85} style={{ fontSize: 12, marginLeft: 10, width: 'auto', boxShadow: 'none' }} onChange={(e) => setDeveloperCSS(e.target.value)} />
+                                <CloseIcon style={{marginLeft : '100%'}} onClick={()=>setDeveloperModal(false)}></CloseIcon>
+                                </div>
+                                <textarea className="form-control" placeholder='Enter CSS Code' rows={22} cols={82} style={{ fontSize: 12, marginLeft: 10, width: 'auto', boxShadow: 'none' }} onChange={(e) => setDeveloperCSS(e.target.value)} />
                             </div>
                         </div>
                         <button className='btn btn-primary' style={{ marginLeft: '88%', fontSize: 12, marginTop: 10 }} onClick={handleDeveloper}>Apply To Module</button>
