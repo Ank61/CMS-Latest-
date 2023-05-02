@@ -13,4 +13,6 @@ background-color : red;
 .HhVZYXdEzj:hover{background-color :#7fd9d1 }.pYvqQLJuIa{border-radius : 20px;background-color : #7fd9d1 ; border :  0px Solid #d6c9f1 ; padding-top : 7px ; padding-left : 15px; padding-right : 16px ;padding-bottom : 5px;}
 .pYvqQLJuIa:hover{background-color :#7fd9d1 }.rinnYrPMvt{border-radius : 7px;background-color : #cce4ff ; border :  1px Solid #7138e3 ; padding-top : 8px ; padding-left : 25px; padding-right : 31px ;padding-bottom : 7px;}
 .rinnYrPMvt:hover{background-color :#d6c9f1 }.DgZqmXRCAK{border-radius : 13px;background-color : #cce4ff ; border :  1px Solid #020006 ; padding-top : 9px ; padding-left : 19px; padding-right : 15px ;padding-bottom : 8px;}
-.DgZqmXRCAK:hover{background-color :#d6c9f1 }
+.DgZqmXRCAK:hover{background-color :#d6c9f1 }* {
+  box-sizing: border-box;
+}

@@ -8,9 +8,14 @@ import { useNavigate } from "react-router";
 import Helmet from 'react-helmet';
 import Header from "../../../../Common/Header/header";
 import parse, { domToReact } from 'html-react-parser';
+import LaptopIcon from '@mui/icons-material/Laptop';
+import SmartphoneIcon from '@mui/icons-material/Smartphone';
+import TabletMacIcon from '@mui/icons-material/TabletMac';
 
 function Preview() {
     const [data, setData] = useState<string>()
+    const [checkSize, setCheckSize] = useState<boolean>(false)
+    const [tabSelected,setTabSelected] = useState(false)
     let { id } = useParams();
     var Id: number;
     var parsedData: string = ''
@@ -35,14 +40,26 @@ function Preview() {
             setData(parsedData)
         }).catch(err => console.log(err))
     }, [])
-
+const handleTab=()=>{
+    setTabSelected(!tabSelected)
+    setCheckSize(false)
+}
     const reactElement = parse(`${data}`);
     return (
-        <div>
-            <div></div>
-            <Toaster />
-            <Header />
-            {reactElement}
+        <div style={{marginBottom : 25}}>
+            <div className="previewTab">
+                Preview
+                <button style={!checkSize && !tabSelected ? { border: 'none', backgroundColor: '#848484', marginLeft: '7%', color: 'white' } : { opacity: '0.5', border: 'none', backgroundColor: '#848484', marginLeft: '7%', color: 'white' }} onClick={() => {setCheckSize(false);  setTabSelected(false)}}><LaptopIcon /></button>
+                <button style={tabSelected && !checkSize  ?  { border: 'none', backgroundColor: '#848484', marginLeft: '1%', color: 'white' } : { opacity: '0.5', border: 'none', backgroundColor: '#848484', marginLeft: '1%', color: 'white' }} onClick={handleTab}><TabletMacIcon/></button>
+                <button style={!checkSize && !tabSelected ? { opacity: '0.5', border: 'none', backgroundColor: '#848484', marginLeft: '1%', color: 'white' } : { border: 'none', backgroundColor: '#848484', marginLeft: '1%', color: 'white' }} onClick={() => {setCheckSize(true);;  setTabSelected(false)}}><SmartphoneIcon /></button>
+            </div>
+            <div className= 'flexDiv'>
+            <div className={` previewLaptop ${checkSize ? "previewMobile" : ""} ${tabSelected ? "previewTablet":""}`}>
+                <Toaster />
+                <Header />
+                {reactElement}
+            </div>
+            </div>
         </div>
     )
 }

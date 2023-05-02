@@ -75,8 +75,6 @@ import Checkbox from '@mui/material/Checkbox'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import Select from 'react-select';
-import LaptopIcon from '@mui/icons-material/Laptop';
-import SmartphoneIcon from '@mui/icons-material/Smartphone';
 
 
 type moduleDetail = {
@@ -162,7 +160,6 @@ function AboutUsDynamic() {
     const [showSubmitButton, setShowSubmitButton] = useState(false)
     const [buttonText, setButtonText] = useState("")
     const [finalForm, setFinalForm] = useState<any[] | undefined>()
-    const [checkSize,setCheckSize] = useState<boolean>(false)
     
     var lastMatchingItem: Item;
     const options = [
@@ -455,8 +452,8 @@ function AboutUsDynamic() {
                     </div>
                     <div>
                         {/* <button className='updateButton' onClick={handleModelChange}>Add Div</button> */}
-                        <button style={!checkSize? {border:'none', backgroundColor : '#f5f5f5',marginRight : 7} : {opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight : 7}} onClick={()=>setCheckSize(false)}><LaptopIcon/></button>
-                <button style={!checkSize?{opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight :20} :{border:'none', backgroundColor : '#f5f5f5',marginRight :20}} onClick={()=>setCheckSize(true)}><SmartphoneIcon/></button>
+                        {/* <button style={!checkSize? {border:'none', backgroundColor : '#f5f5f5',marginRight : 7} : {opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight : 7}} onClick={()=>setCheckSize(false)}><LaptopIcon/></button>
+                <button style={!checkSize?{opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight :20} :{border:'none', backgroundColor : '#f5f5f5',marginRight :20}} onClick={()=>setCheckSize(true)}><SmartphoneIcon/></button> */}
                         <button className='developerButton' style={{ color: '#ef0b60' }} onClick={handleBootstrap}><BoltIcon style={{ height: 21, color: '#ef0b60' }} />Developer</button>
                         <button className='updateButton' onClick={() => setTagModal(true)}><CodeIcon style={{ height: 21 }} /> Meta Tag</button>
                          <button className="updateButton" onClick={handleWindowChange}><VisibilityIcon style={{ height: 21 }} />Preview</button>
@@ -464,8 +461,7 @@ function AboutUsDynamic() {
                         <button className="updateButton" onClick={() => handleDelete()}><DeleteIcon style={{ height: 21 }} /></button>
                     </div>
                 </div>
-                <div style={{ marginLeft: 10, marginRight: 10 }}>
-                    {!checkSize ?
+                <div style={{ marginLeft: 10, marginRight: 10 }}> 
                     <FroalaEditor
                         tag='textarea'
                         model={editorContent}
@@ -479,22 +475,7 @@ function AboutUsDynamic() {
                             pluginsEnabled: ['fontFamily', 'fontSize', 'colors', 'textColor', 'image', "getPDF", "codeView", "inlineStyle", "inlineClass", "link", "video", "emoticons", "wordPaste", "embedly", "fontAwesome", "draggable", "lists", "paragraphStyle", "paragraphFormat", "quote", "align", "insertHTMLButton", "table"],
                             toolbarButtons: ['insertHTML', 'align', "quote", "draggable", "fontAwesome", "embedly", "wordPaste", "emoticons", "insertVideo", "insertLink", "inlineClass", "inlineStyle", "html", "getPDF", 'insertImage', 'backgroundColor', 'textColor', 'color', 'fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', 'paragraphFormat', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertFile', 'insertTable', 'specialCharacters', 'selectAll', 'clearFormatting', 'print', 'help', 'html', 'undo', 'redo', 'trackChanges', 'markdown', "insertHR", 'uploadFile'],
                         }} 
-                    /> : ""}
-                    {checkSize?  
-                    <FroalaEditor
-                    tag='textarea'
-                    model={editorContent}
-                    onModelChange={froalaEditorMain}
-                    ref={editorReff}
-                    config={{
-                        charCounterCount: true,
-                        height: 450,
-                        width: 375,
-                        autoFocus: true,
-                        //pluginsEnabled: ['fontFamily', 'fontSize', 'colors', 'textColor', 'image', "getPDF", "codeView", "inlineStyle", "inlineClass", "link", "video", "emoticons", "wordPaste", "embedly", "fontAwesome", "draggable", "lists", "paragraphStyle", "paragraphFormat", "quote", "align", "insertHTMLButton", "table"],
-                        //toolbarButtons: ['insertHTML', 'align', "quote", "draggable", "fontAwesome", "embedly", "wordPaste", "emoticons", "insertVideo", "insertLink", "inlineClass", "inlineStyle", "html", "getPDF", 'insertImage', 'backgroundColor', 'textColor', 'color', 'fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', 'paragraphFormat', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertFile', 'insertTable', 'specialCharacters', 'selectAll', 'clearFormatting', 'print', 'help', 'html', 'undo', 'redo', 'trackChanges', 'markdown', "insertHR", 'uploadFile'],
-                    }} 
-                />  :""}
+                    />
                 </div>
                 {/* {JSON.stringify(editorContent)} */}
                 <DivModule showing={modal} onHiding={closeDivModule} closeDiv={closeDiv} />
