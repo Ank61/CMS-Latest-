@@ -78,6 +78,7 @@ import Select from 'react-select';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import SmartphoneIcon from '@mui/icons-material/Smartphone';
 
+
 type moduleDetail = {
     moduleName: String
     moduleId: Number
@@ -162,6 +163,7 @@ function AboutUsDynamic() {
     const [buttonText, setButtonText] = useState("")
     const [finalForm, setFinalForm] = useState<any[] | undefined>()
     const [checkSize,setCheckSize] = useState<boolean>(false)
+    
     var lastMatchingItem: Item;
     const options = [
         { value: 'Email', label: 'Email' },
@@ -175,14 +177,19 @@ function AboutUsDynamic() {
     };
     const froalaEditorMain = (newContent: string) => {
         setEditorContent(newContent);
+        const obj = {
+            moduleId : `${id}`,
+            data : `${newContent}`
+        }
+        window.localStorage.setItem("Preview",JSON.stringify(obj))
     }
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         if (!anchorEl) {
             setAnchorEl(event.currentTarget);
             a11yProps(0)
             setCurrentPosition(editorReff.current)
-            var editor = editorReff.current?.getEditor();
-            var selection = editor.selection.get();
+            var editor = editorReff.current?.getEditor()
+            var selection = editor.selection.get()
             setSelectionIndex(selection)
         }
         else {
@@ -219,10 +226,16 @@ function AboutUsDynamic() {
                 setEditorContent(response.data[0].Modules[`${id}`].data)
                 setTitle(response.data[0].title)
                 setDescription(response.data[0].description)
+                const obj = {
+                    moduleId : `${id}`,
+                    data : `${editorContent}`
+                }
+                window.localStorage.setItem("Preview",JSON.stringify(obj))
+
+                console.log("useEffect set")
             }
         }).catch(err => console.log(err))
     }, [])
-
     function handleUpdate() {
         const obj = {
             moduleId: moduleDetails?.moduleId,
@@ -352,6 +365,15 @@ function AboutUsDynamic() {
         setShowSubmitButton(!showSubmitButton)
         setFinalForm(lastObjects)
     }
+    const handleWindowChange=()=> {
+        //<a routerLink="/testPage " [queryParams]="{ hello: 'world' }" target="_blank">click here</a>
+        const obj = {
+            moduleId : `${id}`,
+            data : `${editorContent}`
+        }
+        window.localStorage.setItem("Preview",JSON.stringify(obj))
+        window.open('http://localhost:3000/aboutus/preview' , '_blank');
+    }
     const handleFormData = () => {
         // const components = finalForm ?finalForm.map((item :any,index :any)=>{return <div key={index}>{item.item}<input className = "form-control" type="text" placeholder={item.placeholder}></input></div>}) : "";
         // console.log("This si " , components)
@@ -359,7 +381,6 @@ function AboutUsDynamic() {
         switch (finalForm?.length) {
             case 1:
                 result = `<div style="height : 200px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" id='${intialLabel} ${intialValidation}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder='${intialPlaceholder}' required='${intialRequired}'></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder===undefined? "":finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label}, ${finalForm[0].validations}' ></input></div> <button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button><div>`;
-                console.log("These are finial from admin side" , finalForm)
                 break;
             case 2:
                 result = `<div style="height : 300px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" id='${intialLabel} ${intialValidation}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder='${intialPlaceholder}' required='${intialRequired}' ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder===undefined? "":finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label} ${finalForm[0].validations}' ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button><div>`
@@ -392,18 +413,15 @@ function AboutUsDynamic() {
         editor.html.insert(div, selectionIndex);
         //setEditorContent((prev)=>prev + result)
         setFormModal(false)
-        console.log("This si final data", result)
     }
     var lastObjects: any;
     const handleCheckBoxForm = (value: any, items: number, index: number) => {
         setMultipleLabel((prev) => [...prev, { item: items, label: lastMatchingItem?.label, placeholder: lastMatchingItem?.placeholder, required: value.target.checked }])
     }
     const handleMultiSelect = (event: any) => {
-        console.log(event);
         let classString = "";
         event.map((item: any, index: number) => {
           classString += " " + item.value;
-          console.log(item);
         });
         setIntialValidation(classString)
       };
@@ -413,8 +431,8 @@ function AboutUsDynamic() {
           classString += " " + item.value;
         });
         setMultipleLabel((prev) => [...prev, { item: index, label: lastMatchingItem?.label, placeholder: lastMatchingItem?.placeholder, required: lastMatchingItem?.required, validations :classString}])
-        console.log(event, "Position : " , index,classString)
       }
+
     return (
         <>
             <div className="mainDiv">
@@ -441,7 +459,7 @@ function AboutUsDynamic() {
                 <button style={!checkSize?{opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight :20} :{border:'none', backgroundColor : '#f5f5f5',marginRight :20}} onClick={()=>setCheckSize(true)}><SmartphoneIcon/></button>
                         <button className='developerButton' style={{ color: '#ef0b60' }} onClick={handleBootstrap}><BoltIcon style={{ height: 21, color: '#ef0b60' }} />Developer</button>
                         <button className='updateButton' onClick={() => setTagModal(true)}><CodeIcon style={{ height: 21 }} /> Meta Tag</button>
-                        <button className="updateButton" onClick={() => window.open('http://localhost:3000/aboutus', '_blank')}><VisibilityIcon style={{ height: 21 }} /> Present View</button>
+                         <button className="updateButton" onClick={handleWindowChange}><VisibilityIcon style={{ height: 21 }} />Preview</button>
                         <button className="updateButton" onClick={() => handleUpdate()}><SendIcon style={{ height: 20 }} /> Update</button>
                         <button className="updateButton" onClick={() => handleDelete()}><DeleteIcon style={{ height: 21 }} /></button>
                     </div>
@@ -473,12 +491,12 @@ function AboutUsDynamic() {
                         height: 450,
                         width: 375,
                         autoFocus: true,
-                        pluginsEnabled: ['fontFamily', 'fontSize', 'colors', 'textColor', 'image', "getPDF", "codeView", "inlineStyle", "inlineClass", "link", "video", "emoticons", "wordPaste", "embedly", "fontAwesome", "draggable", "lists", "paragraphStyle", "paragraphFormat", "quote", "align", "insertHTMLButton", "table"],
-                        toolbarButtons: ['insertHTML', 'align', "quote", "draggable", "fontAwesome", "embedly", "wordPaste", "emoticons", "insertVideo", "insertLink", "inlineClass", "inlineStyle", "html", "getPDF", 'insertImage', 'backgroundColor', 'textColor', 'color', 'fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', 'paragraphFormat', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertFile', 'insertTable', 'specialCharacters', 'selectAll', 'clearFormatting', 'print', 'help', 'html', 'undo', 'redo', 'trackChanges', 'markdown', "insertHR", 'uploadFile'],
+                        //pluginsEnabled: ['fontFamily', 'fontSize', 'colors', 'textColor', 'image', "getPDF", "codeView", "inlineStyle", "inlineClass", "link", "video", "emoticons", "wordPaste", "embedly", "fontAwesome", "draggable", "lists", "paragraphStyle", "paragraphFormat", "quote", "align", "insertHTMLButton", "table"],
+                        //toolbarButtons: ['insertHTML', 'align', "quote", "draggable", "fontAwesome", "embedly", "wordPaste", "emoticons", "insertVideo", "insertLink", "inlineClass", "inlineStyle", "html", "getPDF", 'insertImage', 'backgroundColor', 'textColor', 'color', 'fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', 'paragraphFormat', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertFile', 'insertTable', 'specialCharacters', 'selectAll', 'clearFormatting', 'print', 'help', 'html', 'undo', 'redo', 'trackChanges', 'markdown', "insertHR", 'uploadFile'],
                     }} 
                 />  :""}
                 </div>
-                {JSON.stringify(editorContent)}
+                {/* {JSON.stringify(editorContent)} */}
                 <DivModule showing={modal} onHiding={closeDivModule} closeDiv={closeDiv} />
                 <ButtonModule showing={modalButton} onHiding={closeButtonModule} closeButtonDiv={closeButtonModuleDiv} />
                 <BackgroundModule showing={backgroundImageModal} onHiding={closeBackground} closeBackground={closeBackgroundModule} />

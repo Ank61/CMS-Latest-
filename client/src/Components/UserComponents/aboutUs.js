@@ -165,6 +165,7 @@ function AboutUs() {
         if (response.data === "Logout") {
           navigate("/admin")
         } else {
+          console.log(response.data)
           setTitle(response.data.rest[0].title)
           setDescription(response.data.rest[0].description)
           setData(response.data.data)

@@ -7,6 +7,7 @@ import Dashboard from "./Components/AdminComponents/Pages/dashboard";
 import AdminAboutUs from "./Components/AdminComponents/Pages/AboutUs/aboutUs";
 import AboutUsDynamic from "./Components/AdminComponents/Pages/AboutUs/aboutUsModule";
 import Header from "./Components/AdminComponents/Pages/Header/header";
+import AboutUsPreview from "./Components/AdminComponents/Pages/AboutUs/Preview/preview";
 import './App.css';
 
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/admin/aboutus" element={<AdminAboutUs/>}></Route>
           <Route path="/admin/header" element={<Header/>}></Route>
           <Route path= {`/admin/aboutus/:id`} element={<AboutUsDynamic/>}></Route>
+          <Route path= {`/aboutus/preview`} element={<AboutUsPreview/>}></Route>
           {/*Restricted Route*/}
           {/* <Route path="/admin/home" element={<Portal admin={authenticate}/>}></Route> */}
           <Route path = "*" element={<h3>No page found! 404 error</h3>}/>

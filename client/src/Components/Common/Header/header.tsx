@@ -5,7 +5,6 @@ function Header() {
     const [data ,setData] = useState("")
     useEffect(() => {
 axios.get(`${networkConstant.URL.header}`).then(response=>{
-    console.log(":This is header coomponent " , response.data[0].data)
     setData(response.data[0].data)
 }).catch();
     }, [])
