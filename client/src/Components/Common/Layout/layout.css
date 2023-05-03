@@ -57,9 +57,9 @@
   height: 650px;
 }
 .contentDiv{
-  display: flex;
-  flex-direction: row;
-  margin-left: 200px;
+  /* display: flex;
+  flex-direction: row; */
+  margin-left: 15%;
   margin-top: 40px;
 }
 

@@ -68,17 +68,17 @@ function AdminAboutUs() {
                 <Layout title="About Us" moduleName=""/>
             </div>
             <div className="contentDiv">
-                <h3 style={{ textAlign: "center" }}>About us </h3>
+                <h3 style={{ textAlign: "center" }}>About Us Page</h3>
 
                 <div className="Module">
                     {modules.length > 0 ? modules.map((item: Modules, index) => {
                         return (
-                            <div className="moduleDiv" key={item.moduleName} onClick={() => handleClick(index)}>
+                            <div className="moduleDiv" key={item.moduleName} style={{fontSize :13}} onClick={() => handleClick(index)}>
                                 Module Name : {item.moduleName}
                             </div>
                         )
                     }) : " "}
-                    <div className="moduleDiv" onClick={() => setModal(true)}>
+                    <div className="moduleDiv2" onClick={() => setModal(true)}>
                         <AddIcon />
                     </div>
                 </div>
@@ -89,11 +89,11 @@ function AdminAboutUs() {
                     keyboard={false}
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title>Camera</Modal.Title>
+                        <Modal.Title style={{fontSize:19}}>Add New Module</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <input type="text" className="form-control" placeholder="Please enter Title for Module" onChange={(e) => setTitle(e.target.value)} value={title}></input>
-                        <Button variant="primary" className="mt-4" onClick={() => handleNewModule()}>Add Module</Button>
+                        <input type="text" className="form-control" placeholder="Please enter Title for Module" style={{fontSize :13}} onChange={(e) => setTitle(e.target.value)} value={title}></input>
+                        <Button variant="primary" style={{marginLeft :'70%',fontSize :13}} className="mt-4" onClick={() => handleNewModule()}>Create Module</Button>
                     </Modal.Body>
                 </Modal>
             </div>

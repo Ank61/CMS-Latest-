@@ -75,7 +75,7 @@ import Checkbox from '@mui/material/Checkbox'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import Select from 'react-select';
-
+import CachedIcon from '@mui/icons-material/Cached';
 
 type moduleDetail = {
     moduleName: String
@@ -429,7 +429,13 @@ function AboutUsDynamic() {
         });
         setMultipleLabel((prev) => [...prev, { item: index, label: lastMatchingItem?.label, placeholder: lastMatchingItem?.placeholder, required: lastMatchingItem?.required, validations :classString}])
       }
-
+      const handleCache =()=>{
+        axios.get("http://localhost:8080/cache").then((response)=>{
+        if(response.data!=="logout"){
+            toast.success("Cache cleared")
+        }
+    }).catch(err=>console.log(err))
+      }
     return (
         <>
             <div className="mainDiv">
@@ -455,6 +461,7 @@ function AboutUsDynamic() {
                         {/* <button style={!checkSize? {border:'none', backgroundColor : '#f5f5f5',marginRight : 7} : {opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight : 7}} onClick={()=>setCheckSize(false)}><LaptopIcon/></button>
                 <button style={!checkSize?{opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight :20} :{border:'none', backgroundColor : '#f5f5f5',marginRight :20}} onClick={()=>setCheckSize(true)}><SmartphoneIcon/></button> */}
                         <button className='developerButton' style={{ color: '#ef0b60' }} onClick={handleBootstrap}><BoltIcon style={{ height: 21, color: '#ef0b60' }} />Developer</button>
+                        <button className='developerButton'  onClick={handleCache}><CachedIcon style={{ height: 18}} /> Clear Cache</button>
                         <button className='updateButton' onClick={() => setTagModal(true)}><CodeIcon style={{ height: 21 }} /> Meta Tag</button>
                          <button className="updateButton" onClick={handleWindowChange}><VisibilityIcon style={{ height: 21 }} />Preview</button>
                         <button className="updateButton" onClick={() => handleUpdate()}><SendIcon style={{ height: 20 }} /> Update</button>

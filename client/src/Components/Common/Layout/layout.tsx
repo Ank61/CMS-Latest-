@@ -26,13 +26,13 @@ function Layout(props : title){
                     <li style={{fontSize :15}}>
                         <NavLink  to="/admin/header" ><PublishIcon/>&nbsp;    Header</NavLink> 
                     </li>
-                    <li style={{fontSize :15}}>
+                    {/* <li style={{fontSize :15}}>
                         <NavLink  to="/admin/footer" ><GetAppIcon/>&nbsp;    Footer</NavLink> 
-                    </li>
+                    </li> */}
                     <li style={{fontSize :15}}>
                       <NavLink  to="/admin/aboutus" ><AssignmentIndIcon/>&nbsp;    About Us</NavLink>
                     </li>
-                    <li style={{fontSize :15}}>
+                    {/* <li style={{fontSize :15}}>
                        <GroupAddIcon/>&nbsp;    Join Us
                     </li>
                     <li style={{fontSize :15}}>
@@ -43,7 +43,7 @@ function Layout(props : title){
                     </li>
                     <li style={{fontSize :15}}>
                     <CorporateFareIcon/>&nbsp;    Real Estate
-                    </li>
+                    </li> */}
                 </ul>
                 </div>
             </div>

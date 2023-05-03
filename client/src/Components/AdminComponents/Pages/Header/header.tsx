@@ -72,7 +72,6 @@ function Header() {
 
     }
 function handleDiv(){
-
      setEditorContent((prev)=>prev +
         "<div style='display : flex ; flex-direction: row;align-items: center; justify-content: center;'><div style='width : 50% '>Hello</div><div style='width : 50% ;height : 50px'>World</div></div>")
 }

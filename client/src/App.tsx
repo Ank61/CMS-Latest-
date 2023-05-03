@@ -9,7 +9,7 @@ import AboutUsDynamic from "./Components/AdminComponents/Pages/AboutUs/aboutUsMo
 import Header from "./Components/AdminComponents/Pages/Header/header";
 import AboutUsPreview from "./Components/AdminComponents/Pages/AboutUs/Preview/preview";
 import './App.css';
-
+import NoPage from "./Components/UserComponents/noPage";
 
 function App() {
   return (
@@ -27,7 +27,7 @@ function App() {
           <Route path= {`/aboutus/preview`} element={<AboutUsPreview/>}></Route>
           {/*Restricted Route*/}
           {/* <Route path="/admin/home" element={<Portal admin={authenticate}/>}></Route> */}
-          <Route path = "*" element={<h3>No page found! 404 error</h3>}/>
+          <Route path = "*" element={<NoPage/>}/>
         </Routes>
       </Router>
     </div>
