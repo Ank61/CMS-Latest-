@@ -69,7 +69,6 @@ function Header() {
     function handleButton() {
          setEditorContent((prev)=>prev +
         "<span style='display: inline-block; text-align: center; width : 150px ; height : 30px ; background-color : #fb9502; border-radius : 15px ; color : white'>Get a Quote Now</span>")
-
     }
 function handleDiv(){
      setEditorContent((prev)=>prev +

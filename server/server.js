@@ -15,9 +15,7 @@ exposedHeaders: ['Content-Range', 'X-Content-Range'],
 credentials: true}))
 const MONGO_KEY = process.env.MONGO_URL
 
-mongoose.connect(MONGO_KEY, {
-    dbName: 'CMS'
-}).then((res) => {
+mongoose.connect(MONGO_KEY).then((res) => {
     console.log('Database connected successfully',)
 }).catch((error) => {
     console.log("Error occured while connecting",error)

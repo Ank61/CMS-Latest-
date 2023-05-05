@@ -13,7 +13,7 @@ function AboutUs(){
     return (
         <div className="wrapperr">
         <div className="columnswise">
-         <h4>Site under construction!</h4>
+         <h4>Site under construction</h4>
          <h6>Talentelgia Technologies</h6>
         </div>
         </div>
