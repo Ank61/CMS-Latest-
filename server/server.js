@@ -25,12 +25,12 @@ let login = require("./Routes/AdminRoutes/login")
 let mission = require("./Routes/UserRoutes/aboutUs")
 let header = require("./Routes/UserRoutes/header")
 let cache = require("./Routes/UserRoutes/clearCache")
-
+let dashboard = require("./Routes/UserRoutes/dashboard")
 app.use("/login" , login)
 app.use("/aboutUs" , mission)
 app.use("/header" , header)
 app.use("/cache" , cache)
-
+app.use("/dashboard" , dashboard)
 app.use(express.static(path.join(__dirname, '../build')))
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../build'))

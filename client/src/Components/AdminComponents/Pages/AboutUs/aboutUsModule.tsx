@@ -212,6 +212,11 @@ function AboutUsDynamic() {
     };
     const navigate = useNavigate();
     useEffect(() => {
+        const login =window.localStorage.getItem("Login")
+        if(!login){
+            navigate("/admin")
+        }
+        else{
         axios.get(`${networkConstant.URL.aboutUS}`).then(response => {
             if (response.data === "Logout") {
                 toast.error("Session expired")
@@ -232,6 +237,7 @@ function AboutUsDynamic() {
                 console.log("useEffect set")
             }
         }).catch(err => console.log(err))
+    }
     }, [])
     function handleUpdate() {
         const obj = {
@@ -476,7 +482,7 @@ function AboutUsDynamic() {
                         ref={editorReff}
                         config={{
                             charCounterCount: true,
-                            height: 450,
+                            height: 410,
                             width: '100%',
                             autoFocus: true,
                             pluginsEnabled: ['fontFamily', 'fontSize', 'colors', 'textColor', 'image', "getPDF", "codeView", "inlineStyle", "inlineClass", "link", "video", "emoticons", "wordPaste", "embedly", "fontAwesome", "draggable", "lists", "paragraphStyle", "paragraphFormat", "quote", "align", "insertHTMLButton", "table"],

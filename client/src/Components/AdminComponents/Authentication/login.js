@@ -14,7 +14,7 @@ function Login() {
 
     useEffect(()=>{
         if(window.localStorage.getItem("Login")){
-            window.localStorage.removeItem("Login")
+            navigate("/admin/dashboard")
         }   
     },[])
 

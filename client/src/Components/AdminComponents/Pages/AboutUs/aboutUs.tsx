@@ -67,7 +67,7 @@ function AdminAboutUs() {
             <div className="mainDiv">
                 <Layout title="About Us" moduleName=""/>
             </div>
-            <div className="contentDiv">
+            <div className="contentDiv" style={{backgroundColor :'#f5f5f5' }}>
                 <h3 style={{ textAlign: "center" }}>About Us Page</h3>
 
                 <div className="Module">
