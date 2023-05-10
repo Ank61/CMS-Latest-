@@ -41,7 +41,9 @@ function Dashboard() {
     const handleNewPage=()=>{
       axios.get("").then(response=>console.log(response)).catch(err=>console.log(err))
     }
-    
+    const handleRouting=()=>{
+        navigate("/aboutus")
+    }
     return (
         <>
             <div className="mainDiv">
@@ -71,7 +73,7 @@ function Dashboard() {
                                 {moduleNumber? moduleNumber.map((item :any,index :number)=> <td style={{textAlign:'center'}} key={index}>{item}</td>) : ""}
                                 <td style={{textAlign:'center'}}>/{item}</td>
                                 <td style={{textAlign:'center'}} ><EditIcon style={{fontSize: 20 , color : '#8cc0ea' ,cursor:'pointer'}}/> &nbsp; <DeleteIcon style={{fontSize: 20 ,cursor:'pointer', color : '#fb8d8d'}}/></td>
-                                <td style={{textAlign:'center'}}><VisibilityIcon style={{fontSize :20,color : '#ffb75c',cursor:'pointer'}}/></td>
+                                <td style={{textAlign:'center'}} onClick={handleRouting}><VisibilityIcon style={{fontSize :20,color : '#ffb75c',cursor:'pointer'}}/></td>
                                 </tr>) : ""}
                         </tbody>
                     </table>

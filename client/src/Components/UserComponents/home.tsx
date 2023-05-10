@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import axios from "../Common/SecureInstance/axiosInstance";
 import "./home.css"
+import { useNavigate } from "react-router";
 
 function AboutUs(){
+    const navigate = useNavigate();
     useEffect(()=>{
         axios.get("")
         .then(response=>{})
@@ -10,13 +12,20 @@ function AboutUs(){
     }
     ,[])
 
+    const handleAdmin =()=>{
+        navigate("/admin")
+    }
     return (
         <div className="wrapperr">
         <div className="columnswise">
          <h4>Site under construction</h4>
          <h6>Talentelgia Technologies</h6>
+         <div style={{display:'flex' ,textAlign:'center' , justifyContent : 'center'}}>
+         <button className="adminButton" onClick={handleAdmin}>Admin Login</button>
+         </div>
         </div>
         </div>
+   
     )
     }
     export default AboutUs;

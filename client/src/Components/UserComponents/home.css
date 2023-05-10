@@ -8,5 +8,20 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    border: 3px solid black;
+    border: 3px solid #7fd9d1;
+    border-radius: 10px;
+}
+.adminButton{
+    /* margin-left:50%; */
+    /* padding-left: 6px;
+    padding-top: 3px;
+    padding-right: 6px;
+    padding-left: 3px; */
+    margin-top: 20px;
+    border: 1px solid #7fd9d1;
+    background-color: white;
+    border-radius: 4px;
+}
+.adminButton:hover{
+    background-color:#7fd9d1;
 }
