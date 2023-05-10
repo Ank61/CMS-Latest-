@@ -9,12 +9,10 @@ app.get("/", async (request, response) => {
     try {
         var array = []
         const collections = Object.keys(db.collections);
-        console.log(collections)
         for (const collectionName of collections) {
             if (collectionName !== 'logins' && collectionName !== 'headers') {
                 const model =  await aboutUsModal.find({})
                 array.push({[collectionName] : model[0]})
-                console.log(array);
             }
             }
         
