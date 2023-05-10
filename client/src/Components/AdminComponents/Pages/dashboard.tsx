@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../../Common/Layout/layout";
 import { useNavigate } from "react-router";
 import EditIcon from '@mui/icons-material/Edit';
@@ -7,16 +7,41 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from "../../Common/SecureInstance/axiosInstance";
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 
+interface MyComponentProps {
+    data: any[] | undefined | null; // Specify the type of the data property
+  }
+  
 function Dashboard() {
     const navigate = useNavigate();
+    const [data,setData] = useState([])
+    const [moduleName,setModuleName] = useState<string[]>([])
+    const [moduleNumber,setModuleNumber] = useState<number[]>([])
     useEffect(() => {
         if (!window.localStorage.getItem("Login")) {
             navigate("/admin")
         }
         else{
-            axios.get("").then(response=>console.log(response)).catch(error=>console.log(error))
+            var number:number;
+            axios.get("http://localhost:8080/dashboard").then(response=>{
+            console.log(response.data[0])
+           // response.data?.map((item :any,index : number)=> setModuleName((prev:string)=>([...prev , moduleName.push(Object.keys(item))])))    
+           response?.data?.forEach((item: any,index : number) => {
+            const keys = Object.keys(item);
+            keys.forEach((key: string) => {
+              setModuleName((prev: string[]) => [...prev, key]);
+              number = response.data[index][key].Modules.length
+              console.log("This is ",number)
+              setModuleNumber((prev:number[])=>[...prev,number ])
+            });
+          }); 
+           setData(response.data)}).catch(error=>console.log(error))
         }
-    })
+    },[])
+    
+    const handleNewPage=()=>{
+      axios.get("").then(response=>console.log(response)).catch(err=>console.log(err))
+    }
+    
     return (
         <>
             <div className="mainDiv">
@@ -26,53 +51,28 @@ function Dashboard() {
                 <br></br>
                 <div className="dashboardTable">
                     <div className="mainDivDashboard">
-                <h4 style={{ textAlign: "left" }}>Pages</h4>
-                <button className="newPage">Create New Page <CreateNewFolderIcon style={{color : '#22c4d7'}}/></button>
+                <h5 style={{ textAlign: "left" }}>Pages</h5>
+                <button className="newPage" onClick={handleNewPage}>Create New Page &nbsp;<CreateNewFolderIcon style={{color : '#22c4d7'}}/></button>
                 </div>
                     <table className="table">
                         <thead>
-                            <tr>
-                                <th scope="col">Sr.no</th>
-                                <th scope="col">Page Name</th>
-                                <th scope="col">No. of Modules</th>
-                                <th scope="col">Last Updated</th>
-                                <th scope="col">Route Path</th>
-                                <th scope="col">View</th>
+                            <tr style={{fontSize : 14 , marginTop : 10}}>
+                                <th scope="col" style={{textAlign:'center'}}>Sr.no</th>
+                                <th scope="col" style={{textAlign:'center'}}>Page Name</th>
+                                <th scope="col" style={{textAlign:'center'}}>No. of Modules</th>
+                                <th scope="col" style={{textAlign:'center'}}>Route Path</th>
+                                <th scope="col" style={{textAlign:'center'}}>Edit</th>
+                                <th scope="col" style={{textAlign:'center'}}>View</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td><EditIcon style={{fontSize: 20 , color : '#8cc0ea'}}/> &nbsp; <DeleteIcon style={{fontSize: 20 , color : '#fb8d8d'}}/></td>
-                                <td>Jacob</td>
-                                <td><VisibilityIcon style={{fontSize :20,color : '#ffb75c'}}/></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                                <td>Jacob</td>
-                                <td><VisibilityIcon style={{fontSize :20,color : '#ffb75c'}}/></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                                <td>Jacob</td>
-                                <td><VisibilityIcon style={{fontSize :20,color : '#ffb75c'}}/></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">4</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                                <td>Jacob</td>
-                                <td><VisibilityIcon style={{fontSize :20,color : '#ffb75c'}}/></td>
-                            </tr>
+                        <tbody style={{fontSize:13}}>
+                                {moduleName? moduleName.map((item :any,index:number)=>  <tr><th scope="row" style={{textAlign:'center'}}>{index+1}</th>
+                                <td style={{textAlign:'center'}} key={index}>{item}</td>
+                                {moduleNumber? moduleNumber.map((item :any,index :number)=> <td style={{textAlign:'center'}} key={index}>{item}</td>) : ""}
+                                <td style={{textAlign:'center'}}>/{item}</td>
+                                <td style={{textAlign:'center'}} ><EditIcon style={{fontSize: 20 , color : '#8cc0ea' ,cursor:'pointer'}}/> &nbsp; <DeleteIcon style={{fontSize: 20 ,cursor:'pointer', color : '#fb8d8d'}}/></td>
+                                <td style={{textAlign:'center'}}><VisibilityIcon style={{fontSize :20,color : '#ffb75c',cursor:'pointer'}}/></td>
+                                </tr>) : ""}
                         </tbody>
                     </table>
                 </div>

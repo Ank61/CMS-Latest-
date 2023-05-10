@@ -13,8 +13,8 @@ const networkConstant = {
         metaData :  'http://localhost:8080/aboutUs/meta',
 
         //User_Components_API
-        userAboutUs : 'http://localhost:8080/aboutUs/allData'
-
+        userAboutUs : 'http://localhost:8080/aboutUs/allData',
+        dashboard  : 'http://localhost:8080/dashboard'
     } 
 }
 export default networkConstant;
