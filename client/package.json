@@ -36,6 +36,7 @@
     "react-html-parser": "^2.0.2",
     "react-html-replace": "^0.1.6",
     "react-iframe": "^1.8.5",
+    "react-loader-spinner": "^5.3.4",
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
     "react-select": "^5.7.2",

@@ -9,12 +9,13 @@ const fs = require('fs');
 const app = express()
 app.use(bodyparser.json({limit: '50mb'}));
 app.use(bodyparser.urlencoded({limit: '50mb', extended: true}));
-app.use(cors({origin: 'http://localhost:3000' , methods: ['GET', 'PUT', 'POST'],
-allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
-exposedHeaders: ['Content-Range', 'X-Content-Range'],
-credentials: true}))
+// app.use(cors({origin: 'http://localhost:3000' , methods: ['GET', 'PUT', 'POST'],
+// allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
+// exposedHeaders: ['Content-Range', 'X-Content-Range'],
+// credentials: true}))
+app.use(cors()) 
 const MONGO_KEY = process.env.MONGO_URL
-
+app.use(express.json());
 mongoose.connect(MONGO_KEY).then((res) => {
     console.log('Database connected successfully',)
 }).catch((error) => {
@@ -40,7 +41,7 @@ app.use(express.static(path.join(__dirname, '../build')))
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../build'))
 })
-const port = process.env.PORT || process.env.BACKEND_PORT;
-app.listen(port,()=> {
+const port = process.env.PORT || 8080;
+app.listen(port, ()=>{
     console.log("Server running on the port",port)
 })

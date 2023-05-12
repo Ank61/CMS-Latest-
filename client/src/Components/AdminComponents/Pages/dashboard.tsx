@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from "../../Common/SecureInstance/axiosInstance";
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
-
+import networkConstant from "../../Common/API/uri_constant";
 interface MyComponentProps {
     data: any[] | undefined | null; // Specify the type of the data property
   }
@@ -22,7 +22,7 @@ function Dashboard() {
         }
         else{
             var number:number;
-            axios.get("http://localhost:8080/dashboard").then(response=>{
+            axios.get(`${networkConstant.URL.dashboard}`).then(response=>{
             console.log(response.data[0])
            // response.data?.map((item :any,index : number)=> setModuleName((prev:string)=>([...prev , moduleName.push(Object.keys(item))])))    
            response?.data?.forEach((item: any,index : number) => {

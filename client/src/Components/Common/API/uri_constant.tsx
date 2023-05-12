@@ -1,20 +1,23 @@
+const localhost = "http://localhost:8080"
+const netlify = "https://mernbackend-e89k.onrender.com"
 const networkConstant = {
     URL :{
-        login : 'http://localhost:8080/login',
+        login : `${localhost}/login`,
 
-        aboutUS : 'http://localhost:8080/aboutUs',
-        createAboutUs : 'http://localhost:8080/aboutUs/createModule',
-        updateAboutUs : 'http://localhost:8080/aboutUs/update',
-        deleteAboutUs : 'http://localhost:8080/aboutUs/delete',
-        submitButton : 'http://localhost:8080/aboutUs/submitData',
-        header : 'http://localhost:8080/header',
-        updateHeader : 'http://localhost:8080/header/update',
+        aboutUS : `${localhost}/aboutUs`,
+        createAboutUs : `${localhost}/aboutUs/createModule`,
+        updateAboutUs : `${localhost}/aboutUs/update`,
+        deleteAboutUs : `${localhost}/aboutUs/delete`,
+        submitButton : `${localhost}/aboutUs/submitData`,
+        header : `${localhost}/header`,
+        updateHeader : `${localhost}/header/update`,
 
-        metaData :  'http://localhost:8080/aboutUs/meta',
+        metaData :  `${localhost}/aboutUs/meta`,
 
         //User_Components_API
-        userAboutUs : 'http://localhost:8080/aboutUs/allData',
-        dashboard  : 'http://localhost:8080/dashboard'
+        userAboutUs : `${localhost}/aboutUs/allData`,
+        dashboard  : `${localhost}/dashboard`,
+        caches : `${localhost}/cache`,
     } 
 }
 export default networkConstant;

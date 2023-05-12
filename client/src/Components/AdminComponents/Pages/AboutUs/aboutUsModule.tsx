@@ -436,7 +436,7 @@ function AboutUsDynamic() {
         setMultipleLabel((prev) => [...prev, { item: index, label: lastMatchingItem?.label, placeholder: lastMatchingItem?.placeholder, required: lastMatchingItem?.required, validations :classString}])
       }
       const handleCache =()=>{
-        axios.get("http://localhost:8080/cache").then((response)=>{
+        axios.get(`${networkConstant.URL.caches}`).then((response)=>{
         if(response.data!=="logout"){
             toast.success("Cache cleared")
         }
