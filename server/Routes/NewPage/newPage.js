@@ -6,9 +6,10 @@ app.use(cookieparser());
  const aboutUsModal = require("../../Modals/UserRoutes/missionModal");
 const { body, validationResult, param, check } = require('express-validator');
 const fs = require('fs');
+const storageModal = require("../../Modals/UserRoutes/pageStorage")
 
 app.post("/",async(request,response)=>{
-    const {collectionName } = request.body;
+    const {collectionName,path} = request.body;
     const schema = mongoose.Schema;
     const newSchema = new schema({
         Modules: [{
@@ -36,6 +37,9 @@ app.post("/",async(request,response)=>{
         },
         formData : {
             type : [String]
+        },
+        pagePath : {
+            type : String
         }
     })
     const newPage = mongoose.model(`${collectionName}`, newSchema);
@@ -46,9 +50,13 @@ app.post("/",async(request,response)=>{
         moduleId: 1}],
         title : '',
         description : '',
-        formData : ['']
+        formData : [''],
+        pagePath : `${path}`
       });      
-    await user.save().then(response=>console.log(response)).catch(err=>console.log(err))
-    return response.status(200).send("Created new User")
+    await user.save().then(async (response)=>{
+        const result = await storageModal.create({ data: collectionName });
+        return response.status(200).send("Created new User")
+    }
+    ).catch(err=>console.log(err))
 });
 module.exports = app;

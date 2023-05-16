@@ -38,9 +38,9 @@ function Layout(props : title){
                     <li style={{fontSize :14}} >
                         <NavLink  to="/admin/dashboard" ><DashboardIcon style={{fontSize:19}}/>&nbsp;    Dashboard</NavLink> 
                     </li>
-                    <li style={{fontSize :14}}>
+                    {/* <li style={{fontSize :14}}>
                         <NavLink  to="/admin/header" ><PublishIcon style={{fontSize:22}}/>&nbsp;       Header</NavLink> 
-                    </li>
+                    </li> */}
                     {/* <li style={{fontSize :13}}>
                         <NavLink  to="/admin/footer" ><GetAppIcon/>&nbsp;    Footer</NavLink> 
                     </li> */}
