@@ -28,14 +28,16 @@ let header = require("./Routes/UserRoutes/header")
 let cache = require("./Routes/UserRoutes/clearCache")
 let dashboard = require("./Routes/UserRoutes/dashboard")
 let newPage = require("./Routes/NewPage/newPage")
-
-
+let emptyPage = require("./Routes/AdminRoutes/emptyPage")
+let emptyEdit = require("./Routes/AdminRoutes/emptyEdit")
 app.use("/login" , login)
 app.use("/aboutUs" , mission)
 app.use("/header" , header)
 app.use("/cache" , cache)
 app.use("/dashboard" , dashboard)
 app.use("/newPage" , newPage)
+app.use("/empty",emptyPage)
+app.use("/editPage",emptyEdit)
 // app.use("/home" , homePage)
 app.use(express.static(path.join(__dirname, '../build')))
 app.get('*', (req, res) => {

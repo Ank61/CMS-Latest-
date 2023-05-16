@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
-import Layout from "../../Common/Layout/layout";
+import Layout from "../../../Common/Layout/layout";
 import { useNavigate } from "react-router";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import axios from "../../Common/SecureInstance/axiosInstance";
+import axios from "../../../Common/SecureInstance/axiosInstance";
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
-import networkConstant from "../../Common/API/uri_constant";
+import networkConstant from "../../../Common/API/uri_constant";
 import Modal from 'react-bootstrap/Modal';
 import { Button } from "react-bootstrap";
 import { Oval } from 'react-loader-spinner';
 import path from "path";
+
 interface MyComponentProps {
-    name: String | undefined | null; // Specify the type of the data property
-    data : number
+    name: String | undefined | null;
     path : String
 }
 
@@ -21,7 +21,6 @@ function Dashboard() {
     const navigate = useNavigate();
     const [data, setData] = useState([])
     const [allData, setAllData] = useState<MyComponentProps[]>([])
-    const [moduleNumber, setModuleNumber] = useState<number[]>([])
     const [modal, setModal] = useState(false)
     const [newPage, setNewPage] = useState<string>("")
     const [loading, setLoading] = useState(false);
@@ -32,22 +31,19 @@ function Dashboard() {
     const [pathError, setPathError] = useState(false)
     const [shortPath, setShortPath] = useState(false)
     const [emptyPath, setEmptyPath] = useState(false)
-    const [displayPath , setDisplayPath] = useState("")
+
     useEffect(() => {
         if (!window.localStorage.getItem("Login")) {
             navigate("/admin")
         }
         else {
-            var number: number;
             axios.get(`${networkConstant.URL.dashboard}`).then(response => {
                 console.log(response.data);
                 setAllData(response.data)
-                // response.data?.map((item :any,index : number)=> setModuleName((prev:string)=>([...prev , moduleName.push(Object.keys(item))])))    
-
             }).catch(error => console.log(error))
         }
     }, [modal])
-console.log("this is all the data" ,moduleNumber )
+
     const handleModalChange = (e: any) => {
         setNewPage(e.target.value)
         if (e.target.value > 15) {
@@ -63,8 +59,10 @@ console.log("this is all the data" ,moduleNumber )
         setModal(true)
     }
 
-    const handleRouting = () => {
-        navigate("/aboutus")
+    const handleRouting = (path : String) => {
+        debugger;
+        console.log(path)
+        window.open(`${path}`, '_blank');
     }
 
     const handleNewPage = () => {
@@ -74,9 +72,6 @@ console.log("this is all the data" ,moduleNumber )
         else if(!newPage){
             setEmptyPage(true)
         }
-        // else if (path.length < 1 ) {
-        //     setShortPath(true)
-        // }
         else if(newPage.length < 3){
             setShortPage(true)
         }
@@ -85,7 +80,7 @@ console.log("this is all the data" ,moduleNumber )
             setLoading(true);
             const obj = {
                 collectionName: newPage,
-                path: path
+                path: "/"+path
             }
             axios.post(`${networkConstant.URL.createNewPage}`, obj).then(response => {
                 setLoading(false)
@@ -134,13 +129,13 @@ console.log("this is all the data" ,moduleNumber )
                             </tr>
                         </thead>
                         <tbody style={{ fontSize: 13 }}>
-                            {/* {moduleName ? moduleName.map((item: any, index: number) => <tr><td scope="row" style={{ textAlign: 'center' }}>{index + 1}</td>
-                                <td style={{ textAlign: 'center' }} key={index}>{item}</td>
-                                {moduleNumber ? moduleNumber.map((item: any, index: number) => <td style={{ textAlign: 'center' }} key={index}>{item}</td>) : ""}
-                                <td style={{ textAlign: 'center' }}>/{item}</td>
+                            {allData ? allData.map((item: any, index: number) => <tr><td scope="row" style={{ textAlign: 'center' }}>{index + 1}</td>
+                                <td style={{ textAlign: 'center' }} key={index}>{item.name}</td>
+                                <td style={{ textAlign: 'center' }}>{item.data}</td>
+                                <td style={{ textAlign: 'center' }}>{item.path}</td>
                                 <td style={{ textAlign: 'center' }} ><EditIcon style={{ fontSize: 20, color: '#8cc0ea', cursor: 'pointer' }} /> &nbsp; <DeleteIcon style={{ fontSize: 20, cursor: 'pointer', color: '#fb8d8d' }} /></td>
-                                <td style={{ textAlign: 'center' }} onClick={handleRouting}><VisibilityIcon style={{ fontSize: 20, color: '#ffb75c', cursor: 'pointer' }} /></td> */}
-                            {/* </tr>) : ""} */}
+                                <td style={{ textAlign: 'center' }} onClick={()=>handleRouting(item.path)}><VisibilityIcon style={{ fontSize: 20, color: '#ffb75c', cursor: 'pointer' }} /></td>
+                             </tr>) : ""}
                         </tbody>
                     </table>
                 </div>

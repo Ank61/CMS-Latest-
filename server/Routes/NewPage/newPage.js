@@ -38,7 +38,7 @@ app.post("/",async(request,response)=>{
         formData : {
             type : [String]
         },
-        pagePath : {
+        pathPage : {
             type : String
         }
     })
@@ -51,7 +51,7 @@ app.post("/",async(request,response)=>{
         title : '',
         description : '',
         formData : [''],
-        pagePath : `${path}`
+        pathPage : `${path}`
       });      
     await user.save().then(async (response)=>{
         const result = await storageModal.create({ data: collectionName });

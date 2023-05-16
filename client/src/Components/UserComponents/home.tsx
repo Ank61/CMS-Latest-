@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import axios from "../Common/SecureInstance/axiosInstance";
-import "./home.css"
+import "./CSS/home.css"
 import { useNavigate } from "react-router";
 
 function AboutUs(){
@@ -13,7 +13,7 @@ function AboutUs(){
     ,[])
 
     const handleAdmin =()=>{
-        navigate("/admin")
+        navigate("/admin/dashboard")
     }
     return (
         <div className="wrapperr">

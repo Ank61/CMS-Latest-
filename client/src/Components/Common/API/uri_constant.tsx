@@ -18,7 +18,13 @@ const networkConstant = {
         userAboutUs : `${localhost}/aboutUs/allData`,
         dashboard  : `${localhost}/dashboard`,
         caches : `${localhost}/cache`,
-        createNewPage : `${localhost}/newPage`
+        createNewPage : `${localhost}/newPage`,
+        empty : `${localhost}/empty`,
+        editPage : `${localhost}/editPage`,
+        editPageAllData : `${localhost}/editPage/allData`,
+
+        //Extra
+        getLocal : `${localhost}`
     } 
 }
 export default networkConstant;

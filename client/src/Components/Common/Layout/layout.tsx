@@ -12,17 +12,32 @@ import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from "react-router";
+import axios from '../SecureInstance/axiosInstance';
+import networkConstant from '../API/uri_constant';
+interface MyComponentProps {
+    name: String | undefined | null; // Specify the type of the data property
+    data : number
+    path : String
+}
 
 type title = {
     title : String //We have already header comoponent!
     moduleName : String
+    pageData? : MyComponentProps[]  |undefined
 }
 function Layout(props : title){
+    const [allData,setAllData] = useState<MyComponentProps[]>([])
     useEffect(()=>{
         const login =window.localStorage.getItem("Login")
         if(!login){
             navigate("/admin")
         }
+        else{
+        axios.get(`${networkConstant.URL.dashboard}`).then(response => {
+            console.log(response.data);
+            setAllData(response.data)  
+        }).catch(error => console.log(error))
+    }
     },[])
     const navigate = useNavigate();
     const handleLogout =()=>{
@@ -47,6 +62,7 @@ function Layout(props : title){
                     <li style={{fontSize :14}}>
                       <NavLink  to="/admin/aboutus" ><AssignmentIndIcon style={{fontSize:19}}/>&nbsp;    About Us</NavLink>
                     </li>
+                    { allData? allData.map((item :any)=><li style={{fontSize : 14}}> <NavLink  to={`/admin${item.path}`} ><AssignmentIndIcon style={{fontSize:19}}/>&nbsp;    {item.name}</NavLink></li>) : ""}
                     {/* <li style={{fontSize :15}}>
                        <GroupAddIcon/>&nbsp;    Join Us
                     </li>

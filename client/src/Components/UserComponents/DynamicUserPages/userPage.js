@@ -1,14 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
-import axios from "../Common/SecureInstance/axiosInstance";
+import React, { useEffect, useState } from "react";
+import axios from "../../Common/SecureInstance/axiosInstance";
 import { useNavigate } from "react-router";
 import Helmet from 'react-helmet';
-import Header from "../Common/Header/header";
 import parse, { domToReact } from 'html-react-parser';
-import './CSS/about.css';
-import networkConstant from "../Common/API/uri_constant";
+import "../CSS/about.css"
+import networkConstant from "../../Common/API/uri_constant";
 import toast, { Toaster } from 'react-hot-toast';
 
-function AboutUs() {
+function UserPage(props) {
   const [data, setData] = useState()
   const [title, setTitle] = useState("Initial Title")
   const [description, setDescription] = useState("Initial Description")
@@ -158,9 +157,10 @@ function AboutUs() {
       }
     }
   };
-  const reactElement = parse(`${data}`, options);
+  const reactElement = parse(`${data}`, options)
   useEffect(() => {
-    axios.get(`${networkConstant.URL.userAboutUs}`)
+    debugger;
+    axios.post(`${networkConstant.URL.editPageAllData}`,props)
       .then(response => {
         if (response.data === "Logout") {
           navigate("/admin")
@@ -186,11 +186,11 @@ function AboutUs() {
             content: description,
           }
         ]} />
-      <Header />
+      {/* <Header /> */}
       {reactElement}
       {/* {data? <div dangerouslySetInnerHTML={{ __html: data }}></div> : ""} */}
       {/* {JSON.stringify(data)} */}
     </div>
   )
 }
-export default AboutUs;
+export default UserPage;
