@@ -39,7 +39,6 @@ app.post("/" , async(request,response)=>{
     try {
         const data = request.body.data;
         const moduleName = request.body.moduleName;
-        const moduleId = request.body.moduleId;
         const collectionName = request.body.collectionName;
         const newPage = mongoose.model(collectionName, newSchema);      
         const forModuleId = await newPage.find({}).clone().catch(err => response.status(400).send("Erro"))

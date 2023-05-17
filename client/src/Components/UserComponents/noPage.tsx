@@ -1,8 +1,18 @@
 import "./CSS/noPage.css"
 import { Link } from 'react-router-dom';
+import { Oval } from 'react-loader-spinner';
+import {useState, useEffect } from "react";
+
 function NoPage() {
+const [loading , setLoading] = useState<boolean>(true)
+    useEffect(()=>{
+       setTimeout(()=>{
+        setLoading(false)
+       },3000) 
+    },[])
     return (
-        <div id="notfound">
+        <>
+       {!loading ? <div id="notfound">
             <div className="notfound">
                 <div className="notfound-404">
                     <h1>404</h1>
@@ -17,6 +27,24 @@ function NoPage() {
                 </div>
             </div>
         </div>
+        : ""}
+        {loading ? <div style={{marginLeft : '47%',marginRight :'20%',marginTop:'20%', width :'50%'}}>
+                                
+                                        <Oval
+                                        height={90}
+                                        width={90}
+                                        color="#0dcaf0"
+                                        wrapperStyle={{ position: 'absolute'}}
+                                        wrapperClass=""
+                                        visible={loading}
+                                        ariaLabel='oval-loading'
+                                        secondaryColor="#a5deff"
+                                        strokeWidth={2}
+                                        strokeWidthSecondary={2}
+                                    />
+                              
+                                </div> : ""}
+        </>
     )
 }
 export default NoPage;

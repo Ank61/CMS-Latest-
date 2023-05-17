@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const app = express()
 
 const schema = mongoose.Schema;
-const newSchema =  new schema({
+const newSchema =   schema({
     Modules: [{
         moduleName: {
             type: String,

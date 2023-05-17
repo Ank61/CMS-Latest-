@@ -27,7 +27,8 @@ app.post("/allData", async(request,response)=>{
         }
         return response.status(200).send(obj)
     }
-    catch (err){
+    catch (err)
+    {
         return response.status(404).send(err)
     }
 })
