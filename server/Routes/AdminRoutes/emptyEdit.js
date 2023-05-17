@@ -20,9 +20,7 @@ app.post("/allData", async(request,response)=>{
         const db = mongoose.connection.db;
         const documents = await db.collection(request.body.name).find({}).toArray();
         const initial = "";
-        console.log(documents)
         const data = await documents[0].Modules.map(item => item.data).reduce((accumulator, currentValue) => accumulator + currentValue, initial)
-        console.log(data)
         const obj = {
             data: data,
             rest: documents
@@ -33,4 +31,5 @@ app.post("/allData", async(request,response)=>{
         return response.status(404).send(err)
     }
 })
+
 module.exports = app;

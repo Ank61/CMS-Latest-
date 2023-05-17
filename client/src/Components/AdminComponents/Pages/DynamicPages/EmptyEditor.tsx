@@ -131,7 +131,6 @@ interface emptyEdit{
 }
 
 function EmptyEdit(props : emptyEdit) {
-    console.log("Reached Empty edit")
     const [moduleDetails, setModuleDetails] = useState<moduleDetail>()
     const [editorContent, setEditorContent] = useState<string>('');
     const [modal, setModal] = useState<boolean>(false)
@@ -173,7 +172,6 @@ function EmptyEdit(props : emptyEdit) {
     ];
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        debugger;
         setValue(newValue);
     };
     const froalaEditorMain = (newContent: string) => {
@@ -221,7 +219,10 @@ function EmptyEdit(props : emptyEdit) {
             navigate("/admin")
         }
         else{
-        axios.get(`${networkConstant.URL.editPage}`).then(response => {
+            const obj = {
+                name : props.name
+            }
+        axios.post(`${networkConstant.URL.editPage}`,obj).then(response => {
             if (response.data === "Logout") {
                 toast.error("Session expired")
                 setTimeout(() => {
@@ -237,21 +238,21 @@ function EmptyEdit(props : emptyEdit) {
                     data : `${editorContent}`
                 }
                 window.localStorage.setItem("Preview",JSON.stringify(obj))
-
-                console.log("useEffect set")
             }
         }).catch(err => console.log(err))
     }
     }, [])
-    function handleUpdate() {
+     function handleUpdate() {
         const obj = {
             moduleId: moduleDetails?.moduleId,
             moduleName: `${moduleDetails?.moduleName}`,
             data: `${editorContent}`,
-            From: "Update"
+            collectionName : `${props.name}`
         }
-        axios.post(`${networkConstant.URL.updateAboutUs}`, obj)
+        console.log("update clicked",obj)
+        axios.post(`${networkConstant.URL.update}`, obj)
             .then(response => {
+                console.log(response.data)
                 if (response.data === "Logout") {
                     toast.error("Session expired")
                     setTimeout(() => {
@@ -265,10 +266,15 @@ function EmptyEdit(props : emptyEdit) {
     }
 
     function handleDelete() {
-        const obj = { moduleId: `${moduleDetails?.moduleId}` }
-        axios.post(`${networkConstant.URL.deleteAboutUs}`, obj).then(response => console.log(response)).catch(err => console.log(err))
-        navigate("/admin/aboutus")
-        toast.error("Deleted successfully")
+        const obj = 
+        { 
+            moduleId:moduleDetails?.moduleId,
+            collectionName : `${props.name}` 
+        };
+        axios.post(`${networkConstant.URL.deleteModule}`, obj).then(response => {console.log(response)
+        toast.success("Deleted successfully")
+        setTimeout(()=>{navigate(`/admin${props.path}`)},700)}
+        ).catch(err => console.log(err))
     }
     const closeDivModule = (newData: string) => {
         var editor = cursorPosition?.getEditor();
@@ -373,17 +379,14 @@ function EmptyEdit(props : emptyEdit) {
         setFinalForm(lastObjects)
     }
     const handleWindowChange=()=> {
-        //<a routerLink="/testPage " [queryParams]="{ hello: 'world' }" target="_blank">click here</a>
         const obj = {
             moduleId : `${id}`,
             data : `${editorContent}`
         }
         window.localStorage.setItem("Preview",JSON.stringify(obj))
-        window.open('http://localhost:3000/aboutus/preview' , '_blank');
+        window.open(`http://${window.location.host}${props.path}/preview` , '_blank');
     }
     const handleFormData = () => {
-        // const components = finalForm ?finalForm.map((item :any,index :any)=>{return <div key={index}>{item.item}<input className = "form-control" type="text" placeholder={item.placeholder}></input></div>}) : "";
-        // console.log("This si " , components)
         let result: any;
         switch (finalForm?.length) {
             case 1:

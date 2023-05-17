@@ -57,7 +57,7 @@ function Login() {
                     }
                     setTimeout(() => {
                         navigate("/admin/dashboard")
-                    }, 1500)
+                    }, 700)
                 }
                 else {
                     toast.error('Login Failed');

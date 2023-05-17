@@ -34,7 +34,7 @@ function Dashboard() {
 
     useEffect(() => {
         if (!window.localStorage.getItem("Login")) {
-            navigate("/admin")
+            navigate("/adminLogin")
         }
         else {
             axios.get(`${networkConstant.URL.dashboard}`).then(response => {

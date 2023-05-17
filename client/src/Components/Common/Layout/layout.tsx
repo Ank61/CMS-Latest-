@@ -34,7 +34,6 @@ function Layout(props : title){
         }
         else{
         axios.get(`${networkConstant.URL.dashboard}`).then(response => {
-            console.log(response.data);
             setAllData(response.data)  
         }).catch(error => console.log(error))
     }
@@ -42,7 +41,7 @@ function Layout(props : title){
     const navigate = useNavigate();
     const handleLogout =()=>{
         window.localStorage.removeItem("Login")
-        navigate("/admin")
+        navigate("/adminLogin")
     }
     return(
         <>
@@ -62,7 +61,7 @@ function Layout(props : title){
                     <li style={{fontSize :14}}>
                       <NavLink  to="/admin/aboutus" ><AssignmentIndIcon style={{fontSize:19}}/>&nbsp;    About Us</NavLink>
                     </li>
-                    { allData? allData.map((item :any)=><li style={{fontSize : 14}}> <NavLink  to={`/admin${item.path}`} ><AssignmentIndIcon style={{fontSize:19}}/>&nbsp;    {item.name}</NavLink></li>) : ""}
+                    { allData? allData.map((item :any,index :number)=><li style={{fontSize : 14}} key={index}> <NavLink  to={`/admin${item.path}`} ><AssignmentIndIcon style={{fontSize:19}}/>&nbsp;    {item.name}</NavLink></li>) : ""}
                     {/* <li style={{fontSize :15}}>
                        <GroupAddIcon/>&nbsp;    Join Us
                     </li>

@@ -13,7 +13,7 @@ function AboutUs(){
     ,[])
 
     const handleAdmin =()=>{
-        navigate("/admin/dashboard")
+        navigate("/adminLogin")
     }
     return (
         <div className="wrapperr">

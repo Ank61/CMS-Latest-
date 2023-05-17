@@ -16,6 +16,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import { HexColorPicker } from "react-colorful";
+import outsideClickOutside from "../../../../Common/ColorPicker/outsideClickOutside";
 import outsideClickSecond from "../../../../Common//ColorPicker/outsideClickSecond"
 import outsideClickThird from '../../../../Common/ColorPicker/outsideClickThird';
 import outsideClickFourth from '../../../../Common/ColorPicker/outsideClickFourth';
@@ -96,6 +97,8 @@ function ButtonModule(props:buttonModuleProps) {
     const [color, setColor] = useState("#cce4ff");
     const popover = React.useRef<HTMLInputElement>(null);
     const [isOpen, toggle] = useState(false);
+    const close =  useCallback(() => toggle(false), [])
+    outsideClickOutside(popover, close)
     const [secondBackground, setSecondBackground] = useState(false)
     const [secondColor, setSecondColor] = useState("#ccf6c2")
     const popoverSecond = React.useRef<HTMLInputElement>(null);

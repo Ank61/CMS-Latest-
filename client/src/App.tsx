@@ -20,7 +20,7 @@ import UserPage from "./Components/UserComponents/DynamicUserPages/userPage";
 function App() {
   const [allRoutes , setAllRoutes] =useState([])
   useEffect(()=>{
-  axios.get(`${networkConstant.URL.dashboard}`).then(response=>{console.log(response.data);
+  axios.get(`${networkConstant.URL.dashboard}`).then(response=>{
   setAllRoutes(response.data)}
   ).catch(err=>console.log(err))
   },[])
@@ -31,7 +31,7 @@ function App() {
           {/* Routes for the USER */}
           <Route path="/" element={<Home />}></Route>
           <Route path="/aboutus" element={<AboutUs/>}></Route>
-          <Route path="/admin" element={<Login/>}></Route>
+          <Route path="/adminLogin" element={<Login/>}></Route>
           {/* Routes for the ADMIN*/}
           <Route path="/admin/dashboard" element={<Dashboard/>}></Route>
           <Route path="/admin/aboutus" element={<AdminAboutUs/>}></Route>
@@ -39,11 +39,11 @@ function App() {
           <Route path= {`/admin/aboutus/:id`} element={<AboutUsDynamic/>}></Route>
           <Route path= {`/aboutus/preview`} element={<AboutUsPreview/>}></Route>
           {/* Dynamic route for ADMIN*/}
-          {allRoutes? allRoutes.map((item:any)=> <Route path= {`/admin${item.path}/:id`} element={<EmptyEdit path={`${item.path}`} name={`${item.name}`}/>}></Route>):""} 
-          {allRoutes? allRoutes.map((item:any)=><Route path= {`/admin${item.path}`} element={<EmptyPages path={`${item.name}`} pathName={`${item.path}`}/>}></Route>):""}
-        
+          {allRoutes? allRoutes.map((item:any ,index : number)=> <Route path= {`/admin${item.path}/:id`} key={index} element={<EmptyEdit path={`${item.path}`} name={`${item.name}`}/>}></Route>):""} 
+          {allRoutes? allRoutes.map((item:any,index : number)=><Route path= {`/admin${item.path}`} key={index} element={<EmptyPages path={`${item.name}`} pathName={`${item.path}`}/>}></Route>):""}
           {/*Dynamic route for USER*/}
-          {allRoutes ? allRoutes.map((item : any)=><Route path= {`${item.path}`} element={<UserPage path={`${item.path}`} name={`${item.name}`}/>}></Route>):""}
+          {allRoutes ? allRoutes.map((item : any,index : number)=><Route path= {`${item.path}`} key={index} element={<UserPage path={`${item.path}`} name={`${item.name}`}/>}></Route>):""}
+          {/*Route for Preview*/}
           {/*Restricted Route*/}
           {/* <Route path="/admin/home" element={<Portal admin={authenticate}/>}></Route> */}
           <Route path = "*" element={<NoPage/>}/>

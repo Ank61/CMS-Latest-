@@ -35,7 +35,7 @@ function EmptyPages(props : propsType) {
             navigate("/admin")
         }
         else {
-            debugger;
+
             axios.post(`${networkConstant.URL.empty}`,props)
                 .then(response => {
                     if (response.data === "Logout") {
@@ -52,6 +52,62 @@ function EmptyPages(props : propsType) {
     function handleClick(index: Number) {
         navigate(`/admin${props?.pathName}/${index}`)
     }
+     function handleNewModule() {
+        if(!title){
+            setEmptyTitle(true)
+        }
+        else if(title.length<4){
+            setShortTitle(true)
+        }
+        else if(!titleError && !shortTitle && title.length>2){
+
+        setLoading(true);
+        const obj = {
+            moduleName: title,
+            data: "",
+            collectionName : props.path
+        }
+
+        axios.post(`${networkConstant.URL.newModule}`, obj).then(response=>{
+            setRender("2")
+            setTimeout(()=>{
+                axios.post(`${networkConstant.URL.empty}`,props)
+                .then(response => {
+                    if (response.data === "Logout") {
+                        navigate("/admin")
+                    } else {
+                        console.log(response.data[0].Modules)
+                        setModules(response.data[0].Modules)
+                    }
+                })
+                .catch(err => console.log(err))
+            },100)
+        }
+        ).catch(err => console.log(err))
+        setLoading(false);
+         setModal(false);
+    }
+    }
+
+     function handleModalChange(e : any){
+
+
+        setEmptyTitle(false)
+        setTitle(e.target.value)
+        if(e.target.value.length>15 ){
+            setTitleError(true)
+        }
+        else{
+            setShortTitle(false)
+            setTitleError(false)
+        }
+    }
+    const handleKeyDown = (event : any) => {
+        if (event.keyCode === 13) {
+            handleNewModule()
+        }
+    }
+
 
     return (
         <>
@@ -64,7 +120,7 @@ function EmptyPages(props : propsType) {
                 <div className="Module">
                     {modules.length > 0 ? modules.map((item: Modules, index) => {
                         return (
-                            <div className="moduleDiv" key={item.moduleName} style={{ fontSize: 13 }} onClick={()=>handleClick(index)}>
+                            <div className="moduleDiv" key={index} style={{ fontSize: 13 }} onClick={()=>handleClick(index)}>
                                 Module Name : {item.moduleName}
                             </div>
                         )
@@ -83,7 +139,7 @@ function EmptyPages(props : propsType) {
                         <Modal.Title style={{ fontSize: 19 }}>Add New Module</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <input type="text" className="form-control" placeholder="Please enter Title for Module" style={{ fontSize: 13 }} value={title.replace(/\s{2}/, '')} maxLength={40}></input>
+                        <input type="text" className="form-control" placeholder="Please enter Title for Module" style={{ fontSize: 13 }} value={title.replace(/\s{2}/, '')} maxLength={40} onChange={(e) => handleModalChange(e)} onKeyDown={handleKeyDown}></input>
                         <span style={{ height: 12, color: 'red', fontSize: 14 }}>{titleError ? "Oops charachter too long!" : shortTitle ? "Charachter too short" : emptyTitle ? "Enter name of the module" : ""}</span>
                         <Oval
                             height={80}
@@ -98,7 +154,7 @@ function EmptyPages(props : propsType) {
                             strokeWidthSecondary={2}
 
                         />
-                        <Button variant="primary" style={{ marginLeft: '70%', fontSize: 13 }} className="mt-4" >Create Module</Button>
+                        <Button variant="primary" style={{ marginLeft: '70%', fontSize: 13 }} className="mt-4"  onClick={() => handleNewModule()}>Create Module</Button>
                     </Modal.Body>
                 </Modal>
             </div>
