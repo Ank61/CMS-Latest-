@@ -58,9 +58,9 @@ function Layout(props : title){
                     {/* <li style={{fontSize :13}}>
                         <NavLink  to="/admin/footer" ><GetAppIcon/>&nbsp;    Footer</NavLink> 
                     </li> */}
-                    <li style={{fontSize :14}}>
+                    {/* <li style={{fontSize :14}}>
                       <NavLink  to="/admin/aboutus" ><AssignmentIndIcon style={{fontSize:19}}/>&nbsp;    About Us</NavLink>
-                    </li>
+                    </li> */}
                     { allData? allData.map((item :any,index :number)=><li style={{fontSize : 14}} key={index}> <NavLink  to={`/admin${item.path}`} ><AssignmentIndIcon style={{fontSize:19}}/>&nbsp;    {item.name}</NavLink></li>) : ""}
                     {/* <li style={{fontSize :15}}>
                        <GroupAddIcon/>&nbsp;    Join Us

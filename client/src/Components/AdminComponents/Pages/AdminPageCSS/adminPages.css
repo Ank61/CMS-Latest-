@@ -313,3 +313,51 @@ cursor : pointer;
 display: flex;
 flex-direction: row;
 }
+.editButton{
+    font-size: 20px !important;
+    color: #8cc0ea;
+    cursor: pointer;
+}
+.editButton:hover{
+    color : #1a91f2
+}
+.deleteButton{
+    font-size: 20px !important;
+    cursor: pointer;
+    color: #fb8d8d;
+}
+.deleteButton:hover{
+    color : #f74141
+}
+.visibleIcon{
+    font-size: 20px !important;
+    color: #ffb75c;
+    cursor: pointer;
+}
+.visibleIcon:hover{
+    color: #f98900;
+}
+.buttonHover{
+    background-color: white;
+    border: 1px solid white;
+}
+.buttonHover:hover{
+    border: 1px solid  #8cc0ea;
+    border-radius: 3px;
+}
+.buttonHoverDelete{
+    background-color: white;
+    border: 1px solid white;
+}
+.buttonHoverDelete:hover{
+    border: 1px solid  #fb8d8d;
+    border-radius: 3px;
+}
+.buttonHoverPreview{
+    background-color: white;
+    border: 1px solid white;
+}
+.buttonHoverPreview:hover{
+    border: 1px solid #ffb75c;
+    border-radius: 3px;
+}

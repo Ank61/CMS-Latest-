@@ -26,6 +26,7 @@ const networkConstant = {
         deleteModule : `${netlify}/deleteDynamic`,
         newModule : `${netlify}/newModule`,
         update : `${netlify}/update`,
+        delete : `${netlify}/delete`,
         //Extra
         getLocal : `${netlify}`
     } 

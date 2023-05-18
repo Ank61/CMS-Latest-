@@ -6,6 +6,7 @@ import parse, { domToReact } from 'html-react-parser';
 import "../CSS/about.css"
 import networkConstant from "../../Common/API/uri_constant";
 import toast, { Toaster } from 'react-hot-toast';
+import { Oval } from 'react-loader-spinner';
 
 function UserPage(props) {
   const [data, setData] = useState()
@@ -13,14 +14,15 @@ function UserPage(props) {
   const [description, setDescription] = useState("Initial Description")
   const navigate = useNavigate()
   const [allInputs, setAllInputs] = useState("");
-  const [globalRedIput , setGlobalRedInput] = useState(false)
- // const [InputArray, setInputArray] = useState([])
+  const [globalRedIput, setGlobalRedInput] = useState(false)
+  const [loading, setLoading] = useState(false);
+  // const [InputArray, setInputArray] = useState([])
 
   var Array = []
   let numInputs = 0;
   var isEmptyOrWhitespace;
-  var ShowError=0;
-  var EmailPresent=false;
+  var ShowError = 0;
+  var EmailPresent = false;
   // var GlobalRedInput;
   //Regex constants
   const handleClick = (e, route) => {
@@ -31,29 +33,29 @@ function UserPage(props) {
   }
   const handleSubmitButton = (e) => {
     const checkFields = document.querySelectorAll("input");
-    if(globalRedIput===true){ 
-    //one of the input is red
-    toast.error("Invalid Input")
+    if (globalRedIput === true) {
+      //one of the input is red
+      toast.error("Invalid Input")
     }
-    else{
-    checkFields.forEach((input, index) => {
-      const regex = /^\s*$/;
-      isEmptyOrWhitespace = regex.test(input.value);
-      if (isEmptyOrWhitespace===true) {
-        var elementId = document.getElementById(input.id);
-        elementId.style.backgroundColor = "red";
-        ShowError=1;
-        toast.error("Invalid Input")
-        return
-      }
+    else {
+      checkFields.forEach((input, index) => {
+        const regex = /^\s*$/;
+        isEmptyOrWhitespace = regex.test(input.value);
+        if (isEmptyOrWhitespace === true) {
+          var elementId = document.getElementById(input.id);
+          elementId.style.backgroundColor = "red";
+          ShowError = 1;
+          toast.error("Invalid Input")
+          return
+        }
       })
-      if(ShowError===0){
-      console.log("Reached")
-      var getAllString = allInputs.split(';');
+      if (ShowError === 0) {
+        console.log("Reached")
+        var getAllString = allInputs.split(';');
         var fullString = allInputs;
         var getItem, lastOccurrenceIndex, getStartingIndex, finalFirst, splitFinal;
         console.log(numInputs)
-        for (let i = 0; i <numInputs; i++){
+        for (let i = 0; i < numInputs; i++) {
           if (i === 0) {
             getItem = 3;
             getStartingIndex = getAllString[getItem];
@@ -77,29 +79,29 @@ function UserPage(props) {
       }
     }
   }
-  const handleRequiredInput = (e, id,attribs) => {
+  const handleRequiredInput = (e, id, attribs) => {
     let intialArrayOfId = attribs.id.split("  ")
-        let finalArrayOfId = intialArrayOfId.slice(1);
-        finalArrayOfId.map((item,index)=>{
-        EmailPresent=false
-        if(item==='Email'){
-          EmailPresent=true
-          }
-          else{
-            console.log("False hit",item)
-            EmailPresent = false;
-          }
-        })
-    if(EmailPresent){
+    let finalArrayOfId = intialArrayOfId.slice(1);
+    finalArrayOfId.map((item, index) => {
+      EmailPresent = false
+      if (item === 'Email') {
+        EmailPresent = true
+      }
+      else {
+        console.log("False hit", item)
+        EmailPresent = false;
+      }
+    })
+    if (EmailPresent) {
       const Email = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
       var checkEmail = Email.test(e.target.value)
-      if(checkEmail===true){
+      if (checkEmail === true) {
         let element = document.getElementById(id)
         element.style.backgroundColor = "white";
         setGlobalRedInput(false)
         setAllInputs((prev) => prev + ';' + e.target.value)
       }
-      else{
+      else {
         var element = document.getElementById(id)
         element.style.backgroundColor = "red";
         setGlobalRedInput(true)
@@ -145,7 +147,7 @@ function UserPage(props) {
       if (attribs.required === "true") {
         numInputs++
         return <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '7%' }}>
-          <input type="text" className="form-control" placeholder={attribs.placeholder!==""?attribs.placeholder:"Enter value"} onChange={(e) => handleRequiredInput(e, attribs.id,attribs)} style={{ height: 30, marginRight: '10%', width: 'auto',fontSize : 13}} id={attribs.id}></input>
+          <input type="text" className="form-control" placeholder={attribs.placeholder !== "" ? attribs.placeholder : "Enter value"} onChange={(e) => handleRequiredInput(e, attribs.id, attribs)} style={{ height: 30, marginRight: '10%', width: 'auto', fontSize: 13 }} id={attribs.id}></input>
         </div>
       }
       if (attribs.class === 'prettify') {
@@ -160,7 +162,8 @@ function UserPage(props) {
   const reactElement = parse(`${data}`, options)
   useEffect(() => {
     debugger;
-    axios.post(`${networkConstant.URL.editPageAllData}`,props)
+    setLoading(true)
+    axios.post(`${networkConstant.URL.editPageAllData}`, props)
       .then(response => {
         if (response.data === "Logout") {
           navigate("/admin")
@@ -169,6 +172,7 @@ function UserPage(props) {
           setTitle(response.data.rest[0].title)
           setDescription(response.data.rest[0].description)
           setData(response.data.data)
+          setLoading(false)
         }
       })
       .catch(err => console.log(err))
@@ -176,21 +180,37 @@ function UserPage(props) {
     , [])
 
   return (
-    <div>
-      <Toaster/>
-      <Helmet
-        title={`${title}`}
-        meta={[
-          {
-            name: `description`,
-            content: description,
-          }
-        ]} />
-      {/* <Header /> */}
-      {reactElement}
-      {/* {data? <div dangerouslySetInnerHTML={{ __html: data }}></div> : ""} */}
-      {/* {JSON.stringify(data)} */}
-    </div>
+    <>
+      {!loading ? 
+       <div>
+        <Toaster />
+        <Helmet
+          title={`${title}`}
+          meta={[
+            {
+              name: `description`,
+              content: description,
+            }
+          ]} />
+        {reactElement}
+      </div> : ""}
+
+      {loading ?
+        <div style={{ marginLeft: '47%', marginRight: '20%', marginTop: '20%', width: '50%' }}>
+          <Oval
+            height={90}
+            width={90}
+            color="#0dcaf0"
+            wrapperStyle={{ position: 'absolute' }}
+            wrapperClass=""
+            visible={loading}
+            ariaLabel='oval-loading'
+            secondaryColor="#a5deff"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+          />
+        </div> : ""}
+    </>
   )
 }
 export default UserPage;
