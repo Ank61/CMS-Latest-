@@ -11,8 +11,7 @@ import networkConstant from "../../../Common/API/uri_constant";
 import Modal from 'react-bootstrap/Modal';
 import { Button } from "react-bootstrap";
 import { Oval } from 'react-loader-spinner';
-import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
+
 interface MyComponentProps {
     name: String | undefined | null;
     path: String
