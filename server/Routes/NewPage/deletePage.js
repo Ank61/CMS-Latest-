@@ -37,9 +37,8 @@ const newSchema =   schema({
 
 app.post("/", async (request, response) => {
     try {
-      const moduleId = request.body.moduleId;
+      console.log(request.body.collectionName)
       const collectionName = request.body.collectionName;
-      const newPage = mongoose.model(collectionName, newSchema);
       await mongoose.connection.db.dropCollection(collectionName);
       return response.status(200).send("Collection deleted successfully");
     } 

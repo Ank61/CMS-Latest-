@@ -76,10 +76,11 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import Select from 'react-select';
 import CachedIcon from '@mui/icons-material/Cached';
-import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { convertToRaw } from "draft-js";
+import draftToHtml from "draftjs-to-html";
+import { convertFromHTML } from 'draft-convert';
+import { convertToRaw, EditorState, ContentState,convertFromRaw} from "draft-js";
 type moduleDetail = {
     moduleName: String
     moduleId: Number
@@ -257,10 +258,11 @@ function EmptyEdit(props: emptyEdit) {
         }
     }, [])
     function handleUpdate() {
+        const converted =draftToHtml(convertToRaw(editorState.getCurrentContent()))
         const obj = {
             moduleId: moduleDetails?.moduleId,
             moduleName: `${moduleDetails?.moduleName}`,
-            data: `${editorContent}`,
+            data: `${converted}`,
             collectionName: `${props.name}`
         }
         console.log("update clicked", obj)
@@ -533,6 +535,7 @@ function EmptyEdit(props: emptyEdit) {
                             ]
                         }}
                     />
+                     {/* <div>{draftToHtml(convertToRaw(editorState.getCurrentContent()))}</div> */}
                 </div>
                 {/* {JSON.stringify(editorContent)} */}
                 <DivModule showing={modal} onHiding={closeDivModule} closeDiv={closeDiv} />

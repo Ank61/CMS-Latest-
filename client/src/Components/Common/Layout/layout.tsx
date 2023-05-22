@@ -24,6 +24,9 @@ type title = {
     title : String //We have already header comoponent!
     moduleName : String
     pageData? : MyComponentProps[]  |undefined
+    modalDelete?:boolean
+    modal?:boolean
+    editModal? : boolean
 }
 function Layout(props : title){
     const [allData,setAllData] = useState<MyComponentProps[]>([])
@@ -37,7 +40,7 @@ function Layout(props : title){
             setAllData(response.data)  
         }).catch(error => console.log(error))
     }
-    },[])
+    },[props.modalDelete , props.modal])
     const navigate = useNavigate();
     const handleLogout =()=>{
         window.localStorage.removeItem("Login")

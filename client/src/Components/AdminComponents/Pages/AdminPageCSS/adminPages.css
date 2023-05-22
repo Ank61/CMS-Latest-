@@ -361,3 +361,12 @@ flex-direction: row;
     border: 1px solid #ffb75c;
     border-radius: 3px;
 }
+.editorClassName{
+    background-color: white;
+    height: 400px;
+    width: auto;
+}
+.wrapperClassName{
+    height: 400px;
+    width: auto;
+}

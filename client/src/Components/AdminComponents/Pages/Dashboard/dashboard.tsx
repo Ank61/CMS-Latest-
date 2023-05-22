@@ -11,7 +11,7 @@ import networkConstant from "../../../Common/API/uri_constant";
 import Modal from 'react-bootstrap/Modal';
 import { Button } from "react-bootstrap";
 import { Oval } from 'react-loader-spinner';
-
+import toast, { Toaster, useToasterStore } from 'react-hot-toast';
 interface MyComponentProps {
     name: String | undefined | null;
     path: String
@@ -77,12 +77,11 @@ function Dashboard() {
         }
         else {
             axios.get(`${networkConstant.URL.dashboard}`).then(response => {
-                console.log(response.data);
                 setAllData(response.data)
                 setLoading(false);
             }).catch(error => console.log(error))
         }
-    }, [modal])
+    }, [modal, modalDelete,editModal])
 
     const handleModalChange = (e: any) => {
         setNewPage(e.target.value)
@@ -100,7 +99,6 @@ function Dashboard() {
     }
 
     const handleRouting = (path: String) => {
-        debugger;
         console.log(`${window.location.origin}${path}`)
         window.open(`${window.location.origin}${path}`, '_blank');
     }
@@ -116,7 +114,7 @@ function Dashboard() {
             setShortPage(true)
         }
         else if (!pageError && !shortPage && newPage.length > 2 && !pathError && !shortPath) {
-            debugger;
+
             setLoading(true);
             const obj = {
                 collectionName: newPage,
@@ -124,9 +122,10 @@ function Dashboard() {
             }
             axios.post(`${networkConstant.URL.createNewPage}`, obj).then(response => {
                 setLoading(false)
-                console.log(response);
+                setModal(false)
+                setNewPage("")
+                setPath("")
             }).catch(err => console.log(err))
-            setModal(false)
         }
     }
     const handleKeyDown = (event: any) => {
@@ -159,12 +158,16 @@ function Dashboard() {
         }
     }
     const handleDeleteRequest = () => {
-        debugger;
+
         const obj = {
-            collectionName : deleteItem
+            collectionName: deleteItem
         };
-        axios.post(`${networkConstant.URL.delete}`,obj).then(response=>console.log(response)).catch(err=>console.log(err))
-        // toast.success("Deleted Successfully")
+        axios.post(`${networkConstant.URL.delete}`, obj).then(response => {
+            setModalDelete(false);
+            toast.success("Deleted Successfully")
+            setDeleteItemCheck("")
+        }).catch(err => console.log(err))
+
     }
     const handleEditClicked = (item: any, all: any) => {
         setEditName(item);
@@ -210,31 +213,24 @@ function Dashboard() {
             setShortEditShortError(true)
         }
         else if (!editError && !editShortError && editName.length > 2 && !editPathError && !editPathShort) {
-            debugger;
-            console.log(editName, editPath)
+            setLoading(true)
             // setLoading(true);
-            // const obj = {
-            //     collectionName: newPage,
-            //     path: "/" + path
-            // }
-            // axios.post(`${networkConstant.URL.createNewPage}`, obj).then(response => {
-            //     setLoading(false)
-            //     console.log(response);
-            // }).catch(err => console.log(err))
-            // setModal(false)
+            const obj = {
+                collectionName: editName,
+                modulePath: "/" + editPath
+            }
+            axios.post(`${networkConstant.URL.edit}`, obj).then(response => {
+                setLoading(false)
+                setEditModal(false)
+                toast.success("Successfully edited")
+            }).catch(err => console.log(err))
         }
     }
-    const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1
-    };
+
     return (
         <>
-            <div className="mainDiv">
-                <Layout title="Dashboard" moduleName="" />
+            <div className="mainDiv"><Toaster />
+                <Layout title="Dashboard" moduleName="" editModal={editModal} modalDelete={modalDelete} modal={modal} />
             </div>
             <div className="contentDiv" style={{ backgroundColor: '#f5f5f5' }}>
                 <br></br>

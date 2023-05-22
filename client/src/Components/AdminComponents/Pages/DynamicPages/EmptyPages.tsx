@@ -36,7 +36,6 @@ function EmptyPages(props: propsType) {
             navigate("/admin")
         }
         else {
-
             axios.post(`${networkConstant.URL.empty}`, props)
                 .then(response => {
                     if (response.data === "Logout") {

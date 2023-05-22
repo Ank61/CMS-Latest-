@@ -2,33 +2,34 @@ const localhost = "http://localhost:8080"
 const netlify = "https://mernbackend-e89k.onrender.com"
 const networkConstant = {
     URL :{
-        login : `${netlify}/login`,
-        aboutUS : `${netlify}/aboutUs`,
-        createAboutUs : `${netlify}/aboutUs/createModule`,
-        updateAboutUs : `${netlify}/aboutUs/update`,
-        deleteAboutUs : `${netlify}/aboutUs/delete`,
-        submitButton : `${netlify}/aboutUs/submitData`,
-        header : `${netlify}/header`,
-        updateHeader : `${netlify}/header/update`,
-        metaData :  `${netlify}/aboutUs/meta`,
+        login : `${localhost}/login`,
+        aboutUS : `${localhost}/aboutUs`,
+        createAboutUs : `${localhost}/aboutUs/createModule`,
+        updateAboutUs : `${localhost}/aboutUs/update`,
+        deleteAboutUs : `${localhost}/aboutUs/delete`,
+        submitButton : `${localhost}/aboutUs/submitData`,
+        header : `${localhost}/header`,
+        updateHeader : `${localhost}/header/update`,
+        metaData :  `${localhost}/aboutUs/meta`,
         //User_Components_API
-        userAboutUs : `${netlify}/aboutUs/allData`,
-        dashboard  : `${netlify}/dashboard`,
-        caches : `${netlify}/cache`,
+        userAboutUs : `${localhost}/aboutUs/allData`,
+        dashboard  : `${localhost}/dashboard`,
+        caches : `${localhost}/cache`,
         //Dynamic Bakcend Routes
-        createNewPage : `${netlify}/newPage`,
-        empty : `${netlify}/empty`,
-        editPage : `${netlify}/editPage`,
-        editPageAllData : `${netlify}/editPage/allData`,
-        editPageDelete : `${netlify}/newPage/delete`,
-        editPageUpdate : `${netlify}/newPage/update`,
-        editPageUpdateModule : `${netlify}/newPage/updateModule`,
-        deleteModule : `${netlify}/deleteDynamic`,
-        newModule : `${netlify}/newModule`,
-        update : `${netlify}/update`,
-        delete : `${netlify}/delete`,
+        createNewPage : `${localhost}/newPage`,
+        empty : `${localhost}/empty`,
+        editPage : `${localhost}/editPage`,
+        editPageAllData : `${localhost}/editPage/allData`,
+        editPageDelete : `${localhost}/newPage/delete`,
+        editPageUpdate : `${localhost}/newPage/update`,
+        editPageUpdateModule : `${localhost}/newPage/updateModule`,
+        deleteModule : `${localhost}/deleteDynamic`,
+        newModule : `${localhost}/newModule`,
+        update : `${localhost}/update`,
+        delete : `${localhost}/delete`,
+        edit : `${localhost}/edit`,
         //Extra
-        getLocal : `${netlify}`
+        getLocal : `${localhost}`
     } 
 }
 export default networkConstant;
