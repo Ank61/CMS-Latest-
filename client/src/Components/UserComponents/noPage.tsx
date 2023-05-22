@@ -8,7 +8,7 @@ const [loading , setLoading] = useState<boolean>(true)
     useEffect(()=>{
        setTimeout(()=>{
         setLoading(false)
-       },3000) 
+       },4000) 
     },[])
     return (
         <>
