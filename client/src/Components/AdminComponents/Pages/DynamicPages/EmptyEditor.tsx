@@ -81,6 +81,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from "draftjs-to-html";
 import { convertFromHTML } from 'draft-convert';
 import { convertToRaw, EditorState, ContentState,convertFromRaw} from "draft-js";
+import ArticleIcon from '@mui/icons-material/Article';
 type moduleDetail = {
     moduleName: String
     moduleId: Number
@@ -245,7 +246,13 @@ function EmptyEdit(props: emptyEdit) {
                     }, 1000)
                 } else {
                     setModuleDetails(response.data[0].Modules[`${id}`])
-                    setEditorContent(response.data[0].Modules[`${id}`].data)
+                    //setEditorContent(response.data[0].Modules[`${id}`].data)
+                    const data:string = response.data[0].Modules[`${id}`].data
+                    const contentState: ContentState | null  = convertFromHTML(data);
+    if (contentState !== null) {
+      const newEditorState = EditorState.createWithContent(contentState);
+      setEditorState(newEditorState);
+    }
                     setTitle(response.data[0].title)
                     setDescription(response.data[0].description)
                     const obj = {
@@ -467,6 +474,9 @@ function EmptyEdit(props: emptyEdit) {
             }
         }).catch(err => console.log(err))
     }
+    function handleLivePage(){
+window.open(`http://${window.location.host}${props.path}`, '_blank');
+    }
     return (
         <>
             <div className="mainDiv">
@@ -491,6 +501,7 @@ function EmptyEdit(props: emptyEdit) {
                         {/* <button className='updateButton' onClick={handleModelChange}>Add Div</button> */}
                         {/* <button style={!checkSize? {border:'none', backgroundColor : '#f5f5f5',marginRight : 7} : {opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight : 7}} onClick={()=>setCheckSize(false)}><LaptopIcon/></button>
                 <button style={!checkSize?{opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight :20} :{border:'none', backgroundColor : '#f5f5f5',marginRight :20}} onClick={()=>setCheckSize(true)}><SmartphoneIcon/></button> */}
+                        <button className='updateButton' onClick={()=>handleLivePage()}><ArticleIcon style={{ height: 20 }} /> Live Page</button>
                         <button className='developerButton' style={{ color: '#ef0b60' }} onClick={handleBootstrap}><BoltIcon style={{ height: 21, color: '#ef0b60' }} />Developer</button>
                         <button className='developerButton' onClick={handleCache}><CachedIcon style={{ height: 18 }} /> Clear Cache</button>
                         <button className='updateButton' onClick={() => setTagModal(true)}><CodeIcon style={{ height: 21 }} /> Meta Tag</button>

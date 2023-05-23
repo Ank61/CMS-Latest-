@@ -14,7 +14,7 @@ function UserPage(props) {
   const [description, setDescription] = useState("Initial Description")
   const navigate = useNavigate()
   const [allInputs, setAllInputs] = useState("");
-  const [globalRedIput, setGlobalRedInput] = useState(false)
+  const [globalRedIput, setGlobalRedInput] = useState(false);
   const [loading, setLoading] = useState(false);
   // const [InputArray, setInputArray] = useState([])
 

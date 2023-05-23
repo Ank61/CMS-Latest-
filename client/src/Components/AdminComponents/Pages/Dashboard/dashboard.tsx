@@ -12,6 +12,8 @@ import Modal from 'react-bootstrap/Modal';
 import { Button } from "react-bootstrap";
 import { Oval } from 'react-loader-spinner';
 import toast, { Toaster, useToasterStore } from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
+import CircleIcon from '@mui/icons-material/Circle';
 interface MyComponentProps {
     name: String | undefined | null;
     path: String
@@ -69,7 +71,10 @@ function Dashboard() {
     const [editPathError, setEditPathError] = useState<boolean>(false)
     const [editPathShort, setEditPathShort] = useState<boolean>(false)
     const [editPathEmpty, setEditPathEmpty] = useState<boolean>(false)
-
+    const [deleteActive ,setDeleteActive] = useState<boolean>(false)
+    const [editCheck ,setEditActive] = useState<boolean>(false)
+    const [newActive ,setNewActive] = useState<boolean>(false)
+    const [seperateLoading , setSeperateLoading] = useState<boolean>(false)
     useEffect(() => {
         setLoading(true);
         if (!window.localStorage.getItem("Login")) {
@@ -81,8 +86,8 @@ function Dashboard() {
                 setLoading(false);
             }).catch(error => console.log(error))
         }
-    }, [modal, modalDelete,editModal])
-
+    }, [newActive, deleteActive,editCheck])
+    const { page } = useParams();
     const handleModalChange = (e: any) => {
         setNewPage(e.target.value)
         if (e.target.value > 15) {
@@ -125,6 +130,7 @@ function Dashboard() {
                 setModal(false)
                 setNewPage("")
                 setPath("")
+                setNewActive(!newActive);
             }).catch(err => console.log(err))
         }
     }
@@ -166,6 +172,7 @@ function Dashboard() {
             setModalDelete(false);
             toast.success("Deleted Successfully")
             setDeleteItemCheck("")
+            setDeleteActive(!deleteActive)
         }).catch(err => console.log(err))
 
     }
@@ -213,16 +220,17 @@ function Dashboard() {
             setShortEditShortError(true)
         }
         else if (!editError && !editShortError && editName.length > 2 && !editPathError && !editPathShort) {
-            setLoading(true)
+            setSeperateLoading(true)
             // setLoading(true);
             const obj = {
                 collectionName: editName,
                 modulePath: "/" + editPath
             }
             axios.post(`${networkConstant.URL.edit}`, obj).then(response => {
-                setLoading(false)
+                setSeperateLoading(false)
                 setEditModal(false)
                 toast.success("Successfully edited")
+                setEditActive(!editCheck)
             }).catch(err => console.log(err))
         }
     }
@@ -230,7 +238,7 @@ function Dashboard() {
     return (
         <>
             <div className="mainDiv"><Toaster />
-                <Layout title="Dashboard" moduleName="" editModal={editModal} modalDelete={modalDelete} modal={modal} />
+                <Layout title="Dashboard" moduleName="" editModal={editCheck} modalDelete={deleteActive} modal={newActive} />
             </div>
             <div className="contentDiv" style={{ backgroundColor: '#f5f5f5' }}>
                 <br></br>
@@ -246,6 +254,7 @@ function Dashboard() {
                                 <th scope="col" style={{ textAlign: 'center' }}>Page Name</th>
                                 <th scope="col" style={{ textAlign: 'center' }}>No. of Modules</th>
                                 <th scope="col" style={{ textAlign: 'center' }}>Route Path</th>
+                                <th scope="col" style={{ textAlign: 'center' }}>Status</th>
                                 <th scope="col" style={{ textAlign: 'center' }}>Edit</th>
                                 <th scope="col" style={{ textAlign: 'center' }}>View</th>
                             </tr>
@@ -255,7 +264,10 @@ function Dashboard() {
                                 <td style={{ textAlign: 'center' }} key={index}>{item.name}</td>
                                 <td style={{ textAlign: 'center' }}>{item.data}</td>
                                 <td style={{ textAlign: 'center' }}>{item.path}</td>
-                                <td style={{ textAlign: 'center' }} ><button className="buttonHover"><EditIcon className="editButton" onClick={() => handleEditClicked(item.name, item)} /></button> &nbsp; <button className="buttonHoverDelete"><DeleteIcon className="deleteButton" onClick={() => handleDelete(item.name)} /></button></td>
+                                <td style={{ textAlign: 'center'}}>{item.name==="homes" ? 
+                                <div style={{padding:'2px 0px 2px 0px',fontSize:13,backgroundColor : '#fef2f2',fontWeight:650,color : '#fc7777',width:'72%',margin:'auto',borderRadius:4}}><CircleIcon style={{fontSize :7,color:'#fc7777'}}/>&nbsp;Reserved</div> :
+                                <div style={{padding:'2px 0px 2px 0px' ,fontSize:13,backgroundColor : '#ebfcfb',fontWeight:650,color : '#2ad2ce',width:'56%',marginLeft:16,borderRadius:4}}><CircleIcon style={{fontSize :7,color:'#36c6d5'}}/>&nbsp;Open</div>}</td>
+                                <td style={{ textAlign: 'center' }} ><button className="buttonHover" disabled={item.name==="homes" ? true:false }  onClick={() => handleEditClicked(item.name, item)}><EditIcon className={item.name==="homes" ? "buttonHoverDisable":"editButton"}  /></button> &nbsp; <button className="buttonHoverDelete" onClick={() => handleDelete(item.name)} disabled={item.name==="homes" ? true:false }><DeleteIcon className={item.name==="homes" ? "buttonHoverDisableDelete":"deleteButton"} /></button></td>
                                 <td style={{ textAlign: 'center' }} onClick={() => handleRouting(item.path)}><button className="buttonHoverPreview"><VisibilityIcon className="visibleIcon" /></button></td>
                             </tr>) : ""}
                         </tbody>
@@ -420,7 +432,7 @@ function Dashboard() {
                         color="#0dcaf0"
                         wrapperStyle={{ position: 'absolute' }}
                         wrapperClass=""
-                        visible={loading}
+                        visible={seperateLoading}
                         ariaLabel='oval-loading'
                         secondaryColor="#a5deff"
                         strokeWidth={2}

@@ -80,6 +80,7 @@
     "@types/react-draft-wysiwyg": "^1.13.4",
     "@types/react-helmet": "^6.1.6",
     "@types/react-html-parser": "^2.0.2",
-    "@types/styled-components": "^5.1.26"
+    "@types/styled-components": "^5.1.26",
+    "proxy" : "http://localhost:8080"
   }
 }

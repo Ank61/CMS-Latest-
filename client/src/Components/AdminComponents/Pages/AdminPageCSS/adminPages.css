@@ -370,3 +370,13 @@ flex-direction: row;
     height: 400px;
     width: auto;
 }
+.buttonHoverDisable{
+    font-size: 20px !important;
+ color: #d2e1ed;
+ background-color: white;
+}
+.buttonHoverDisableDelete{
+    font-size: 20px !important;
+    color: #e8d4d4;
+    background-color: white;
+   }
