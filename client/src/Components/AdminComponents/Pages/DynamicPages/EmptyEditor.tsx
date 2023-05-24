@@ -544,7 +544,8 @@ function EmptyEdit(props: emptyEdit) {
         }).catch(err => console.log(err))
     }
     function handleLivePage() {
-        window.open(`http://${window.location.host}${props.path}`, '_blank');
+        //window.open(`http://${window.location.host}/user${props.path}`, '_blank');
+        navigate(`/user${props.path}`);
     }
     const handleChangeTextArea=(event:React.ChangeEvent<HTMLTextAreaElement>)=>{
         debugger;
