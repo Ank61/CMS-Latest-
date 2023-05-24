@@ -76,12 +76,12 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import Select from 'react-select';
 import CachedIcon from '@mui/icons-material/Cached';
-import { Editor } from 'react-draft-wysiwyg';
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import draftToHtml from "draftjs-to-html";
-import { convertFromHTML } from 'draft-convert';
-import { convertToRaw, EditorState, ContentState,convertFromRaw} from "draft-js";
+import {Jodit} from "jodit";
+// import 'jodit/build/jodit.min.css';
+//import "../../../../../node_modules/jodit/buid/jodit.css";
 import ArticleIcon from '@mui/icons-material/Article';
+import 'jodit';
+//import  convertFromHTML  from 'draft-js-import-html';
 type moduleDetail = {
     moduleName: String
     moduleId: Number
@@ -137,7 +137,6 @@ interface emptyEdit {
 
 function EmptyEdit(props: emptyEdit) {
     const [moduleDetails, setModuleDetails] = useState<moduleDetail>()
-    const [editorContent, setEditorContent] = useState<string>('');
     const [modal, setModal] = useState<boolean>(false)
     const [modalButton, setModalButton] = useState(false)
     const [backgroundImageModal, setBackgroundImageModal] = useState(false)
@@ -168,25 +167,14 @@ function EmptyEdit(props: emptyEdit) {
     const [showSubmitButton, setShowSubmitButton] = useState(false)
     const [buttonText, setButtonText] = useState("")
     const [finalForm, setFinalForm] = useState<any[] | undefined>()
-    const [editorState, setEditorState] = useState(EditorState.createEmpty());
-    const [text, setText] = useState();
-    const onEditorStateChange = function (editorState: any) {
-        setEditorState(editorState);
-        const { blocks } = convertToRaw(editorState.getCurrentContent());
-        /*let text = blocks.reduce((acc, item) => {
-          acc = acc + item.text;
-          return acc;
-        }, "");*/
-        let text = editorState.getCurrentContent().getPlainText("\u0001");
-        setText(text);
-    };
+    const [editorContent, setEditorContent] = useState<string>('');
+    const editorRef= useRef<HTMLTextAreaElement>(null);
     var lastMatchingItem: Item;
     const options = [
         { value: 'Email', label: 'Email' },
         { value: 'Password', label: 'Password' },
         { value: 'Number', label: 'Number' },
     ];
-
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
@@ -202,10 +190,10 @@ function EmptyEdit(props: emptyEdit) {
         if (!anchorEl) {
             setAnchorEl(event.currentTarget);
             a11yProps(0)
-            setCurrentPosition(editorReff.current)
-            var editor = editorReff.current?.getEditor()
-            var selection = editor.selection.get()
-            setSelectionIndex(selection)
+            // setCurrentPosition(editorReff.current)
+            // var editor = editorReff.current?.getEditor()
+            // var selection = editor.selection.get()
+            // setSelectionIndex(selection)
         }
         else {
             setAnchorEl(null);
@@ -246,13 +234,93 @@ function EmptyEdit(props: emptyEdit) {
                     }, 1000)
                 } else {
                     setModuleDetails(response.data[0].Modules[`${id}`])
-                    //setEditorContent(response.data[0].Modules[`${id}`].data)
-                    const data:string = response.data[0].Modules[`${id}`].data
-                    const contentState: ContentState | null  = convertFromHTML(data);
-    if (contentState !== null) {
-      const newEditorState = EditorState.createWithContent(contentState);
-      setEditorState(newEditorState);
-    }
+                    const data = response.data[0].Modules[`${id}`].data;
+                    if(editorRef.current){
+                        var editor = Jodit.make(editorRef.current, {
+                            zIndex: 0,
+                            readonly: false,
+                            activeButtonsInReadOnly: ['source', 'fullsize', 'print', 'about', 'dots'],
+                            toolbarButtonSize: 'middle',
+                            theme: 'default',
+                            saveModeInCookie: false,
+                            spellcheck: true,
+                            editorCssClass: false,
+                            triggerChangeEvent: true,
+                            width: 'auto',
+                            height: 'auto',
+                            minHeight: 100,
+                            direction: '',
+                            language: 'auto',
+                            debugLanguage: false,
+                            i18n: 'en',
+                            tabIndex: -1,
+                            toolbar: true,
+                            enter: "P",
+                            useSplitMode: false,
+                            colors: {
+                                greyscale:  ['#000000', '#434343', '#666666', '#999999', '#B7B7B7', '#CCCCCC', '#D9D9D9', '#EFEFEF', '#F3F3F3', '#FFFFFF'],
+                                palette:    ['#980000', '#FF0000', '#FF9900', '#FFFF00', '#00F0F0', '#00FFFF', '#4A86E8', '#0000FF', '#9900FF', '#FF00FF'],
+                                full: [
+                                    '#E6B8AF', '#F4CCCC', '#FCE5CD', '#FFF2CC', '#D9EAD3', '#D0E0E3', '#C9DAF8', '#CFE2F3', '#D9D2E9', '#EAD1DC',
+                                    '#DD7E6B', '#EA9999', '#F9CB9C', '#FFE599', '#B6D7A8', '#A2C4C9', '#A4C2F4', '#9FC5E8', '#B4A7D6', '#D5A6BD',
+                                    '#CC4125', '#E06666', '#F6B26B', '#FFD966', '#93C47D', '#76A5AF', '#6D9EEB', '#6FA8DC', '#8E7CC3', '#C27BA0',
+                                    '#A61C00', '#CC0000', '#E69138', '#F1C232', '#6AA84F', '#45818E', '#3C78D8', '#3D85C6', '#674EA7', '#A64D79',
+                                    '#85200C', '#990000', '#B45F06', '#BF9000', '#38761D', '#134F5C', '#1155CC', '#0B5394', '#351C75', '#733554',
+                                    '#5B0F00', '#660000', '#783F04', '#7F6000', '#274E13', '#0C343D', '#1C4587', '#073763', '#20124D', '#4C1130'
+                                ]
+                            },
+                            colorPickerDefaultTab: 'background',
+                            imageDefaultWidth: 300,
+                            removeButtons: [],
+                            disablePlugins: [],
+                            extraButtons: [],
+                            sizeLG: 900,
+                            sizeMD: 700,
+                            sizeSM: 400,
+                            buttons: [
+                                'source', '|',
+                                'bold',
+                                'strikethrough',
+                                'underline',
+                                'italic', '|',
+                                'ul',
+                                'ol', '|',
+                                'outdent', 'indent',  '|',
+                                'font',
+                                'fontsize',
+                                'brush',
+                                'paragraph', '|',
+                                'image',
+                                'video',
+                                'table',
+                                'link', '|',
+                                'align', 'undo', 'redo', '|',
+                                'hr',
+                                'eraser',
+                                'copyformat', '|',
+                                'symbol',
+                                'fullsize',
+                                'print',
+                                'about'
+                            ],
+                            buttonsXS: [
+                                'bold',
+                                'image', '|',
+                                'brush',
+                                'paragraph', '|',
+                                'align', '|',
+                                'undo', 'redo', '|',
+                                'eraser',
+                                'dots'
+                            ],
+                            events: {},
+                            textIcons: false,
+                        });
+                        editor.value = data
+                        editor.events.on('change', () => {
+                            setEditorContent(editor.value);
+                          });
+                    }
                     setTitle(response.data[0].title)
                     setDescription(response.data[0].description)
                     const obj = {
@@ -265,11 +333,11 @@ function EmptyEdit(props: emptyEdit) {
         }
     }, [])
     function handleUpdate() {
-        const converted =draftToHtml(convertToRaw(editorState.getCurrentContent()))
+        // const converted = draftToHtml(convertToRaw(editorState.getCurrentContent()))
         const obj = {
             moduleId: moduleDetails?.moduleId,
             moduleName: `${moduleDetails?.moduleName}`,
-            data: `${converted}`,
+            data: `${editorContent}`,
             collectionName: `${props.name}`
         }
         console.log("update clicked", obj)
@@ -302,11 +370,12 @@ function EmptyEdit(props: emptyEdit) {
         ).catch(err => console.log(err))
     }
     const closeDivModule = (newData: string) => {
-        var editor = cursorPosition?.getEditor();
-        if (!editor) return;
-        var div = `${newData}`
-        editor.html.insert(div, selectionIndex);
-    }
+        debugger;
+        console.log(newData)
+        //  var editor = cursorPosition?.getEditor();
+        // if (!editor) return;
+        setEditorContent((prev)=>prev+newData)
+}
     const closeDiv = () => {
         setModal(false)
     }
@@ -344,7 +413,7 @@ function EmptyEdit(props: emptyEdit) {
     const handleDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setDescription(e.target.value);
     }
-    const editorReff = useRef<FroalaEditor>(null);
+    // const editorReff = useRef<FroalaEditor>(null);
     //Do not delete this
     // const handleModelChange = () => {
     //     const editor = editorReff.current?.getEditor();
@@ -474,9 +543,15 @@ function EmptyEdit(props: emptyEdit) {
             }
         }).catch(err => console.log(err))
     }
-    function handleLivePage(){
-window.open(`http://${window.location.host}${props.path}`, '_blank');
+    function handleLivePage() {
+        window.open(`http://${window.location.host}${props.path}`, '_blank');
     }
+    const handleChangeTextArea=(event:React.ChangeEvent<HTMLTextAreaElement>)=>{
+        debugger;
+            setEditorContent(event.target.value);
+    }
+    //editor.setEditorValue('<p>start</p>')
+   
     return (
         <>
             <div className="mainDiv">
@@ -501,7 +576,7 @@ window.open(`http://${window.location.host}${props.path}`, '_blank');
                         {/* <button className='updateButton' onClick={handleModelChange}>Add Div</button> */}
                         {/* <button style={!checkSize? {border:'none', backgroundColor : '#f5f5f5',marginRight : 7} : {opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight : 7}} onClick={()=>setCheckSize(false)}><LaptopIcon/></button>
                 <button style={!checkSize?{opacity: '0.1',border:'none', backgroundColor : '#f5f5f5',marginRight :20} :{border:'none', backgroundColor : '#f5f5f5',marginRight :20}} onClick={()=>setCheckSize(true)}><SmartphoneIcon/></button> */}
-                        <button className='updateButton' onClick={()=>handleLivePage()}><ArticleIcon style={{ height: 20 }} /> Live Page</button>
+                        <button className='updateButton' onClick={() => handleLivePage()}><ArticleIcon style={{ height: 20 }} /> Live Page</button>
                         <button className='developerButton' style={{ color: '#ef0b60' }} onClick={handleBootstrap}><BoltIcon style={{ height: 21, color: '#ef0b60' }} />Developer</button>
                         <button className='developerButton' onClick={handleCache}><CachedIcon style={{ height: 18 }} /> Clear Cache</button>
                         <button className='updateButton' onClick={() => setTagModal(true)}><CodeIcon style={{ height: 21 }} /> Meta Tag</button>
@@ -525,7 +600,7 @@ window.open(`http://${window.location.host}${props.path}`, '_blank');
                             toolbarButtons: ['insertHTML', 'align', "quote", "draggable", "fontAwesome", "embedly", "wordPaste", "emoticons", "insertVideo", "insertLink", "inlineClass", "inlineStyle", "html", "getPDF", 'insertImage', 'backgroundColor', 'textColor', 'color', 'fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', 'paragraphFormat', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertFile', 'insertTable', 'specialCharacters', 'selectAll', 'clearFormatting', 'print', 'help', 'html', 'undo', 'redo', 'trackChanges', 'markdown', "insertHR", 'uploadFile'],
                         }} 
                     /> */}
-                    <Editor
+                    {/* <Editor
                         editorState={editorState}
                         toolbarClassName="toolbarClassName"
                         wrapperClassName="wrapperClassName"
@@ -545,8 +620,16 @@ window.open(`http://${window.location.host}${props.path}`, '_blank');
                                 { text: "HONEYDEW", value: "honeydew", url: "honeydew" }
                             ]
                         }}
-                    />
-                     {/* <div>{draftToHtml(convertToRaw(editorState.getCurrentContent()))}</div> */}
+                    /> */}
+                     {/* <ReactQuill
+  value={editorContent}
+  onChange={setEditorContent}
+  modules={modules}
+  formats={formats}
+/> */}
+<textarea id="editor" value={editorContent} ref={editorRef}></textarea>
+<div>{JSON.stringify(editorContent)}</div>
+                    {/* <div>{draftToHtml(convertToRaw(editorState.getCurrentContent()))}</div> */}
                 </div>
                 {/* {JSON.stringify(editorContent)} */}
                 <DivModule showing={modal} onHiding={closeDivModule} closeDiv={closeDiv} />

@@ -28,21 +28,21 @@ function App() {
     <div>
       <Router>
         <Routes>
+        {allRoutes ? allRoutes.map((item : any,index : number)=><Route path= {`${item.path}`} key={index} element={<UserPage path={`${item.path}`} name={`${item.name}`}/>}></Route>):""}
           {/* Routes for the USER */}
           <Route path="/" element={<Home />}></Route>
           <Route path="/aboutus" element={<AboutUs/>}></Route>
           <Route path="/adminLogin" element={<Login/>}></Route>
           {/* Routes for the ADMIN*/}
           <Route path="/admin/dashboard" element={<Dashboard/>}></Route>
-          <Route path="/admin/aboutus" element={<AdminAboutUs/>}></Route>
+          {/* <Route path="/admin/aboutus" element={<AdminAboutUs/>}></Route>
           <Route path="/admin/header" element={<Header/>}></Route>
           <Route path= {`/admin/aboutus/:id`} element={<AboutUsDynamic/>}></Route>
-          <Route path= {`/aboutus/preview`} element={<AboutUsPreview/>}></Route>
+          <Route path= {`/aboutus/preview`} element={<AboutUsPreview/>}></Route> */}
           {/* Dynamic route for ADMIN*/}
           {allRoutes? allRoutes.map((item:any ,index : number)=> <Route path= {`/admin${item.path}/:id`} key={index} element={<EmptyEdit path={`${item.path}`} name={`${item.name}`}/>}></Route>):""} 
           {allRoutes? allRoutes.map((item:any,index : number)=><Route path= {`/admin${item.path}`} key={index} element={<EmptyPages path={`${item.name}`} pathName={`${item.path}`}/>}></Route>):""}
           {/*Dynamic route for USER*/}
-          {allRoutes ? allRoutes.map((item : any,index : number)=><Route path= {`${item.path}`} key={index} element={<UserPage path={`${item.path}`} name={`${item.name}`}/>}></Route>):""}
           {/*Route for Preview*/}
           {/*Restricted Route*/}
           {/* <Route path="/admin/home" element={<Portal admin={authenticate}/>}></Route> */}
