@@ -77,6 +77,8 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import Select from 'react-select';
 import CachedIcon from '@mui/icons-material/Cached';
 import {Jodit} from "jodit";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+// import calender from "../";
 // import 'jodit/build/jodit.min.css';
 //import "../../../../../node_modules/jodit/buid/jodit.css";
 import ArticleIcon from '@mui/icons-material/Article';
@@ -273,7 +275,15 @@ function EmptyEdit(props: emptyEdit) {
                             imageDefaultWidth: 300,
                             removeButtons: [],
                             disablePlugins: [],
-                            extraButtons: [],
+                            extraButtons: [
+                                {
+                                    name: 'insertDate',
+                                    iconURL: 'http://xdsoft.net/jodit/logo.png',
+                                    exec: function (edit:any) {
+                                        edit.s.insertHTML(new Date().toDateString());
+                                    }
+                                }
+                            ],
                             sizeLG: 900,
                             sizeMD: 700,
                             sizeSM: 400,
@@ -301,7 +311,14 @@ function EmptyEdit(props: emptyEdit) {
                                 'symbol',
                                 'fullsize',
                                 'print',
-                                'about'
+                                'about',
+                                // {
+                                //     name: 'insertDate',
+                                //     iconURL: ,
+                                //     exec: function (edit:any) {
+                                //         edit.s.insertHTML(new Date().toDateString());
+                                //     }
+                                // }
                             ],
                             buttonsXS: [
                                 'bold',
@@ -601,38 +618,9 @@ function EmptyEdit(props: emptyEdit) {
                             toolbarButtons: ['insertHTML', 'align', "quote", "draggable", "fontAwesome", "embedly", "wordPaste", "emoticons", "insertVideo", "insertLink", "inlineClass", "inlineStyle", "html", "getPDF", 'insertImage', 'backgroundColor', 'textColor', 'color', 'fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', 'paragraphFormat', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertFile', 'insertTable', 'specialCharacters', 'selectAll', 'clearFormatting', 'print', 'help', 'html', 'undo', 'redo', 'trackChanges', 'markdown', "insertHR", 'uploadFile'],
                         }} 
                     /> */}
-                    {/* <Editor
-                        editorState={editorState}
-                        toolbarClassName="toolbarClassName"
-                        wrapperClassName="wrapperClassName"
-                        editorClassName="editorClassName"
-                        onEditorStateChange={onEditorStateChange}
-                        mention={{
-                            separator: " ",
-                            trigger: "@",
-                            suggestions: [
-                                { text: "APPLE", value: "apple" },
-                                { text: "BANANA", value: "banana", url: "banana" },
-                                { text: "CHERRY", value: "cherry", url: "cherry" },
-                                { text: "DURIAN", value: "durian", url: "durian" },
-                                { text: "EGGFRUIT", value: "eggfruit", url: "eggfruit" },
-                                { text: "FIG", value: "fig", url: "fig" },
-                                { text: "GRAPEFRUIT", value: "grapefruit", url: "grapefruit" },
-                                { text: "HONEYDEW", value: "honeydew", url: "honeydew" }
-                            ]
-                        }}
-                    /> */}
-                     {/* <ReactQuill
-  value={editorContent}
-  onChange={setEditorContent}
-  modules={modules}
-  formats={formats}
-/> */}
 <textarea id="editor" value={editorContent} ref={editorRef}></textarea>
-<div>{JSON.stringify(editorContent)}</div>
-                    {/* <div>{draftToHtml(convertToRaw(editorState.getCurrentContent()))}</div> */}
+{/* <div>{JSON.stringify(editorContent)}</div> */}
                 </div>
-                {/* {JSON.stringify(editorContent)} */}
                 <DivModule showing={modal} onHiding={closeDivModule} closeDiv={closeDiv} />
                 <ButtonModule showing={modalButton} onHiding={closeButtonModule} closeButtonDiv={closeButtonModuleDiv} />
                 <BackgroundModule showing={backgroundImageModal} onHiding={closeBackground} closeBackground={closeBackgroundModule} />
