@@ -76,14 +76,22 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import Select from 'react-select';
 import CachedIcon from '@mui/icons-material/Cached';
-import {Jodit} from "jodit";
+import {Jodit} from "jodit"; 
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 // import calender from "../";
-// import 'jodit/build/jodit.min.css';
-//import "../../../../../node_modules/jodit/buid/jodit.css";
 import ArticleIcon from '@mui/icons-material/Article';
-import 'jodit';
-//import  convertFromHTML  from 'draft-js-import-html';
+import calender from "../../../../Images/calendar.png";
+import bold from "../../../../Images/bold-option.png";
+import indent from "../../../../Images/indent.png";
+import outdent from "../../../../Images/indent (3).png";
+import underline from "../../../../Images/underline.png";
+import italic from "../../../../Images/italic-font.png";
+//import { faStrikethrough, fas } from '@fortawesome/free-solid-svg-icons';
+import strike from "../../../../Images/strikethrough-text-option-interface-symbol.png";
+import line from "../../../../Images/minus-sign-of-a-line-in-horizontal-position.png";
+import table from "../../../../Images/table (1).png";
+import { mobile } from 'jodit/types/plugins/mobile/mobile';
+
 type moduleDetail = {
     moduleName: String
     moduleId: Number
@@ -171,6 +179,7 @@ function EmptyEdit(props: emptyEdit) {
     const [finalForm, setFinalForm] = useState<any[] | undefined>()
     const [editorContent, setEditorContent] = useState<string>('');
     const editorRef= useRef<HTMLTextAreaElement>(null);
+    const [dataFinal ,setDataFinal] = useState<string>('')
     var lastMatchingItem: Item;
     const options = [
         { value: 'Email', label: 'Email' },
@@ -238,19 +247,21 @@ function EmptyEdit(props: emptyEdit) {
                     setModuleDetails(response.data[0].Modules[`${id}`])
                     const data = response.data[0].Modules[`${id}`].data;
                     if(editorRef.current){
-                        var editor = Jodit.make(editorRef.current, {
+                        var editor = Jodit.make(editorRef.current
+                            ,
+                             {
                             zIndex: 0,
                             readonly: false,
                             activeButtonsInReadOnly: ['source', 'fullsize', 'print', 'about', 'dots'],
-                            toolbarButtonSize: 'middle',
+                            toolbarButtonSize: 'medium',
                             theme: 'default',
                             saveModeInCookie: false,
                             spellcheck: true,
-                            editorCssClass: false,
+                            editorCssClass: 'editorStyling',
                             triggerChangeEvent: true,
                             width: 'auto',
                             height: 'auto',
-                            minHeight: 100,
+                            minHeight: 460,
                             direction: '',
                             language: 'auto',
                             debugLanguage: false,
@@ -276,49 +287,117 @@ function EmptyEdit(props: emptyEdit) {
                             removeButtons: [],
                             disablePlugins: [],
                             extraButtons: [
-                                {
-                                    name: 'insertDate',
-                                    iconURL: 'http://xdsoft.net/jodit/logo.png',
-                                    exec: function (edit:any) {
-                                        edit.s.insertHTML(new Date().toDateString());
-                                    }
-                                }
+                                // {
+                                //     name: 'insertDate',
+                                //     iconURL: 'http://xdsoft.net/jodit/logo.png',
+                                //     exec: function (edit:any) {
+                                //         edit.s.insertHTML(new Date().toDateString());
+                                //     }
+                                // }
                             ],
                             sizeLG: 900,
                             sizeMD: 700,
                             sizeSM: 400,
                             buttons: [
-                                'source', '|',
-                                'bold',
-                                'strikethrough',
-                                'underline',
-                                'italic', '|',
+                                {
+                                    name: 'bold',
+                                    iconURL: bold,
+                                    tooltip: 'Bold',
+                                    exec: function (editor : any) {
+                                        editor.execCommand('bold');
+                                    }
+                                },
+                                {
+                                    name: 'strikethrough',
+                                    iconURL: strike,
+                                    tooltip: 'Strikethrough',
+                                    exec: function (editor : any) {
+                                        editor.execCommand('strikethrough');
+                                    }
+                                }
+                                ,
+                                {
+                                    name: 'outdent',
+                                    iconURL: underline,
+                                    tooltip: 'Underline',
+                                    className: 'custom-button',
+                                    exec: function (editor : any) {
+                                        editor.execCommand('underline');
+                                    }
+                                },
+                                {
+                                    name: 'italic',
+                                    iconURL: italic,
+                                    tooltip: 'Italic',
+                                    exec: function (editor : any) {
+                                        editor.execCommand('italic');
+                                    }
+                                }
+                                , '|',
                                 'ul',
                                 'ol', '|',
-                                'outdent', 'indent',  '|',
+                                {
+                                    name: 'outdent',
+                                    iconURL: outdent,
+                                    tooltip: 'Outdent Line',
+                                    exec: function (editor : any) {
+                                        editor.execCommand('outdent');
+                                    }
+                                }
+                                ,
+                                {
+                                    name: 'indent',
+                                    iconURL: indent,
+                                    tooltip: 'Indent Line',
+                                    exec: function (editor : any) {
+                                        editor.execCommand('indent');
+                                    }
+                                }
+                                ,  '|',
                                 'font',
                                 'fontsize',
                                 'brush',
                                 'paragraph', '|',
                                 'image',
                                 'video',
-                                'table',
+                                {
+                                    name: 'table',
+                                    iconURL: table,
+                                    tooltip: 'Insert Table',
+                                    exec: function (editor : any) {
+                                        var tableHTML = `<table>
+                        <tr>
+                        <th>Header 1</th>
+                        <th>Header 2</th>
+                        </tr>
+                        <tr>
+                        <td>Cell 1</td>
+                        <td>Cell 2</td>
+                        </tr>
+                        </table>`;
+                        editor.s.insertHTML( tableHTML);
+                                    }
+                                }
+                                ,
                                 'link', '|',
                                 'align', 'undo', 'redo', '|',
-                                'hr',
-                                'eraser',
-                                'copyformat', '|',
-                                'symbol',
-                                'fullsize',
-                                'print',
-                                'about',
-                                // {
-                                //     name: 'insertDate',
-                                //     iconURL: ,
-                                //     exec: function (edit:any) {
-                                //         edit.s.insertHTML(new Date().toDateString());
-                                //     }
-                                // }
+                                 '|',
+                                {
+                                    name: 'insertDate',
+                                    iconURL: calender,
+                                    tooltip: 'Insert Date',
+                                    exec: function (edit:any) {
+                                        edit.s.insertHTML(new Date().toDateString());
+                                    }
+                                },
+                                {
+                                    name: 'Hr',
+                                    iconURL:line ,
+                                    tooltip: 'Insert line',
+                                    exec: function (edit:any) {
+                                        edit.s.insertHTML('<hr/>');
+                                    }
+                                }
                             ],
                             buttonsXS: [
                                 'bold',
@@ -330,13 +409,20 @@ function EmptyEdit(props: emptyEdit) {
                                 'eraser',
                                 'dots'
                             ],
-                            events: {},
-                            textIcons: false,
+                            events: {
+                                afterCommand: function (command:string, value:any) {
+                                    if (command === 'justifyLeft' || command === 'justifyCenter' || command === 'justifyRight') {
+                                      editor.s.focus();
+                                      editor.execCommand('formatBlock', false, 'div');
+                                      editor.execCommand(command, false, value);
+                                    }
+                                  }
+                            },
                         });
-                        editor.value = data
                         editor.events.on('change', () => {
                             setEditorContent(editor.value);
                           });
+                          editor.value = data;
                     }
                     setTitle(response.data[0].title)
                     setDescription(response.data[0].description)
@@ -349,6 +435,7 @@ function EmptyEdit(props: emptyEdit) {
             }).catch(err => console.log(err))
         }
     }, [])
+
     function handleUpdate() {
         // const converted = draftToHtml(convertToRaw(editorState.getCurrentContent()))
         const obj = {
@@ -387,7 +474,6 @@ function EmptyEdit(props: emptyEdit) {
         ).catch(err => console.log(err))
     }
     const closeDivModule = (newData: string) => {
-        debugger;
         console.log(newData)
         //  var editor = cursorPosition?.getEditor();
         // if (!editor) return;
@@ -565,10 +651,10 @@ function EmptyEdit(props: emptyEdit) {
         navigate(`/user${props.path}`);
     }
     const handleChangeTextArea=(event:React.ChangeEvent<HTMLTextAreaElement>)=>{
-        debugger;
             setEditorContent(event.target.value);
     }
     //editor.setEditorValue('<p>start</p>')
+
    
     return (
         <>

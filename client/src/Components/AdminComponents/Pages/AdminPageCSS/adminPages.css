@@ -380,3 +380,8 @@ flex-direction: row;
     color: #e8d4d4;
     background-color: white;
    }
+   .editorStyling{
+    padding-top: '10%';
+    width : 200px;
+    /* background-color: #f1b89d; */
+   }
