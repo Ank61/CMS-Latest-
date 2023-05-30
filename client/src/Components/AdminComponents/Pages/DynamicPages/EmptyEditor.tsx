@@ -95,6 +95,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import { switchClasses } from '@mui/material';
 
 
 type moduleDetail = {
@@ -149,6 +150,13 @@ interface emptyEdit {
     path: String
     name: String
 }
+interface patternaData{
+    div1 : boolean;
+    div2 : boolean;
+    div3 : boolean;
+    div4 : boolean;
+    div5 : boolean;
+}
 
 function EmptyEdit(props: emptyEdit) {
     const [moduleDetails, setModuleDetails] = useState<moduleDetail>()
@@ -185,15 +193,34 @@ function EmptyEdit(props: emptyEdit) {
     const [editorContent, setEditorContent] = useState<string>('');
     const editorRef= useRef<HTMLTextAreaElement>(null);
     const [editorInstance, setEditorInstance] = useState<Jodit | null>(null);
-
+    const [formData , setFormData] = useState<string>('')
     //States for the from Dynamic
     const [ insideDiv1 , setInsideDiv1] =useState<boolean>(false)
     const [ insideDiv2 , setInsideDiv2] =useState<boolean>(false)
-    const [ div1Data , setDiv1Data] = useState({})
-    const [ div2Data , setDiv2Data] = useState({})
+    const [ div1Data , setDiv1Data] = useState<boolean>(false)
+    const [ div2Data , setDiv2Data] = useState<boolean>(false)
     const [ finalDataDivisionModule , setFinalDataDivisionModule] =useState<number>(0)
     const [pattern , setPattern] = useState<number>(2)
+    const [pattherData,setPatternData] = useState<patternaData>({div1 : false , div2: false , div3 : false , div4 : false , div5 : false})
+    
 
+
+
+    const handlePatternSelected = (event : any)=>{
+    const divName = event.target.value;
+    if(divName.match("div1")){
+        const firstDiv = editorContent.indexOf("div1")
+        const lastDivTag = editorContent.indexOf("</div>" , firstDiv) 
+        console.log("This is the div 1index" , editorContent, firstDiv  ,lastDivTag , editorContent.slice(firstDiv , lastDivTag) )
+        setPatternData({div1 : true , div2: false , div3 : false , div4 : false , div5 : false})
+    }
+    else if(divName.match("div2")){
+        setPatternData({div1 : false , div2: true , div3 : false , div4 : false , div5 : false})
+    }
+    else{
+        setPatternData({div1 : false , div2: false , div3 : false , div4 : false , div5 : false})
+    }
+    }
     var lastMatchingItem: Item;
     // var  editor :any ;
     const options = [
@@ -640,6 +667,10 @@ function EmptyEdit(props: emptyEdit) {
                 result = `<div style="height : 500px ; border : 1px solid #dee2e6;width :300px;"><div style="display:flex;flex-direction :row ; margin-top : 13px">${intialLabel}<input type="text" class="form-control" id='${intialLabel} ${intialValidation}' style="width : 50% ;height : 30px;font-size : 12px ;margin-left : 20px" placeholder=${intialPlaceholder} required=${intialRequired} ></input></div><div style="display:flex;flex-direction :row ; margin-top : 13px">${finalForm[0].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder='${finalForm[0].placeholder === undefined ? "" : finalForm[0].placeholder}' required='${finalForm[0].required}' id='${finalForm[0].label} ${finalForm[0].validations}' ></input></div><div style="display:flex;flex-direction :row">${finalForm[1].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[1].placeholder} required=${finalForm[1].required}></input></div><div style="display:flex;flex-direction :row">${finalForm[2].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[2].placeholder} ></input></div><div style="display:flex;flex-direction :row">${finalForm[3].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[3].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[4].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[5].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[6].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[6].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[7].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[7].placeholder}></input></div><div style="display:flex;flex-direction :row">${finalForm[8].label}<input type="text" class="form-control" style="width : 50% ;font-size : 12px ;height : 30px;margin-left : 20px" placeholder=${finalForm[8].placeholder}></input></div><button class='btn btn-primary submitButton' id="postIt" style="font-size : 12px ; margin-top : 20px">${buttonText ? buttonText : "Submit"}</button></div>`;
                 break;
         }
+        //We have got the form data
+        //Now we have to take the present input and find the present index of the special charachtar that present state
+        // console.log("This sis defalt state" , editorContent , "indexof div 1" , editorContent.indexOf("Div 1" ) )
+        setFormData(result)
         if (editorInstance) {
             editorInstance.value =editorContent+ result;
             setEditorContent(editorContent+result);
@@ -887,10 +918,10 @@ function EmptyEdit(props: emptyEdit) {
                                             <>
                                                 <Grid container justifyContent="center" spacing={2} style={{ marginLeft: 2, width: '100%',marginTop : 8}}>
                                                         <Grid key={1} item>
-                                                            <Paper sx={{ height: 130, width: 80, border: '1px solid #77aadc', backgroundColor: '#efebeb',fontSize : 14 , paddingTop :5 , paddingBottom :5,paddingLeft:3 }} >Div 1</Paper>
+                                                            <Paper sx={{ height: 130, width: 80, border: '1px solid #77aadc', backgroundColor: '#ffffff',fontSize : 14 , paddingTop :0, paddingBottom :5,paddingLeft:2,fontWeight:600 }} >Div 1  {pattherData.div1 ? <div style={{width :'80%',height:'70%',backgroundColor:'#e6fcfc',fontWeight:400,marginTop:18,fontSize : 12,paddingTop:19,paddingLeft:10 }}>Form</div> : ""}</Paper>
                                                         </Grid>
                                                         <Grid key={2} item>
-                                                            <Paper sx={{ height: 130, width: 80, border: '1px solid #77aadc', backgroundColor: '#efebeb',fontSize : 14, paddingTop :5 , paddingBottom :5,paddingLeft:3}} >Div 2</Paper>
+                                                            <Paper sx={{ height: 130, width: 80, border: '1px solid #77aadc', backgroundColor: '#ffffff',fontSize : 14, paddingTop :0, paddingBottom :5,paddingLeft:2,fontWeight:600 }} >Div 2{pattherData.div2 ? <div style={{width :'80%',height:'70%',backgroundColor:'#e6fcfc',fontWeight:400,marginTop:18,fontSize : 12,paddingTop:19,paddingLeft:10 }}>Form</div> : ""}</Paper>
                                                         </Grid>
                                                     </Grid>
                                         <div style={{ display: 'flex', justifyContent: 'center',marginTop :'3%' }}>
@@ -899,9 +930,10 @@ function EmptyEdit(props: emptyEdit) {
                                                     row
                                                     aria-labelledby="demo-row-radio-buttons-group-label"
                                                     name="row-radio-buttons-group"
+                                                    onChange={handlePatternSelected}
                                                 >
-                                                    <FormControlLabel value="Div 1" control={<Radio style={{fontSize :12}} size ="small"/>}  label={<span style={{ fontSize: 14 }}>Div 1</span>} />
-                                                    <FormControlLabel value="Div 2" control={<Radio size ="small"/>} label={<span style={{ fontSize: 14 }}>Div 2</span>} />
+                                                    <FormControlLabel value="div1" control={<Radio style={{fontSize :12}} size ="small"/>}  label={<span style={{ fontSize: 14 }}>Div 1</span>} />
+                                                    <FormControlLabel value="div2" control={<Radio size ="small"/>} label={<span style={{ fontSize: 14 }}>Div 2</span>} />
                                                     <FormControlLabel value="Other" control={<Radio size ="small"/>} label={<span style={{ fontSize: 14 }}>Apply below</span>} />
                                                 </RadioGroup>
                                             </FormControl>
@@ -925,7 +957,7 @@ function EmptyEdit(props: emptyEdit) {
                                     <div style={{ marginLeft: 'auto' }} onClick={() => setFormModal(false)}><CloseIcon style={{ fontSize: 25 }} /></div>
                                 </div>
                                 {/* For output make it auto*/}
-                                <div style={{ height: 460, width: 550, marginLeft: 10, border: '1px solid #e1e1e1' }} className='column'>
+                                <div style={{ height: 460, width: 550, marginLeft: 10, borderTop: '1px solid #e1e1e1',marginTop:15 }} className='column'>
                                     {showMore ?
                                         <div className="backgroundButton" style={{ marginTop: 30, fontSize: 14 }}>
                                             <h6 style={{ fontSize: 13, marginRight: 'auto' }}>{JSON.stringify(intialLabel)}</h6>
